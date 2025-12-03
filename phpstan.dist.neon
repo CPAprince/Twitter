@@ -1,8 +1,24 @@
+includes:
+    # Symfony extension + rules
+    - vendor/phpstan/phpstan-symfony/extension.neon
+    - vendor/phpstan/phpstan-symfony/rules.neon
+
+    # Doctrine extension + rules
+    - vendor/phpstan/phpstan-doctrine/extension.neon
+    - vendor/phpstan/phpstan-doctrine/rules.neon
+
 parameters:
-    level: 6
+    level: 4
     paths:
         - bin/
         - config/
         - public/
         - src/
         - tests/
+    symfony:
+            # actual parameter name for PHPStan-symfony
+            # and path for Symfony 5+ (including 7.4)
+            containerXmlPath: var/cache/dev/App_KernelDevDebugContainer.xml
+
+    # basic Doctrine settings – without objectManagerLoader yet
+    doctrine: []
