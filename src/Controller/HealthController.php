@@ -1,18 +1,17 @@
 <?php
 
-namespace App\Controller;
+declare(strict_types=1);
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+namespace Twitter\Controller;
+
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 
-final class HealthController extends AbstractController
+final class HealthController
 {
-    #[Route('/health', name: 'app_health')]
+    #[Route('/api/health', name: 'health', methods: ['GET'])]
     public function index(): JsonResponse
     {
-        return $this->json([
-            'status' => 'ok',
-        ]);
+        return new JsonResponse(['status' => 'ok']);
     }
 }

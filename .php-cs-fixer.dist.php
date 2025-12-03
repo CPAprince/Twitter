@@ -8,6 +8,8 @@ $finder = (new PhpCsFixer\Finder())
 return (new PhpCsFixer\Config())
     ->setRules([
         '@Symfony' => true,
+        'strict_comparison' => true,
+        'declare_strict_types' => ['preserve_existing_declaration' => false],
     ])
     ->setFinder($finder)
 ;
