@@ -1,336 +1,73 @@
-#### --== Twitter ==-- ####
+# Twitter #
 
-Lab's Team Project
+How to start/install read in [SETUP.MD](./docs/setup.md)
 
-# 📘 Правила роботи з Git у проєкті
 
-У цьому проєкті використовується безпечна та зрозуміла модель розробки з чітким розмежуванням гілок:
 
-* `main` — стабільна версія (production)
-* `develop` — активна розробка
-* `feature/*` — окремі задачі
+## 🌿 Branch Structure
+
+* `main` — stable version (production)
+* `develop` — active development
+* `feature/*` — individual tasks / features
 
 ---
 
-## 🌿 Структура гілок
-
 ### `main`
 
-* Готовий та стабільний код
-* Використовується для production
-* Заборонено робити напряму коміти
-* Приймає зміни тільки через Pull Request з `develop`
+* Contains production-ready and stable code
+* Used for deployment
+* Direct commits are **not allowed**
+* Accepts changes **only via Pull Requests from `develop`**
 
 ---
 
 ### `develop`
 
-* Головна гілка для розробників
-* Всі нові функції зливаються сюди
-* Заборонені прямі коміти — тільки через `feature/*`
+* The main branch for developers
+* All new features are merged here
+* Direct commits are **not allowed** — only via `feature/*` branches
 
 ---
 
 ### `feature/*`
 
-* Гілки для окремих задач
-* Створюються від `develop`
+* Branches for individual tasks and features
+* Created from `develop`
 
-**Формат назви:**
-
-```
-feature/назва-задачі
-```
-
-**Приклади:**
+**Naming format:**
 
 ```
-feature/login-page
-feature/api-integration
-feature/admin-dashboard
+feature/task-name
 ```
 
----
-
-## 🚀 Процес роботи
-
-### 1. Створення гілки для задачі
-
-```bash
-git checkout develop
-git pull
-git checkout -b feature/task-name
-```
-
----
-
-### 2. Робота і коміт
-
-```bash
-git add .
-git commit -m "Add: new authentication system"
-git push origin feature/task-name
-```
-
----
-
-### 3. Pull Request
-
-1. Відкрити Pull Request → у `develop`
-2. Пройти code review
-3. Після підтвердження → Merge
-
----
-
-### 4. Реліз (оновлення main)
-
-Після завершення спринту або великої задачі:
-
-```bash
-git checkout main
-git merge develop
-git tag v1.0.0
-git push origin main --tags
-```
-
----
-
-## 📝 Правила комітів
-
-Використовуємо єдиний стиль:
-
-| Тип         | Значення            |
-| ----------- | ------------------- |
-| `Add:`      | Новий функціонал    |
-| `Fix:`      | Виправлення помилок |
-| `Update:`   | Оновлення           |
-| `Refactor:` | Переписування коду  |
-| `Remove:`   | Видалення           |
-
-**Приклад:**
-
-```bash
-git commit -m "Fix: validation error on login"
-```
-
----
-
-## 🚫 Заборонено
-
-* Комітити напряму в `main`
-* Працювати в `develop` без гілки `feature`
-* Мержити код без ревʼю
-
----
-
-## 🔁 Схема потоку
+**Examples:**
 
 ```
-feature/* → develop → main
-    ↑          ↑         ↑
-   задачі    тестування   реліз
-```
-
----
-
-За потреби може бути додано:
-
-* `hotfix/*` — термінові виправлення
-* `release/*` — підготовка релізу
-
------------------------------------------------
-
-=============================================
-
-# 📘 Git Workflow для Scrum + Jira + GitHub
-
-=============================================
-
-У цьому проєкті використовується модель гілок, адаптована під **Scrum-процес**, **Jira таски** та **GitHub Pull Requests**.
-
----
-
-## 🌿 Структура гілок
-
-| Гілка       | Призначення                    |
-| ----------- | ------------------------------ |
-| `main`      | Production (стабільна версія)  |
-| `develop`   | Основна гілка розробки         |
-| `feature/*` | Задачі спринту (Jira tickets)  |
-| `hotfix/*`  | Термінові баги в production    |
-| `release/*` | Підготовка релізу (за потреби) |
-
----
-
-## 🎫 Інтеграція з Jira
-
-Кожна задача у Jira має ключ, наприклад:
-**`API-123`**, **`AUTH-45`**, **`FRONT-12`**
-
-👉 Назва гілки **обовʼязково повинна містити цей ключ**:
-
-```
+feature/SCRUM-22-login-page
+feature/SCRUM-37-api-integration
+feature/SCRUM-37-admin-dashboard
 feature/API-123-login-endpoint
 feature/AUTH-45-password-reset
 feature/FRONT-12-dashboard-layout
 ```
 
-Це дає автоматичний звʼязок комітів із Jira.
+---
+
+## 🚫 Not Allowed
+
+* Direct commits to `main` or `develop`
+* Working in `develop` without a `feature` branch
+* Merging code without [Ihor](https://github.com/ihpr) code review
 
 ---
 
-## 🚀 Процес роботи в Scrum
+## 📝 Commit Rules
 
-### 1. Старт нової задачі зі спринту
+Useful guidance links: 
+* [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/)
+* [How to Write a Git Commit Message](https://cbea.ms/git-commit/)
 
-Переведи задачу в Jira у **"In Progress"**
-
-Створи гілку:
-
-```bash
-git checkout develop
-git pull
-git checkout -b feature/API-123-login-endpoint
-```
 
 ---
 
-### 2. Коміти
 
-Кожен коміт повинен починатись з ключа Jira:
-
-```
-API-123 Add login endpoint
-AUTH-45 Fix password validation
-```
-
-Приклад:
-
-```bash
-git commit -m "API-123 Add JWT authentication"
-```
-
-Це дозволяє Jira відслідковувати прогрес задачі автоматично.
-
----
-
-### 3. Push + Pull Request
-
-```bash
-git push origin feature/API-123-login-endpoint
-```
-
-У GitHub:
-
-1. Створити **Pull Request → у `develop`**
-2. У назві PR вказати:
-
-   ```
-   API-123: Add login endpoint
-   ```
-
-3. Додати description:
-
-   * Що зроблено
-   * Посилання на Jira таск
-   * Скріншоти (якщо UI)
-
----
-
-### 4. Code Review
-
-* Мінімум 1 approve від іншого розробника
-* CI/CD пайплайн має пройти ✅
-* Тільки після цього → Merge
-
----
-
-## ✅ End of Sprint / Release
-
-Після закінчення спринту або milestone:
-
-```bash
-git checkout main
-git merge develop
-git tag v1.2.0
-git push origin main --tags
-```
-
-У **Jira → створюється Version = v1.2.0**
-І повʼязані задачі автоматично закриваються.
-
----
-
-## 🔥 Hotfix (терміново для Production)
-
-Якщо баг у продакшені:
-
-```bash
-git checkout main
-git checkout -b hotfix/API-201-critical-bug
-```
-
-Після виправлення:
-
-```bash
-git commit -m "API-201 Fix critical bug in production"
-git checkout main
-git merge hotfix/API-201-critical-bug
-git checkout develop
-git merge hotfix/API-201-critical-bug
-git push origin --all
-```
-
-✔ Фікс зʼявляється і в `main`, і в `develop`
-
----
-
-## 🧠 Статуси в Jira
-
-Рекомендований pipeline:
-
-```
-Backlog → Selected for Sprint → In Progress → Code Review → Testing → Done
-```
-
-* При створенні PR → задача автоматично у **Code Review**
-* Після merge → **Testing / Done**
-
----
-
-## 🚫 Заборонено
-
-* Коміти напряму в `main` і `develop`
-* Merge без PR і review
-* Зміни без привʼязки до Jira задачі
-
----
-
-## 📌 Обовʼязково в GitHub
-
-Налаштувати:
-
-✅ Branch protection rules:
-
-* `main`, `develop`
-* Заборонити force-push
-* Обовʼязковий PR
-* Status checks before merge
-
-✅ PR Template
-
-✅ Default branch: `develop`
-
----
-
-## Схема потоку
-
-```
-Jira Ticket
-     ↓
-feature/JIRA-123
-     ↓ PR + Review
-   develop
-     ↓ release
-     main (v1.2.0)
-```
