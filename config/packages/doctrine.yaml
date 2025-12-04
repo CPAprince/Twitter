@@ -10,13 +10,12 @@ doctrine:
     orm:
         validate_xml_mapping: true
         naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
-        auto_mapping: true
         mappings:
             Twitter:
-                type: attribute
+                type: xml
                 is_bundle: false
-                dir: '%kernel.project_dir%/src/Entity'
-                prefix: 'Twitter\Entity'
+                dir: '%kernel.project_dir%/config/doctrine'
+                prefix: 'Twitter'
                 alias: Twitter
         controller_resolver:
             auto_mapping: false
