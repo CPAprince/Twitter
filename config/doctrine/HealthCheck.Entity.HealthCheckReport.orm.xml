@@ -11,7 +11,7 @@
             <generator strategy="AUTO"/>
         </id>
 
-        <field name="status" type="string"/>
+        <field name="status" type="enum"/>
         <field name="createdAt" type="datetime_immutable"/>
 
     </entity>

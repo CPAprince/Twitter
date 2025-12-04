@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Twitter\HealthCheck\Controller;
 
 use Doctrine\ORM\EntityManagerInterface;
@@ -16,6 +18,10 @@ final class HealthCheckController
         $entityManager->persist($report);
         $entityManager->flush();
 
-        return new JsonResponse($report);
+        return new JsonResponse([
+            'id' => $report->id,
+            'status' => $report->status,
+            'createdAt' => $report->createdAt->format(\DateTimeInterface::RFC3339),
+        ]);
     }
 }
