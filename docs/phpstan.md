@@ -39,4 +39,4 @@ Supported environments:
 - **Windows (Git Bash)** — supported; run using:
 
   ```bash
-  bash tools/phpstan.sh
+  tools/phpstan.sh

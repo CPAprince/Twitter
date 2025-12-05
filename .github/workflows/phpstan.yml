@@ -9,15 +9,18 @@ jobs:
     phpstan:
         runs-on: ubuntu-latest
 
+        container:
+            image: php:8.4-cli
+
         steps:
             - name: Checkout repository
               uses: actions/checkout@v4
 
-            - name: Setup PHP 8.4
-              uses: shivammathur/setup-php@v2
-              with:
-                  php-version: '8.4'
-                  tools: composer
+            - name: Install Composer
+              run: |
+                  php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+                  php composer-setup.php --install-dir=/usr/local/bin --filename=composer
+                  rm composer-setup.php
 
             - name: Install dependencies
               run: composer install --no-interaction --prefer-dist
