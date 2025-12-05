@@ -1,4 +1,5 @@
 # PHPStan – Static Analysis
+https://phpstan.org/user-guide/getting-started
 
 This project uses **PHPStan** for static analysis with full
 **Symfony** and **Doctrine** integration.

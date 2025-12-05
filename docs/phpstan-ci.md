@@ -11,9 +11,10 @@ and quick start for developers.
 ## Scope
 
 - **Dev (local)**: `phpstan.md` + `./tools/phpstan.sh`  
-  Uses Docker, auto-installs dependencies, smart cache warmup.
+  Uses Docker, auto-installs dev dependencies, smart cache warmup, and ensures
+  Symfony container XML exists.
 
-- **CI / "prod" (this document)**: `docs/phpstan-ci.md`  
+- **CI (GitHub) (this document)**: `docs/phpstan-ci.md`  
   No auto-install logic, clean environment, deterministic behaviour.
 
 ---
@@ -22,8 +23,8 @@ and quick start for developers.
 
 PHPStan in CI assumes:
 
-1. PHP 8.4 is available.
-2. Composer dependencies are installed via:
+1. **PHP 8.4** is available.
+2. **Composer dependencies** (including dev tools) are installed:
 
    ```bash
    composer install --no-interaction --prefer-dist

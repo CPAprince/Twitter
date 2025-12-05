@@ -1,0 +1,26 @@
+name: PHP-CS-Fixer
+
+on:
+    pull_request:
+    push:
+        branches: [ main, develop ]
+
+jobs:
+    cs-fixer:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
+
+            - name: Setup PHP 8.4
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: '8.4'
+                  tools: composer
+
+            - name: Install dependencies
+              run: composer install --no-interaction --prefer-dist
+
+            - name: Run PHP-CS-Fixer (check)
+              run: ./tools/cs-fixer
