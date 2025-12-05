@@ -13,6 +13,14 @@ jobs:
             image: php:8.4-cli
 
         steps:
+            - name: Install system dependencies (git, unzip, zip extension)
+              run: |
+                  apt-get update
+                  apt-get install -y git unzip libzip-dev zlib1g-dev
+                  docker-php-ext-configure zip
+                  docker-php-ext-install zip
+                  rm -rf /var/lib/apt/lists/*
+
             - name: Checkout repository
               uses: actions/checkout@v4
 
