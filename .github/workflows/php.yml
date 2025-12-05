@@ -1,0 +1,33 @@
+name: PHP
+
+on:
+  workflow_call:
+    inputs:
+      os:
+        type: string
+        required: true
+      php-version:
+        type: string
+        required: true
+
+jobs:
+  composer:
+    runs-on: ${{ inputs.os }}
+    container:
+      image: php:${{ inputs.php-version }}-cli
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install system dependencies
+        run: |
+          apt-get update
+          apt-get install -y git unzip libzip-dev zlib1g-dev
+          docker-php-ext-configure zip
+          docker-php-ext-install zip
+          rm -rf /var/lib/apt/lists/*
+      - name: Install Composer
+        run: |
+          php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+          php composer-setup.php --install-dir=/usr/local/bin --filename=composer
+          rm composer-setup.php
+      - name: Install dependencies
+        run: composer install --no-interaction --prefer-dist

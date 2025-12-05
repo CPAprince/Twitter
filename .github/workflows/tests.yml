@@ -1,0 +1,22 @@
+name: Tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  tests:
+    strategy:
+      matrix:
+        os: [ 'ubuntu-22.04' ]
+        php-version: [ '8.4' ]
+    runs-on: ${{ matrix.os }}
+    container:
+      image: php:${{ matrix.php-version }}-cli
+    steps:
+      - uses: ./.github/workflows/php.yml
+        with:
+          os: ${{ matrix.os }}
+          php-version: ${{ matrix.php-version }}
+      - name: Run unit-tests
+        run: ./vendor/bin/phpunit
