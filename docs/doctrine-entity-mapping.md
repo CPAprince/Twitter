@@ -1,20 +1,43 @@
 # How to Create and Map Doctrine Entities
 
-## Create a new entity
+## Define an entity
 
-Entities are located in `Entity` directory of corresponding modules,
-for example `../src/HealthCheck/Entity/HealthCheckReport.php)`.
+Entities are located in `Entity` directory of corresponding modules.
+Let's create a simple health check report entity `src/HealthCheck/Entity/HealthCheckReport.php`:
+
+```php
+final class HealthCheckReport
+{
+    public readonly ?int $id;
+    public HealthCheckReportStatus $status;
+    public readonly \DateTimeImmutable $createdAt;
+
+    public function __construct(HealthCheckReportStatus $status = HealthCheckReportStatus::HEALTHY)
+    {
+        $this->id = null;
+        $this->status = $status;
+        $this->createdAt = new \DateTimeImmutable();
+    }
+}
+```
+
+And `src/HealthCheck/Entity/HealthCheckReportStatus.php`:
+
+```php
+enum HealthCheckReportStatus: string
+{
+    case HEALTHY = 'application services are healthy';
+    case DATABASE_UNREACHABLE = 'could not ping the database'
+}
+```
 
 ## Doctrine XML mapping
 
 ### Create an XML file
 
 Doctrine entities corresponding `.orm.xml` files are located in [`config/doctrine`](../config/doctrine) directory.
-The mapping filename has the following structure: `<ModuleName>.<EntityDirectiry>.<EntityClassName>.orm.xml`, for
-example: [
-`HealthCheck.Entity.HealthCheckReport.orm.xml`](../config/doctrine/HealthCheck.Entity.HealthCheckReport.orm.xml).
-
-Example configuration:
+The mapping filename has the following structure: `<ModuleName>.<EntityDirectiry>.<EntityClassName>.orm.xml`.
+In our case we can create `../config/doctrine/HealthCheck.Entity.HealthCheckReport.orm.xml`:
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -24,19 +47,19 @@ Example configuration:
                     http://doctrine-project.org/schemas/orm/doctrine-mapping
                     https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
 
-    <entity name="MyApp\SomeModule\Entity\SomeEntity" table="some_entities">
+    <entity name="Twitter\HealthCheck\Entity\HealthCheckReport" table="health_check_reports">
 
         <id name="id" type="integer">
             <generator strategy="AUTO"/>
         </id>
 
-        <field name="title" type="string"/>
-        <field name="description" type="text"/>
+        <field name="status" type="enum"/>
         <field name="createdAt" type="datetime_immutable"/>
 
     </entity>
 
 </doctrine-mapping>
+
 ```
 
 ### Update Doctrine schema
