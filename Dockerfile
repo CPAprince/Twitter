@@ -1,5 +1,7 @@
 #syntax=docker/dockerfile:1
 
+# Adapted from https://github.com/dunglas/symfony-docker
+
 # Versions
 FROM dunglas/frankenphp:1-php8.4 AS frankenphp_upstream
 
@@ -13,31 +15,34 @@ FROM frankenphp_upstream AS frankenphp_base
 
 WORKDIR /app
 
-VOLUME /app/var/
-
 # persistent / runtime deps
 # hadolint ignore=DL3008
-RUN apt-get update && apt-get install -y --no-install-recommends \
+RUN apt-get update && apt-get install --no-install-recommends -y \
+	acl \
 	file \
+	gettext \
 	git \
 	&& rm -rf /var/lib/apt/lists/*
-
-RUN set -eux; \
-	install-php-extensions \
-	@composer \
-	apcu \
-	intl \
-	opcache \
-	zip \
-	pdo_mysql \
-	;
 
 # https://getcomposer.org/doc/03-cli.md#composer-allow-superuser
 ENV COMPOSER_ALLOW_SUPERUSER=1
 
 ENV PHP_INI_SCAN_DIR=":$PHP_INI_DIR/app.conf.d"
 
+RUN set -eux; \
+	install-php-extensions \
+		@composer \
+		apcu \
+		intl \
+		opcache \
+		zip \
+	;
+
 ###> recipes ###
+###> doctrine/doctrine-bundle ###
+RUN set -eux; \
+	install-php-extensions pdo_mysql
+###< doctrine/doctrine-bundle ###
 ###< recipes ###
 
 COPY --link frankenphp/conf.d/10-app.ini $PHP_INI_DIR/app.conf.d/
@@ -56,11 +61,13 @@ ENV APP_ENV=dev
 ENV XDEBUG_MODE=off
 ENV FRANKENPHP_WORKER_CONFIG=watch
 
+VOLUME /app/var/
+
 RUN mv "$PHP_INI_DIR/php.ini-development" "$PHP_INI_DIR/php.ini"
 
 RUN set -eux; \
 	install-php-extensions \
-	xdebug \
+		xdebug \
 	;
 
 COPY --link frankenphp/conf.d/20-app.dev.ini $PHP_INI_DIR/app.conf.d/

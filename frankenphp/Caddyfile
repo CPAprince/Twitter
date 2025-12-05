@@ -1,5 +1,5 @@
 {
-	skip_install_trust
+	skip_install_trust 
 
 	{$CADDY_GLOBAL_OPTIONS}
 
@@ -8,13 +8,14 @@
 
 		worker {
 			file ./public/index.php
-			env APP_RUNTIME Runtime\FrankenPhpSymfony\Runtime
+			env APP_RUNTIME Runtime\FrankenPhpSymfony\Runtime 
+
 			{$FRANKENPHP_WORKER_CONFIG}
 		}
 	}
 }
 
-{$CADDY_EXTRA_CONFIG}
+{$CADDY_EXTRA_CONFIG} 
 
 {$SERVER_NAME:localhost} {
 	log {
@@ -30,22 +31,24 @@
 	root /app/public
 	encode zstd br gzip
 
-	vulcain
+	vulcain 
 
 	{$CADDY_SERVER_EXTRA_DIRECTIVES}
 
 	# Disable Topics tracking if not enabled explicitly: https://github.com/jkarlin/topics
 	header ?Permissions-Policy "browsing-topics=()"
 
-	@phpRoute {
-		not file {path}
-	}
-	rewrite @phpRoute index.php
+	route {
+		@phpRoute {
+			not file {path}
+		}
+		rewrite @phpRoute index.php
 
-	@frontController path index.php
-	php @frontController
+		@frontController path index.php
+		php @frontController
 
-	file_server {
-		hide *.php
+		file_server {
+			hide *.php
+		}
 	}
 }

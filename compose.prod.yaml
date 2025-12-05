@@ -5,3 +5,7 @@ services:
       target: frankenphp_prod
     environment:
       APP_SECRET: ${APP_SECRET}
+
+  database:
+    environment:
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
