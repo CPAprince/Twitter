@@ -2,6 +2,7 @@
 
 How to start/install read in [SETUP.MD](./docs/setup.md)
 
+[PHPStan – Static Analysis](./docs/phpstan.md) and [PHPStan in CI](./docs/phpstan-ci.md)
 
 
 ## 🌿 Branch Structure
@@ -38,16 +39,10 @@ How to start/install read in [SETUP.MD](./docs/setup.md)
 
 ```
 feature/task-name
-```
 
-**Examples:**
-
-```
+Examples:
 feature/SCRUM-22-login-page
-feature/SCRUM-37-api-integration
-feature/SCRUM-37-admin-dashboard
 feature/API-123-login-endpoint
-feature/AUTH-45-password-reset
 feature/FRONT-12-dashboard-layout
 ```
 
