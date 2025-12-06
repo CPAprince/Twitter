@@ -14,9 +14,20 @@ jobs:
     container:
       image: php:${{ matrix.php-version }}-cli
     steps:
-      - uses: ./.github/workflows/php.yml
-        with:
-          os: ${{ matrix.os }}
-          php-version: ${{ matrix.php-version }}
+      - uses: actions/checkout@v4
+      - name: Install system dependencies
+        run: |
+          apt-get update
+          apt-get install -y git unzip libzip-dev zlib1g-dev
+          docker-php-ext-configure zip
+          docker-php-ext-install zip
+          rm -rf /var/lib/apt/lists/*
+      - name: Install Composer
+        run: |
+          php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+          php composer-setup.php --install-dir=/usr/local/bin --filename=composer
+          rm composer-setup.php
+      - name: Install dependencies
+        run: composer install --no-interaction --prefer-dist
       - name: Run Unit Tests
         run: ./vendor/bin/phpunit
