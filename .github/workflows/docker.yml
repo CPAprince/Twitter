@@ -43,4 +43,4 @@ jobs:
       - name: Check HTTP reachability
         run: curl -v --fail-with-body http://localhost/api/health
       - name: Check HTTPS reachability
-        run: curl -vk --fail-with-body http://localhost/api/health
+        run: curl -vk --fail-with-body https://localhost/api/health
