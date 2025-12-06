@@ -3,7 +3,8 @@ services:
     image: ${IMAGES_PREFIX:-}app-php
     restart: unless-stopped
     depends_on:
-      - database
+      database:
+        condition: service_healthy
     environment:
       SERVER_NAME: ${SERVER_NAME:-localhost}, php:80
       DEFAULT_URI: https://${SERVER_NAME:-localhost}:${HTTPS_PORT:-443}
@@ -32,15 +33,15 @@ services:
       MYSQL_RANDOM_ROOT_PASSWORD: "true"
       MYSQL_PASSWORD: ${MYSQL_PASSWORD:-!ChangeMe!}
       MYSQL_USER: ${MYSQL_USER:-app}
+    volumes:
+      - database_data:/var/lib/mysql:rw
+      # You may use a bind-mounted host directory instead, so that it is harder to accidentally remove the volume and lose all your data!
+      # - ./docker/db/data:/var/lib/mysql:rw
     healthcheck:
       test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
       timeout: 5s
       retries: 5
       start_period: 60s
-    volumes:
-      - database_data:/var/lib/mysql:rw
-      # You may use a bind-mounted host directory instead, so that it is harder to accidentally remove the volume and lose all your data!
-      # - ./docker/db/data:/var/lib/mysql:rw
 ###< doctrine/doctrine-bundle ###
 
 volumes:
