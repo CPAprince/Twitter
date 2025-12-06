@@ -16,7 +16,8 @@ jobs:
     container:
       image: php:${{ inputs.php-version }}-cli
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
       - name: Install system dependencies
         run: |
           apt-get update
