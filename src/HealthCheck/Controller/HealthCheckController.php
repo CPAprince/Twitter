@@ -4,24 +4,17 @@ declare(strict_types=1);
 
 namespace Twitter\HealthCheck\Controller;
 
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
-use Twitter\HealthCheck\Entity\HealthCheckReport;
 
 #[Route('/api/health', name: 'api_health_check', methods: ['GET'])]
 final class HealthCheckController
 {
-    public function __invoke(EntityManagerInterface $entityManager): JsonResponse
+    public function __invoke(): JsonResponse
     {
-        $report = new HealthCheckReport();
-        $entityManager->persist($report);
-        $entityManager->flush();
-
         return new JsonResponse([
-            'id' => $report->id,
-            'status' => $report->status,
-            'createdAt' => $report->createdAt->format(\DateTimeInterface::RFC3339),
+            'status' => 'ok',
+            'checkedAt' => new \DateTimeImmutable()->format(\DateTimeInterface::RFC3339),
         ]);
     }
 }
