@@ -35,7 +35,7 @@ services:
       MYSQL_USER: ${MYSQL_USER:-app}
     volumes:
       - database_data:/var/lib/mysql:rw
-      # You may use a bind-mounted host directory instead, so that it is harder to accidentally remove the volume and lose all your data!
+      # You may use a bind-mounted host directory instead so that it is harder to accidentally remove the volume and lose all your data!
       # - ./docker/db/data:/var/lib/mysql:rw
     healthcheck:
       test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
