@@ -5,12 +5,36 @@ developed within EPAM PHP Laboratory.
 
 ## Technical Standards and Conventions
 
-| Category          | Decision     | Rationale                                 |
-|:------------------|:-------------|:------------------------------------------|
-| **DBMS**          | `MySQL`      | Speed, reliability and popularity.        |
-| **Charset**       | `utf8mb4`    | Full Unicode support (emojis, etc.).      |
-| **Identity (PK)** | `UUID v7`    | Safety, global uniqueness, time-sortable. |
-| **ID Storage**    | `BINARY(16)` | Speed and space saving.                   |
+| Category          | Decision             | Rationale                                                                                                                                                                                      |
+|:------------------|:---------------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **DBMS**          | `MySQL 8.0`          | Speed, reliability and popularity.                                                                                                                                                             |
+| **Charset**       | `utf8mb4`            | Full Unicode support (emojis, etc.).                                                                                                                                                           |
+| **Collation**     | `utf8mb4_0900_ai_ci` | Modern Unicode sorting standards. Case-insensitive ensures intuitive search (e.g., "Oleh" matches "oleh") and filtering.                                                                       |
+| **Identity (PK)** | `UUID v7`            | Unlike `v4`, `v7` is time-ordered. This prevents B-Tree index fragmentation in MySQL, significantly improving insert performance and query speed for historical data compared to random UUIDs. |
+| **ID Storage**    | `BINARY(16)`         | Speed and space saving.                                                                                                                                                                        |
+
+### UUID Handling Snippets
+
+Since UUIDs are stored as `BINARY(16)`, we utilize MySQL's conversion functions
+for human-readable input/output:
+
+- Selecting data (binary to string):
+
+    ```sql
+    SELECT BIN_TO_UUID(id) as id, email FROM users;
+    ```
+
+- Inserting data (string to binary):
+
+    ```sql
+    INSERT INTO users (id, email, ...) 
+    VALUES (UUID_TO_BIN('6ccd780c-baba-1026-9564-5b8c656024db'), 'email@example.com', ...);
+    ```
+
+> [!NOTE]
+> For UUID v7 generation, we rely on the application layer (Symfony/PHP) to
+> generate the ID before insertion to ensure strict time-sorting, utilizing
+`UUID_TO_BIN()` only when raw SQL interaction is necessary.
 
 ## Entity-Relationship Diagram
 
@@ -19,23 +43,23 @@ developed within EPAM PHP Laboratory.
 title: Twitter (X) ER Diagram
 ---
 erDiagram
-    USER {
+    USERS {
         BINARY(16) id PK
         VARCHAR(320) email UK
-        VARCHAR(255) password
+        CHAR(60) password_hash
         JSON roles
         DATETIME created_at
         DATETIME email_verified_at "Nullable"
     }
 
-    PROFILE {
+    PROFILES {
         BINARY(16) user_id PK, FK
         VARCHAR(50) name
         VARCHAR(300) bio
         DATETIME updated_at
     }
 
-    TWEET {
+    TWEETS {
         BINARY(16) id PK
         BINARY(16) user_id FK
         VARCHAR(280) content
@@ -43,60 +67,60 @@ erDiagram
         DATETIME updated_at
     }
 
-    TWEET_LIKE {
+    TWEET_LIKES {
         BINARY(16) tweet_id PK, FK "Composite PK"
         BINARY(16) user_id PK, FK "Composite PK, indexed"
         DATETIME created_at
     }
 
-    USER ||--|| PROFILE: has
-    USER ||..o{ TWEET: posts
-    USER ||--o{ TWEET_LIKE: performs
-    TWEET ||--o{ TWEET_LIKE: receives
+    USERS ||--|| PROFILES: has
+    USERS ||..o{ TWEETS: posts
+    USERS ||--o{ TWEET_LIKES: performs
+    TWEETS ||--o{ TWEET_LIKES: receives
 ```
 
 ## Data Dictionary and Entities
 
-### Table: `user`
+### Table: `users`
 
 Stores only data required for authentication and authorization.
 
-| Field               | Type           | Attributes       | Description                       |
-|:--------------------|:---------------|:-----------------|:----------------------------------|
-| `id`                | `BINARY(16)`   | **PK**           | Unique identifier (UUID v7).      |
-| `email`             | `VARCHAR(320)` | **UK**, Not Null | User login.                       |
-| `password`          | `VARCHAR(255)` | Not Null         | Password hash.                    |
-| `roles`             | `JSON`         | Not Null         | Array of roles.                   |
-| `created_at`        | `DATETIME`     | Not Null         | Registration date and time.       |
-| `email_verified_at` | `DATETIME`     | Nullable         | Email verification date and time. |
+| Field               | Type           | Attributes       | Description                                                                            |
+|:--------------------|:---------------|:-----------------|:---------------------------------------------------------------------------------------|
+| `id`                | `BINARY(16)`   | **PK**           | Unique identifier (UUID v7).                                                           |
+| `email`             | `VARCHAR(320)` | **UK**, Not Null | User login.                                                                            |
+| `password_hash`     | `CHAR(60)`     | Not Null         | Bcrypt hash. Fixed length of 60 characters ensures optimal storage for Bcrypt strings. |
+| `roles`             | `JSON`         | Not Null         | Array of roles.                                                                        |
+| `created_at`        | `DATETIME`     | Not Null         | Registration date and time.                                                            |
+| `email_verified_at` | `DATETIME`     | Nullable         | Email verification date and time.                                                      |
 
 * Email must be unique across the system.
 * Users are assigned the `ROLE_USER` role by default upon creation.
 
-### Table: `profile`
+### Table: `profiles`
 
-Public user information. Separated from `user`.
+Public user information. Separated from `users`.
 
 | Field        | Type           | Attributes | Description                        |
 |:-------------|:---------------|:-----------|:-----------------------------------|
-| `user_id`    | `BINARY(16)`   | **PK, FK** | Foreign key to `user.id`.          |
+| `user_id`    | `BINARY(16)`   | **PK, FK** | Foreign key to `users.id`.         |
 | `name`       | `VARCHAR(50)`  | Not Null   | Displayed name.                    |
 | `bio`        | `VARCHAR(300)` | Nullable   | User biography.                    |
 | `updated_at` | `DATETIME`     | Nullable   | Last profile update date and time. |
 
-### Table: `tweet`
+### Table: `tweets`
 
 The main content unit.
 
-| Field        | Type           | Attributes | Description                          |
-|:-------------|:---------------|:-----------|:-------------------------------------|
-| `id`         | `BINARY(16)`   | **PK**     | Tweet identifier.                    |
-| `user_id`    | `BINARY(16)`   | **FK**     | Reference to the author (`user.id`). |
-| `content`    | `VARCHAR(280)` | Not Null   | Tweet text body.                     |
-| `created_at` | `DATETIME`     | **Index**  | Publication date and time.           |
-| `updated_at` | `DATETIME`     | Nullable   | Edit date and time.                  |
+| Field        | Type           | Attributes | Description                           |
+|:-------------|:---------------|:-----------|:--------------------------------------|
+| `id`         | `BINARY(16)`   | **PK**     | Tweet identifier.                     |
+| `user_id`    | `BINARY(16)`   | **FK**     | Reference to the author (`users.id`). |
+| `content`    | `VARCHAR(280)` | Not Null   | Tweet text body.                      |
+| `created_at` | `DATETIME`     | **Index**  | Publication date and time.            |
+| `updated_at` | `DATETIME`     | Nullable   | Edit date and time.                   |
 
-### Table: `tweet_like`
+### Table: `tweet_likes`
 
 Junction table (Many-to-Many) for likes.
 
@@ -111,13 +135,13 @@ user from liking the same tweet twice.
 
 ## Indexes
 
-| Table        | Index / Key             | Use Case                                     |
-|:-------------|:------------------------|:---------------------------------------------|
-| `user`       | `UNIQUE(email)`         | Fast user lookup during login.               |
-| `tweet`      | `IDX(created_at DESC)`  | Chronological Feed generation.               |
-| `tweet`      | `IDX(user_id)`          | Fetching all tweets by a specific user.      |
-| `tweet_like` | `PK(tweet_id, user_id)` | Checking whether a user liked a tweet.       |
-| `tweet_like` | `IDX(user_id)`          | Fetching a list of tweets liked by the user. |
+| Table         | Index / Key             | Use Case                                     |
+|:--------------|:------------------------|:---------------------------------------------|
+| `users`       | `UNIQUE(email)`         | Fast user lookup during login.               |
+| `tweets`      | `IDX(created_at DESC)`  | Chronological Feed generation.               |
+| `tweets`      | `IDX(user_id)`          | Fetching all tweets by a specific user.      |
+| `tweet_likes` | `PK(tweet_id, user_id)` | Checking whether a user liked a tweet.       |
+| `tweet_likes` | `IDX(user_id)`          | Fetching a list of tweets liked by the user. |
 
 ## Normalization
 
