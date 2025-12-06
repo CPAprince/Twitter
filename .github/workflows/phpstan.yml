@@ -1,0 +1,40 @@
+name: PHPStan
+
+on:
+    pull_request:
+    push:
+        branches: [ main, develop ]
+
+jobs:
+    phpstan:
+        runs-on: ubuntu-latest
+
+        container:
+            image: php:8.4-cli
+
+        steps:
+            - name: Install system dependencies (git, unzip, zip extension)
+              run: |
+                  apt-get update
+                  apt-get install -y git unzip libzip-dev zlib1g-dev
+                  docker-php-ext-configure zip
+                  docker-php-ext-install zip
+                  rm -rf /var/lib/apt/lists/*
+
+            - name: Checkout repository
+              uses: actions/checkout@v4
+
+            - name: Install Composer
+              run: |
+                  php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+                  php composer-setup.php --install-dir=/usr/local/bin --filename=composer
+                  rm composer-setup.php
+
+            - name: Install dependencies
+              run: composer install --no-interaction --prefer-dist
+
+            - name: Warm up Symfony cache (dev)
+              run: php bin/console cache:warmup --env=dev
+
+            - name: Run PHPStan
+              run: composer phpstan
