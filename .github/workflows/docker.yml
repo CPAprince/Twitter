@@ -15,6 +15,7 @@ jobs:
         with:
           recursive: true
   docker:
+    name: Docker Build
     strategy:
       matrix:
         os: [ 'ubuntu-22.04' ]

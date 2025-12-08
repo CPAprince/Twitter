@@ -5,6 +5,7 @@ on:
 
 jobs:
   lint:
+    name: PHP Lint
     strategy:
       matrix:
         os: [ 'ubuntu-22.04' ]

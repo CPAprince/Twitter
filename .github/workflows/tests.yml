@@ -5,6 +5,7 @@ on:
 
 jobs:
   tests:
+    name: PHP Unit Tests
     strategy:
       matrix:
         os: [ 'ubuntu-22.04' ]
