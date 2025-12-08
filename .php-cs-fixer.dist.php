@@ -13,7 +13,7 @@ $finder = (new Finder())
         __DIR__ . '/bin',
         __DIR__ . '/tools',
     ])
-    ->notPath('config/reference.php')
+    ->notName('reference.php')
     ->name('*.php')
     ->ignoreDotFiles(true)
     ->ignoreVCS(true);
