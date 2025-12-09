@@ -6,10 +6,6 @@
 
 <!-- Step-by-step instructions on how to reproduce the behavior -->
 
-_N/A_
+## Media attachments
 
-## Screenshots
-
-<!-- Drag & drop images here or paste links -->
-
-_N/A_
+<!-- Drag & drop attachments here or paste links -->
