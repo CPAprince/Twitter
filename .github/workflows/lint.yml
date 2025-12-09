@@ -15,7 +15,7 @@ jobs:
       image: php:${{ matrix.php-version }}-cli
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Install system dependencies
         run: |
           apt-get update
