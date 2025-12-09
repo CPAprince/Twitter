@@ -15,5 +15,4 @@ return new PhpCsFixer\Config()
         'strict_comparison' => true,
         'declare_strict_types' => ['preserve_existing_declaration' => false],
     ])
-    ->setRiskyAllowed(true)
     ->setFinder($finder);

@@ -33,4 +33,4 @@ jobs:
       - name: Run PHPStan
         run: ./vendor/bin/phpstan analyse
       - name: Run PHP-CS-Fixer
-        run: ./vendor/bin/php-cs-fixer check
+        run: ./vendor/bin/php-cs-fixer check --allow-risky=yes
