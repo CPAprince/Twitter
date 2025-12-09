@@ -1,5 +1,4 @@
-<!-- Jira ticket URL in the format [SCRUM-X](https://.../SCRUM-X) -->
-**Jira**:
+**Jira**: [SCRUM-X](https://epam-team-php.atlassian.net/browse/SCRUM-X)
 
 <!-- list of related issues -->
 Closes:
