@@ -4,14 +4,17 @@
 
 <!-- Short summary of what this PR does -->
 
-## Test coverage
+## How to roll back?
 
-<!-- Step-by-step instructions on how to test the changes -->
+<!-- How to roll back these changes -->
 
-_N/A_
+Revert this pull request.
 
-## Screenshots
+## How has this been tested?
+
+<!-- Describe the tests that were run to verify your changes -->
+<!-- Provide reproducible instructions -->
+
+## Media attachments (optional)
 
 <!-- Drag & drop images here or paste links -->
-
-_N/A_
