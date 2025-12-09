@@ -1,8 +1,5 @@
 **Jira**: [SCRUM-X](https://epam-team-php.atlassian.net/browse/SCRUM-X)
 
-<!-- list of related issues -->
-Closes:
-
 ## Description
 
 <!-- Short summary of what this PR does -->
