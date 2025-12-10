@@ -1,8 +1,8 @@
-## Expected Behavior
+## Expected behavior
 
 <!-- A clear and concise description of what you expected to happen -->
 
-## Current Behavior
+## Current behavior
 
 <!-- A clear and concise description of what is actually happening -->
 
@@ -10,7 +10,7 @@
 
 <!-- Step-by-step instructions on how to reproduce the behavior -->
 
-## Possible Solution
+## Possible solution
 
 <!-- Suggestion for a fix or reason for the bug -->
 
