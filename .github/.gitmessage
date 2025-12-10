@@ -1,11 +1,7 @@
-# Conventional subject
+# Subject in Conventional Commits format
 
-# Body: Explain *what* and *why* (not *how*).
+# Body: Provide a detailed explanation why changes were made
 
-# At the end: Include Co-authored-by for all contributors.
-# Include at least one empty line before it. Format:
-# Co-authored-by: name <ID+USERNAME@users.noreply.github.com>
-#
 # How to Write a Git Commit Message:
 # https://chris.beams.io/posts/git-commit
 #
