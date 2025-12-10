@@ -3,8 +3,7 @@
 # Git Workflow
 
 This project follows a simplified **Git Flow** model.
-
-Full original Git Flow explanation: https://nvie.com/posts/a-successful-git-branching-model
+See the full [original Git Flow explanation](https://nvie.com/posts/a-successful-git-branching-model).
 
 ## Branches
 
@@ -23,16 +22,23 @@ Full original Git Flow explanation: https://nvie.com/posts/a-successful-git-bran
 
 ## Commit messages
 
-We use **Conventional Commits** → https://www.conventionalcommits.org
-
-Jira ticket key should be included.
+Follow the [Conventional Commits](https://www.conventionalcommits.org)
+format with a Jira ticket key included, for example:
 
 ```text
-feat: TK-18 add user registration en dpoint
-fix: TK-19 prevent SQL injection in search
-refactor: TK-23 extract authentication service
-docs: TK-28 update API documentation
-test: TK-20 add tests for password reset
+feat(auth): TK-18 Add user registration endpoint
+fix(search: TK-19 Prevent SQL injection in search
+refactor(auth): TK-23 Extract authentication service
+docs(api): TK-28 Update API documentation
+test(auth): TK-20 Add tests for password reset
+```
+
+### Commit message template
+
+To use the [message template](../.github/.gitmessage), change Git config local settings:
+
+```shell
+git config --local commit.template .github/.gitmessage
 ```
 
 ## Prohibited
