@@ -7,6 +7,7 @@ namespace Twitter\Tests\Health\Application\PingDatabase\Query;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception as DBALException;
 use Doctrine\ORM\EntityManagerInterface;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Twitter\Health\Application\PingDatabase\Query\PingDatabaseDTO;
 use Twitter\Health\Application\PingDatabase\Query\PingDatabaseQuery;
@@ -14,9 +15,9 @@ use Twitter\Health\Application\PingDatabase\Query\PingDatabaseQueryHandler;
 
 class PingDatabaseQueryHandlerTest extends TestCase
 {
-    private EntityManagerInterface $entityManager;
+    private EntityManagerInterface&MockObject $entityManager;
     private PingDatabaseQueryHandler $handler;
-    private Connection $connection;
+    private Connection&MockObject $connection;
 
     protected function setUp(): void
     {
@@ -36,6 +37,7 @@ class PingDatabaseQueryHandlerTest extends TestCase
 
         $query = new PingDatabaseQuery();
         $result = ($this->handler)($query);
+
         $this->assertInstanceOf(PingDatabaseDTO::class, $result);
         $this->assertSame('connected', $result->status);
         $this->assertSame('Database is up and running', $result->message);

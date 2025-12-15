@@ -16,7 +16,7 @@ final readonly class PingDatabaseQueryHandler implements QueryHandlerInterface
     ) {
     }
 
-    public function __invoke(QueryInterface|PingDatabaseQuery $query): ?PingDatabaseDTO
+    public function __invoke(QueryInterface|PingDatabaseQuery $query): PingDatabaseDTO
     {
         try {
             $connection = $this->entityManager->getConnection();
