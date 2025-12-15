@@ -3,7 +3,7 @@
 ## Create a new controller
 
 Controllers are located in `Controller` directory of corresponding modules,
-for example `../src/HealthCheck/Controller/HealthCheckController.php)`.
+for example `../src/Health/UI/REST/Controller/HealthController.php)`.
 Each controller class name **must** have `Controller` prefix.
 
 ## Register routes
@@ -11,15 +11,17 @@ Each controller class name **must** have `Controller` prefix.
 Controller configuration has to be done manually added to [`routes.yaml`](../config/routes.yaml) in the following way:
 
 ```yaml
-<module_name_in_snake_case>:
-    resource: ../src/<ModuleDirectory>/Controller/<ControllerClassName>.php
-    type: attribute
+<route_name_in_snake_case>:
+    path: /<prefix>/<route>
+    resource: Twitter\<Module>\UI\REST\Controller\<Controller>
+    methods: GET, POST, PUT, DELETE
 ```
 
-For example, [`HealthCheck`](../src/HealthCheck) controller:
+For example, [Health](../src/Health/UI/REST/Controller/HealthController.php) controller:
 
 ```yaml
-health_check_module:
-    resource: ../src/HealthCheck/Controller/HealthCheckController.php
-    type: attribute
+api_health:
+    path: /api/health
+    controller: Twitter\Health\UI\REST\Controller\HealthController
+    methods: GET
 ```
