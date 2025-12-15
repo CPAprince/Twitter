@@ -1,0 +1,680 @@
+openapi: 3.0.3
+info:
+  title: Twitter Clone – Auth, Profile, Tweet, Like API
+  version: 1.0.0
+  description: |-
+    REST API specification derived from domain use cases:
+
+    - Auth (login, register, logout, refresh)
+    - Profile (create system, read, update)
+    - Tweet / Feed (create, read single, list user feed, list global feed, update)
+    - Like (toggle)
+
+    ## Content-Type
+    This API accepts `application/json` only. Requests with another media type should return **415**.
+
+    ## Validation
+    Validation failures return **422** with a domain error code.
+
+servers:
+  - url: /api
+
+tags:
+  - name: Auth
+  - name: Profile
+  - name: Tweet
+  - name: Like
+  - name: Internal
+
+paths:
+  /auth/login:
+    post:
+      tags: [Auth]
+      summary: Login
+      operationId: authLogin
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/AuthLoginRequest" }
+            examples:
+              example:
+                value: { email: "john.doe@example.com", password: "secret" }
+      responses:
+        "200":
+          description: Tokens issued.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/AuthTokensResponse" }
+        "415": { $ref: "#/components/responses/UnsupportedMediaType" }
+        "422":
+          description: Invalid credentials.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ErrorResponse" }
+              examples:
+                invalidCredentials:
+                  value:
+                    error: { code: AUTH_INVALID_CREDENTIALS, message: "Email or password is incorrect." }
+
+  /auth/register:
+    post:
+      tags: [Auth]
+      summary: Register user
+      description: Creates a new user (profile is created automatically by the system).
+      operationId: authRegister
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/AuthRegisterRequest" }
+            examples:
+              example:
+                value: { email: "john.doe@example.com", password: "secret" }
+      responses:
+        "201":
+          description: User created.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/AuthRegisterResponse" }
+        "415": { $ref: "#/components/responses/UnsupportedMediaType" }
+        "422":
+          description: Validation error or user already exists.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ErrorResponse" }
+              examples:
+                userAlreadyExists:
+                  value:
+                    error: { code: USER_ALREADY_EXISTS, message: "User with this email already exists." }
+                validationError:
+                  value:
+                    error: { code: VALIDATION_ERROR, message: "Invalid input data." }
+
+  /auth/logout:
+    post:
+      tags: [Auth]
+      summary: Logout
+      operationId: authLogout
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/AuthLogoutRequest" }
+            examples:
+              example:
+                value: { refreshToken: "jwt-refresh-token" }
+      responses:
+        "200":
+          description: Logged out.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/AuthLogoutResponse" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "415": { $ref: "#/components/responses/UnsupportedMediaType" }
+        "422":
+          description: Invalid refresh token.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ErrorResponse" }
+              examples:
+                tokenInvalid:
+                  value:
+                    error: { code: AUTH_TOKEN_INVALID, message: "Refresh token is invalid or expired." }
+
+  /auth/refresh:
+    post:
+      tags: [Auth]
+      summary: Refresh access token
+      operationId: authRefresh
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/AuthRefreshRequest" }
+            examples:
+              example:
+                value: { refreshToken: "jwt-refresh-token" }
+      responses:
+        "200":
+          description: Tokens refreshed.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/AuthTokensResponse" }
+        "415": { $ref: "#/components/responses/UnsupportedMediaType" }
+        "422":
+          description: Invalid refresh token.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ErrorResponse" }
+              examples:
+                tokenInvalid:
+                  value:
+                    error: { code: AUTH_TOKEN_INVALID, message: "Refresh token is invalid or expired." }
+
+  /profile:
+    post:
+      tags: [Internal]
+      summary: Create profile (system)
+      description: Internal/system operation (triggered by registration).
+      operationId: profileCreateSystem
+      x-internal: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/ProfileCreateRequest" }
+            examples:
+              example:
+                value:
+                  userId: "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+                  email: "johndoe@gmail.com"
+      responses:
+        "201":
+          description: Profile created.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Profile" }
+        "415": { $ref: "#/components/responses/UnsupportedMediaType" }
+        "422":
+          description: Validation error.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ErrorResponse" }
+              examples:
+                validationError:
+                  value:
+                    error: { code: VALIDATION_ERROR, message: "Invalid input data." }
+
+  /profile/{userId}:
+    get:
+      tags: [Profile]
+      summary: Read profile
+      operationId: profileRead
+      parameters: [{ $ref: "#/components/parameters/UserId" }]
+      responses:
+        "200":
+          description: Profile.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Profile" }
+        "404": { $ref: "#/components/responses/ProfileNotFound" }
+
+  /profile/me:
+    patch:
+      tags: [Profile]
+      summary: Update current profile
+      operationId: profileUpdateMe
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/ProfileUpdateRequest" }
+            examples:
+              updateNameBio:
+                value: { name: "john_doe", bio: "Fishing & mountains" }
+              updateBioOnly:
+                value: { bio: "Just bio" }
+      responses:
+        "200":
+          description: Updated profile.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Profile" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "415": { $ref: "#/components/responses/UnsupportedMediaType" }
+        "422":
+          description: Validation error.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ErrorResponse" }
+              examples:
+                validationError:
+                  value:
+                    error: { code: VALIDATION_ERROR, message: "Invalid input data." }
+        "404": { $ref: "#/components/responses/ProfileNotFound" }
+
+  /users/{userId}/tweets:
+    post:
+      tags: [Tweet]
+      summary: Create tweet
+      description: Publish a new tweet (userId must match auth context).
+      operationId: tweetCreateForUser
+      security: [{ bearerAuth: [] }]
+      parameters: [{ $ref: "#/components/parameters/UserId" }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/TweetCreateRequest" }
+            examples:
+              example:
+                value: { content: "Hello, world" }
+      responses:
+        "201":
+          description: Tweet created.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/TweetView" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "415": { $ref: "#/components/responses/UnsupportedMediaType" }
+        "422":
+          description: Tweet validation error.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ErrorResponse" }
+              examples:
+                tweetValidation:
+                  value:
+                    error: { code: TWEET_VALIDATION_ERROR, message: "Tweet content is invalid." }
+        "404": { $ref: "#/components/responses/ProfileNotFound" }
+
+    get:
+      tags: [Tweet]
+      summary: Read user tweets (user feed)
+      description: List tweets for a specific user (public).
+      operationId: tweetListByUser
+      parameters:
+        - $ref: "#/components/parameters/UserId"
+        - $ref: "#/components/parameters/Limit"
+        - $ref: "#/components/parameters/Offset"
+      responses:
+        "200":
+          description: List of user tweets.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/TweetListResponse" }
+        "404": { $ref: "#/components/responses/ProfileNotFound" }
+
+  /users/{userId}/tweets/{tweetId}:
+    get:
+      tags: [Tweet]
+      summary: Read single tweet
+      description: Read a tweet by tweetId (route also includes userId constraint).
+      operationId: tweetReadSingle
+      parameters:
+        - $ref: "#/components/parameters/UserId"
+        - $ref: "#/components/parameters/TweetId"
+      responses:
+        "200":
+          description: Tweet.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/TweetView" }
+        "404": { $ref: "#/components/responses/TweetNotFound" }
+
+    patch:
+      tags: [Tweet]
+      summary: Update tweet
+      description: Update tweet content (only the author can update; userId must match auth context).
+      operationId: tweetUpdateForUser
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - $ref: "#/components/parameters/UserId"
+        - $ref: "#/components/parameters/TweetId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/TweetUpdateRequest" }
+            examples:
+              example:
+                value: { content: "Updated text" }
+      responses:
+        "200":
+          description: Updated tweet.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/TweetView" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/TweetNotFound" }
+        "415": { $ref: "#/components/responses/UnsupportedMediaType" }
+        "422":
+          description: Tweet validation error.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ErrorResponse" }
+              examples:
+                tweetValidation:
+                  value:
+                    error: { code: TWEET_VALIDATION_ERROR, message: "Tweet content is invalid." }
+
+  /tweets:
+    get:
+      tags: [Tweet]
+      summary: Read global tweets (global feed)
+      description: List recent tweets from all users (public).
+      operationId: tweetListGlobal
+      parameters:
+        - $ref: "#/components/parameters/Limit"
+        - $ref: "#/components/parameters/Offset"
+      responses:
+        "200":
+          description: List of tweets.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/TweetListResponse" }
+
+  /users/{userId}/likes/{tweetId}:
+    post:
+      tags: [Like]
+      summary: Toggle like
+      description: Toggle like state for a tweet for the current user (userId must match auth context).
+      operationId: likeToggleForUser
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - $ref: "#/components/parameters/UserId"
+        - $ref: "#/components/parameters/TweetId"
+      responses:
+        "200":
+          description: Like toggled.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/LikeToggleResponse" }
+              examples:
+                liked: { value: { liked: true } }
+                unliked: { value: { liked: false } }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "404": { $ref: "#/components/responses/TweetNotFound" }
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  parameters:
+    UserId:
+      in: path
+      name: userId
+      required: true
+      schema:
+        type: string
+        format: uuid
+      description: User identifier (UUID).
+    TweetId:
+      in: path
+      name: tweetId
+      required: true
+      schema:
+        type: string
+        format: uuid
+      description: Tweet identifier (UUID).
+    Limit:
+      in: query
+      name: limit
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 20
+      description: Max number of items to return.
+    Offset:
+      in: query
+      name: offset
+      required: false
+      schema:
+        type: integer
+        minimum: 0
+        default: 0
+      description: Number of items to skip.
+
+  responses:
+    UnsupportedMediaType:
+      description: Unsupported Media Type (this API accepts application/json only).
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/ErrorResponse" }
+          examples:
+            unsupportedMediaType:
+              value:
+                error:
+                  code: VALIDATION_ERROR
+                  message: "Unsupported Media Type. Use application/json."
+    Unauthorized:
+      description: Unauthorized (not authenticated).
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/ErrorResponse" }
+          examples:
+            unauthorized:
+              value:
+                error:
+                  code: AUTH_UNAUTHORIZED
+                  message: "User is not authenticated."
+    Forbidden:
+      description: Forbidden (authenticated but not allowed).
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/ErrorResponse" }
+          examples:
+            forbidden:
+              value:
+                error:
+                  code: AUTH_FORBIDDEN
+                  message: "User is not allowed to perform this operation."
+    ProfileNotFound:
+      description: Profile not found.
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/ErrorResponse" }
+          examples:
+            profileNotFound:
+              value:
+                error:
+                  code: PROFILE_NOT_FOUND
+                  message: "Profile not found."
+    TweetNotFound:
+      description: Tweet not found.
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/ErrorResponse" }
+          examples:
+            tweetNotFound:
+              value:
+                error:
+                  code: TWEET_NOT_FOUND
+                  message: "Tweet not found."
+
+  schemas:
+    DomainErrorCode:
+      type: string
+      enum:
+        - AUTH_UNAUTHORIZED
+        - AUTH_FORBIDDEN
+        - AUTH_INVALID_CREDENTIALS
+        - AUTH_TOKEN_INVALID
+        - USER_ALREADY_EXISTS
+        - USER_NOT_FOUND
+        - VALIDATION_ERROR
+        - PROFILE_NOT_FOUND
+        - TWEET_NOT_FOUND
+        - TWEET_VALIDATION_ERROR
+
+    ErrorResponse:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: object
+          required: [code]
+          properties:
+            code: { $ref: "#/components/schemas/DomainErrorCode" }
+            message:
+              type: string
+              description: Human-readable error message (optional).
+            details:
+              type: object
+              additionalProperties: true
+              description: Optional structured details (validation fields, etc.).
+
+    AuthLoginRequest:
+      type: object
+      additionalProperties: false
+      required: [email, password]
+      properties:
+        email: { type: string, format: email }
+        password:
+          type: string
+          minLength: 1
+          description: Validated server-side against security rules.
+
+    AuthRegisterRequest:
+      type: object
+      additionalProperties: false
+      required: [email, password]
+      properties:
+        email: { type: string, format: email }
+        password:
+          type: string
+          minLength: 1
+          description: Validated server-side against security rules.
+
+    AuthRegisterResponse:
+      type: object
+      additionalProperties: false
+      required: [userId]
+      properties:
+        userId: { type: string, format: uuid }
+
+    AuthTokensResponse:
+      type: object
+      additionalProperties: false
+      required: [accessToken, refreshToken]
+      properties:
+        accessToken: { type: string }
+        refreshToken: { type: string }
+
+    AuthLogoutRequest:
+      type: object
+      additionalProperties: false
+      required: [refreshToken]
+      properties:
+        refreshToken: { type: string }
+
+    AuthLogoutResponse:
+      type: object
+      additionalProperties: false
+      required: [loggedOut]
+      properties:
+        loggedOut: { type: boolean }
+
+    AuthRefreshRequest:
+      type: object
+      additionalProperties: false
+      required: [refreshToken]
+      properties:
+        refreshToken: { type: string }
+
+    ProfileCreateRequest:
+      type: object
+      additionalProperties: false
+      required: [userId, email]
+      properties:
+        userId: { type: string, format: uuid }
+        email: { type: string, format: email }
+      description: Input for internal/system profile creation (UC-P1).
+
+    Profile:
+      type: object
+      additionalProperties: false
+      required: [userId, name, bio, updatedAt]
+      properties:
+        userId: { type: string, format: uuid }
+        name:
+          type: string
+          description: Public display name.
+        bio:
+          type: string
+          nullable: true
+        updatedAt: { type: string, format: date-time }
+
+    ProfileUpdateRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        name:
+          type: string
+          description: New display name (must be unique; server may adjust with suffixes).
+        bio:
+          type: string
+          description: New bio.
+      oneOf:
+        - required: [name]
+        - required: [bio]
+
+    TweetCreateRequest:
+      type: object
+      additionalProperties: false
+      required: [content]
+      properties:
+        content:
+          type: string
+          minLength: 1
+          maxLength: 280
+
+    TweetUpdateRequest:
+      type: object
+      additionalProperties: false
+      required: [content]
+      properties:
+        content:
+          type: string
+          minLength: 1
+          maxLength: 280
+
+    TweetAuthor:
+      type: object
+      additionalProperties: false
+      required: [id, name]
+      properties:
+        id: { type: string, format: uuid }
+        name: { type: string }
+
+    TweetView:
+      type: object
+      additionalProperties: false
+      required: [id, content, createdAt, updatedAt, likesCount, author]
+      properties:
+        id: { type: string, format: uuid }
+        content: { type: string }
+        createdAt: { type: string, format: date-time }
+        updatedAt:
+          type: string
+          format: date-time
+          nullable: true
+        likesCount:
+          type: integer
+          minimum: 0
+        author: { $ref: "#/components/schemas/TweetAuthor" }
+
+    Pagination:
+      type: object
+      additionalProperties: false
+      required: [limit, offset, hasMore]
+      properties:
+        limit: { type: integer, minimum: 1 }
+        offset: { type: integer, minimum: 0 }
+        hasMore: { type: boolean }
+
+    TweetListResponse:
+      type: object
+      additionalProperties: false
+      required: [tweets, pagination]
+      properties:
+        tweets:
+          type: array
+          items: { $ref: "#/components/schemas/TweetView" }
+        pagination: { $ref: "#/components/schemas/Pagination" }
+
+    LikeToggleResponse:
+      type: object
+      additionalProperties: false
+      required: [liked]
+      properties:
+        liked: { type: boolean }
