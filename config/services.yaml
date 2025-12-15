@@ -4,5 +4,30 @@ services:
     _defaults:
         autowire: true
         autoconfigure: true
+
     Twitter\:
         resource: '../src/'
+        exclude:
+            - '../src/{DependencyInjection,Kernel.php}'
+            - '../src/*/Domain/*/Model/'
+    
+    _instanceof:
+        Twitter\Shared\Application\Bus\Command\CommandHandlerInterface:
+            tags: [ 'app.command_handler' ]
+        
+        Twitter\Shared\Application\Bus\Query\QueryHandlerInterface:
+            tags: [ 'app.query_handler' ]
+
+    Twitter\Shared\Application\Bus\Command\CommandBusInterface:
+        alias: Twitter\Shared\Infrastructure\Bus\Command\InMemoryCommandBus
+    
+    Twitter\Shared\Infrastructure\Bus\Command\InMemoryCommandBus:
+        arguments:
+            $handlersLocator: !tagged_locator 'app.command_handler'
+    
+    Twitter\Shared\Application\Bus\Query\QueryBusInterface:
+        alias: Twitter\Shared\Infrastructure\Bus\Query\InMemoryQueryBus
+    
+    Twitter\Shared\Infrastructure\Bus\Query\InMemoryQueryBus:
+        arguments:
+            $handlersLocator: !tagged_locator 'app.query_handler'
