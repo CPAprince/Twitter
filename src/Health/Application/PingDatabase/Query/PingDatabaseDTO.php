@@ -15,9 +15,6 @@ final readonly class PingDatabaseDTO implements \JsonSerializable
         $this->date = new \DateTimeImmutable();
     }
 
-    /**
-     * @inheritDoc
-     */
     #[\Override]
     public function jsonSerialize(): array
     {
