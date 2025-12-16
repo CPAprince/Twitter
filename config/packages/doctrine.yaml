@@ -2,19 +2,22 @@ doctrine:
     dbal:
         url: '%env(resolve:DATABASE_URL)%'
         profiling_collect_backtrace: '%kernel.debug%'
+        
+        types:
+            user_id: Twitter\Shared\Infrastructure\Persistence\Doctrine\Type\UserIdType
+            email: Twitter\Shared\Infrastructure\Persistence\Doctrine\Type\EmailType
+            password_hash: Twitter\Shared\Infrastructure\Persistence\Doctrine\Type\PasswordHashType
+
     orm:
         validate_xml_mapping: true
         naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
+        auto_mapping: true
         mappings:
-            Twitter:
+            IAM:
                 type: xml
+                dir: '%kernel.project_dir%/src/IAM/Infrastructure/Persistence/Doctrine/Mapping'
+                prefix: Twitter\IAM\Domain
                 is_bundle: false
-                dir: '%kernel.project_dir%/config/doctrine'
-                prefix: 'Twitter'
-                alias: Twitter
-        controller_resolver:
-            auto_mapping: false
-
 when@test:
     doctrine:
         dbal:
