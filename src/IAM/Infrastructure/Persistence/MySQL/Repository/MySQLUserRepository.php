@@ -1,0 +1,39 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Twitter\IAM\Infrastructure\Persistence\MySQL\Repository;
+
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\ORMInvalidArgumentException;
+use Twitter\IAM\Domain\User\Model\Email;
+use Twitter\IAM\Domain\User\Model\User;
+use Twitter\IAM\Domain\User\Model\UserRepository;
+
+final class MySQLUserRepository implements UserRepository
+{
+    public function __construct(
+        private EntityManagerInterface $entityManager,
+    ) {
+    }
+
+    /**
+     * @throws ORMInvalidArgumentException
+     */
+    public function save(User $user): void
+    {
+        $this->entityManager->persist($user);
+        $this->entityManager->flush();
+    }
+
+    public function findByEmail(Email $email): ?User
+    {
+        return $this->entityManager->createQueryBuilder()
+            ->select('u')
+            ->from(User::class, 'u')
+            ->where('u.email = :email')
+            ->setParameter('email', $email->toString())
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+}
