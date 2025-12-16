@@ -18,7 +18,7 @@ parameters:
     symfony:
             # actual parameter name for PHPStan-symfony
             # and path for Symfony 5+ (including 7.4)
-            containerXmlPath: var/cache/dev/App_KernelDevDebugContainer.xml
+            containerXmlPath: var/cache/dev/Twitter_KernelDevDebugContainer.xml
 
     # basic Doctrine settings – without objectManagerLoader yet
     doctrine: []
