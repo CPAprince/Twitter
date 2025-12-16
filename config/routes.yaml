@@ -10,3 +10,8 @@
 health_check_module:
     resource: ../src/HealthCheck/Controller/HealthCheckController.php
     type: attribute
+
+api_users_create:
+    path: /api/users
+    controller: Twitter\IAM\UI\REST\Controller\CreateUserController
+    methods: POST

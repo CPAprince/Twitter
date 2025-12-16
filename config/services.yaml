@@ -4,5 +4,16 @@ services:
     _defaults:
         autowire: true
         autoconfigure: true
+    
     Twitter\:
         resource: '../src/'
+        exclude:
+            - '../src/Kernel.php'
+            - '../src/*/Domain/*/Model/'
+    
+    Twitter\IAM\Domain\User\Model\UserRepository:
+        class: Twitter\IAM\Infrastructure\Persistence\MySQL\Repository\MySQLUserRepository
+    
+    Twitter\IAM\UI\REST\Controller\:
+        resource: '../src/IAM/UI/REST/Controller/*'
+        tags: [ 'controller.service_arguments' ]
