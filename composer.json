@@ -60,7 +60,7 @@
         "post-update-cmd": [
             "@auto-scripts"
         ],
-        "phpstan": "phpstan analyse -c phpstan.dist.neon",
+        "phpstan": "phpstan analyse -c phpstan.dist.neon --no-interaction --memory-limit=512M",
         "cs:fix": "php-cs-fixer fix --config=.php-cs-fixer.dist.php",
         "cs:check": "php-cs-fixer fix --config=.php-cs-fixer.dist.php --dry-run --diff"
     },
