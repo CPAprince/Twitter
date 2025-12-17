@@ -16,10 +16,22 @@ use Twitter\IAM\Domain\User\Model\Exception\UserAlreadyExistsException;
 
 final readonly class ExceptionSubscriber implements EventSubscriberInterface
 {
-    private const array EXCEPTION_HTTP_CODE_MAP = [
-        InvalidEmailException::class => Response::HTTP_UNPROCESSABLE_ENTITY,
-        InvalidPasswordException::class => Response::HTTP_UNPROCESSABLE_ENTITY,
-        UserAlreadyExistsException::class => Response::HTTP_CONFLICT,
+    private const array EXCEPTION_MAPPING = [
+        InvalidEmailException::class => [
+            'code' => 'INVALID_EMAIL',
+            'message' => 'The provided email address is invalid',
+            'status' => Response::HTTP_UNPROCESSABLE_ENTITY,
+        ],
+        InvalidPasswordException::class => [
+            'code' => 'INVALID_PASSWORD',
+            'message' => 'The provided password does not meet requirements',
+            'status' => Response::HTTP_UNPROCESSABLE_ENTITY,
+        ],
+        UserAlreadyExistsException::class => [
+            'code' => 'USER_ALREADY_EXISTS',
+            'message' => 'A user with this email already exists',
+            'status' => Response::HTTP_CONFLICT,
+        ],
     ];
 
     public static function getSubscribedEvents(): array
@@ -36,23 +48,42 @@ final readonly class ExceptionSubscriber implements EventSubscriberInterface
         }
 
         $throwable = $event->getThrowable();
-        $response = new JsonResponse([
-            'error' => $throwable->getMessage(),
-        ], $this->httpCodeFromException($throwable));
+
+        $response = $this->createErrorResponse($throwable);
         $event->setResponse($response);
     }
 
-    private function httpCodeFromException(\Throwable $throwable): int
+    private function createErrorResponse(\Throwable $throwable): JsonResponse
     {
         $class = $throwable::class;
-        if (array_key_exists($class, self::EXCEPTION_HTTP_CODE_MAP)) {
-            return self::EXCEPTION_HTTP_CODE_MAP[$class];
+        if (array_key_exists($class, self::EXCEPTION_MAPPING)) {
+            $config = self::EXCEPTION_MAPPING[$class];
+
+            return new JsonResponse([
+                'error' => [
+                    'code' => $config['code'],
+                    'message' => $config['message'],
+                ],
+            ], $config['status']);
         }
 
         if ($throwable instanceof HttpExceptionInterface) {
-            return $throwable->getStatusCode();
+            return new JsonResponse([
+                'error' => [
+                    'code' => 'HTTP_ERROR',
+                    'message' => 'An error occurred',
+                ],
+            ], $throwable->getStatusCode());
         }
 
-        return Response::HTTP_INTERNAL_SERVER_ERROR;
+        return new JsonResponse(
+            [
+                'error' => [
+                    'code' => 'INTERNAL_SERVER_ERROR',
+                    'message' => 'An unexpected error occurred. Please try again later',
+                ],
+            ],
+            Response::HTTP_INTERNAL_SERVER_ERROR,
+        );
     }
 }
