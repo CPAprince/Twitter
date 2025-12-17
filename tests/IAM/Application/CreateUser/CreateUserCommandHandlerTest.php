@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Twitter\Tests\IAM\Application\CreateUser;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -17,6 +18,7 @@ use Twitter\IAM\Domain\User\Model\Exception\UserAlreadyExistsException;
 use Twitter\IAM\Domain\User\Model\UserRepository;
 
 #[Group('unit')]
+#[CoversClass(CreateUserCommandHandler::class)]
 class CreateUserCommandHandlerTest extends TestCase
 {
     private UserRepository&MockObject $userRepository;

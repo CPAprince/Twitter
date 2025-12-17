@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Twitter\Tests\IAM\Domain\User\Model;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -11,6 +12,7 @@ use Symfony\Component\Uid\Uuid;
 use Twitter\IAM\Domain\User\Model\UserId;
 
 #[Group('unit')]
+#[CoversClass(UserId::class)]
 class UserIdTest extends TestCase
 {
     #[Test]
