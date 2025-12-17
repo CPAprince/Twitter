@@ -9,7 +9,7 @@ use Symfony\Component\Uid\Uuid;
 final readonly class UserId
 {
     public function __construct(
-        private string $value,
+        private string $id,
     ) {
     }
 
@@ -21,13 +21,13 @@ final readonly class UserId
     /**
      * @throws \InvalidArgumentException
      */
-    public static function fromString(string $value): self
+    public static function fromString(string $id): self
     {
-        if (!Uuid::isValid($value)) {
+        if (!Uuid::isValid($id)) {
             throw new \InvalidArgumentException('Invalid user ID');
         }
 
-        return new self($value);
+        return new self($id);
     }
 
     public function toString(): string
@@ -37,6 +37,6 @@ final readonly class UserId
 
     public function __toString(): string
     {
-        return $this->value;
+        return $this->id;
     }
 }

@@ -9,21 +9,21 @@ use Twitter\IAM\Domain\User\Model\Exception\InvalidEmailException;
 final readonly class Email
 {
     public function __construct(
-        private string $value,
+        private string $email,
     ) {
     }
 
     /**
      * @throws InvalidEmailException
      */
-    public static function fromString(string $value): self
+    public static function fromString(string $email): self
     {
-        $value = trim($value);
-        if (!filter_var($value, FILTER_VALIDATE_EMAIL)) {
-            throw new InvalidEmailException($value);
+        $email = trim($email);
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            throw new InvalidEmailException($email);
         }
 
-        return new self($value);
+        return new self($email);
     }
 
     public function toString(): string
@@ -33,6 +33,6 @@ final readonly class Email
 
     public function __toString(): string
     {
-        return $this->value;
+        return $this->email;
     }
 }
