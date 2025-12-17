@@ -20,3 +20,9 @@ services:
     
     Twitter\IAM\Domain\User\Model\UserRepository:
         class: Twitter\IAM\Infrastructure\Persistence\MySQL\Repository\MySQLUserRepository
+    Twitter\:
+        resource: '../src/'
+    Twitter\IAM\Infrastructure\Persistence\Auth\RefreshTokenHasher:
+        arguments:
+            $secret: '%kernel.secret%'
+    Twitter\IAM\Application\Logout\RefreshTokenStoreInterface: '@Twitter\IAM\Infrastructure\Persistence\MySQL\Logout\DbalRefreshTokenStore'
