@@ -8,16 +8,16 @@
             repository-class="Twitter\IAM\Domain\User\Model\UserRepository"
             table="users">
 
-        <id name="id" column="id" type="user_id">
+        <id name="id" column="id" type="uuid">
             <generator strategy="NONE"/>
         </id>
 
         <field name="roles" column="roles" type="json"/>
-        <field name="email" column="email" type="email" unique="true" length="320"/>
-        <field name="passwordHash" column="password_hash" type="password_hash" length="60"/>
+        <field name="email" column="email" unique="true" length="320"/>
+        <field name="passwordHash" column="password_hash" length="60"/>
         <field name="createdAt" column="created_at" type="datetime_immutable"/>
         <field name="updatedAt" column="updated_at" type="datetime_immutable"/>
-        
+
     </entity>
 
 </doctrine-mapping>

@@ -8,7 +8,6 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\ORMInvalidArgumentException;
-use Twitter\IAM\Domain\User\Model\Email;
 use Twitter\IAM\Domain\User\Model\User;
 use Twitter\IAM\Domain\User\Model\UserRepository;
 
@@ -32,13 +31,13 @@ final class MySQLUserRepository implements UserRepository
      * @throws NoResultException
      * @throws NonUniqueResultException
      */
-    public function existsByEmail(Email $email): bool
+    public function existsByEmail(string $email): bool
     {
         return 1 === $this->entityManager->createQueryBuilder()
                 ->select('count(u)')
                 ->from(User::class, 'u')
                 ->where('u.email = :email')
-                ->setParameter('email', $email->toString())
+                ->setParameter('email', $email)
                 ->getQuery()
                 ->getSingleScalarResult();
     }

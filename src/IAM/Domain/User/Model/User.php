@@ -7,10 +7,10 @@ namespace Twitter\IAM\Domain\User\Model;
 final class User
 {
     private function __construct(
-        private UserId $id,
         private array $roles,
-        private Email $email,
-        private PasswordHash $passwordHash,
+        private string $id,
+        private string $email,
+        private string $passwordHash,
         private \DateTimeImmutable $createdAt,
         private \DateTimeImmutable $updatedAt,
     ) {
@@ -19,16 +19,16 @@ final class User
     public static function create(Email $email, PasswordHash $passwordHash): self
     {
         return new self(
-            UserId::generate(),
             ['ROLE_USER'],
-            $email,
-            $passwordHash,
+            UserId::generate()->toString(),
+            $email->toString(),
+            $passwordHash->toString(),
             new \DateTimeImmutable(),
             new \DateTimeImmutable(),
         );
     }
 
-    public function getId(): UserId
+    public function getId(): string
     {
         return $this->id;
     }
@@ -38,12 +38,12 @@ final class User
         return $this->roles;
     }
 
-    public function getEmail(): Email
+    public function getEmail(): string
     {
         return $this->email;
     }
 
-    public function getPasswordHash(): PasswordHash
+    public function getPasswordHash(): string
     {
         return $this->passwordHash;
     }

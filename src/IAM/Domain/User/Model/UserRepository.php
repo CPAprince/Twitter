@@ -8,5 +8,5 @@ interface UserRepository
 {
     public function add(User $user): void;
 
-    public function existsByEmail(Email $email): bool;
+    public function existsByEmail(string $email): bool;
 }

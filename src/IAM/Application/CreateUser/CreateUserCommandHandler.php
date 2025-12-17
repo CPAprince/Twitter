@@ -28,7 +28,7 @@ final class CreateUserCommandHandler
     {
         $email = Email::fromString($command->email);
 
-        if ($this->userRepository->existsByEmail($email)) {
+        if ($this->userRepository->existsByEmail($email->toString())) {
             throw new UserAlreadyExistsException($email->toString());
         }
 

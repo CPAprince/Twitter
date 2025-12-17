@@ -32,7 +32,7 @@ final class CreateUserController
             $command = new CreateUserCommand($data['email'], $data['password']);
             $result = $this->createUserCommandHandler->handle($command);
 
-            return new JsonResponse(['id' => $result->userId->toString()], Response::HTTP_CREATED);
+            return new JsonResponse(['id' => $result->userId], Response::HTTP_CREATED);
         } catch (InvalidEmailException $emailException) {
             return new JsonResponse(['error' => 'Invalid email'], Response::HTTP_UNPROCESSABLE_ENTITY);
         } catch (InvalidPasswordException $passwordException) {

@@ -42,7 +42,7 @@ class CreateUserCommandHandlerTest extends TestCase
             ),
         );
 
-        $this->assertTrue(Uuid::isValid($result->userId->toString()));
+        $this->assertTrue(Uuid::isValid($result->userId));
     }
 
     #[Test]
