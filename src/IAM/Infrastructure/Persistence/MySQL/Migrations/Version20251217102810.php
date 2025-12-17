@@ -7,10 +7,7 @@ namespace Twitter\IAM\Infrastructure\Persistence\MySQL\Migrations;
 use Doctrine\DBAL\Schema\Schema;
 use Doctrine\Migrations\AbstractMigration;
 
-/**
- * Auto-generated Migration: Please modify to your needs!
- */
-final class Version20251217062759 extends AbstractMigration
+final class Version20251217102810 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -29,7 +26,7 @@ final class Version20251217062759 extends AbstractMigration
                     id CHAR(36) NOT NULL,
                     UNIQUE INDEX UNIQ_1483A5E9E7927C74 (email),
                     PRIMARY KEY (id)
-                ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci',
+                ) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_0900_ai_ci`',
         );
     }
 
