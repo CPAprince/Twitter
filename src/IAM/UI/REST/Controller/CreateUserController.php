@@ -7,17 +7,16 @@ namespace Twitter\IAM\UI\REST\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Twitter\IAM\Domain\User\Model\Email;
+use Twitter\IAM\Application\CreateUser\CreateUserCommand;
+use Twitter\IAM\Application\CreateUser\CreateUserCommandHandler;
 use Twitter\IAM\Domain\User\Model\Exception\InvalidEmailException;
 use Twitter\IAM\Domain\User\Model\Exception\InvalidPasswordException;
-use Twitter\IAM\Domain\User\Model\PasswordHash;
-use Twitter\IAM\Domain\User\Model\User;
-use Twitter\IAM\Domain\User\Model\UserRepository;
+use Twitter\IAM\Domain\User\Model\Exception\UserAlreadyExistsException;
 
 final class CreateUserController
 {
     public function __construct(
-        private UserRepository $userRepository,
+        private CreateUserCommandHandler $createUserCommandHandler,
     ) {
     }
 
@@ -30,28 +29,16 @@ final class CreateUserController
         }
 
         try {
-            $email = Email::fromString($data['email']);
+            $command = new CreateUserCommand($data['email'], $data['password']);
+            $result = $this->createUserCommandHandler->handle($command);
 
-            if ($this->userRepository->existsByEmail($email)) {
-                return new JsonResponse(['error' => 'User with this email already exists'], Response::HTTP_CONFLICT);
-            }
-
-            $passwordHash = PasswordHash::fromPlainPassword($data['password']);
-            $user = User::create($email, $passwordHash);
-
-            $this->userRepository->save($user);
-
-            return new JsonResponse([
-                'id' => $user->getId()->toString(),
-            ], Response::HTTP_CREATED);
+            return new JsonResponse(['id' => $result->userId->toString()], Response::HTTP_CREATED);
         } catch (InvalidEmailException $emailException) {
-            return new JsonResponse([
-                'error' => 'Invalid email',
-            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+            return new JsonResponse(['error' => 'Invalid email'], Response::HTTP_UNPROCESSABLE_ENTITY);
         } catch (InvalidPasswordException $passwordException) {
-            return new JsonResponse([
-                'error' => 'Invalid password',
-            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+            return new JsonResponse(['error' => 'Invalid password'], Response::HTTP_UNPROCESSABLE_ENTITY);
+        } catch (UserAlreadyExistsException $userAlreadyExistsException) {
+            return new JsonResponse(['error' => 'User already exists'], Response::HTTP_CONFLICT);
         } catch (\Throwable $throwable) {
             return new JsonResponse(['error' => 'Unexpected error'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
