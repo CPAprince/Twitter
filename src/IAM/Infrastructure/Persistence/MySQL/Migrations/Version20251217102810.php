@@ -18,15 +18,15 @@ final class Version20251217102810 extends AbstractMigration
     {
         $this->addSql(
             'CREATE TABLE users (
-                    roles JSON NOT NULL,
-                    email VARCHAR(320) NOT NULL,
-                    password_hash VARCHAR(60) NOT NULL,
-                    created_at DATETIME NOT NULL,
-                    updated_at DATETIME NOT NULL,
-                    id CHAR(36) NOT NULL,
-                    UNIQUE INDEX UNIQ_1483A5E9E7927C74 (email),
-                    PRIMARY KEY (id)
-                ) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_0900_ai_ci`',
+                roles JSON NOT NULL,
+                email VARCHAR(320) NOT NULL,
+                password_hash VARCHAR(60) NOT NULL,
+                created_at DATETIME NOT NULL,
+                updated_at DATETIME NOT NULL,
+                id BINARY(16) NOT NULL,
+                UNIQUE INDEX UNIQ_1483A5E9E7927C74 (email),
+                PRIMARY KEY (id)
+            ) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_0900_ai_ci`',
         );
     }
 
