@@ -32,7 +32,7 @@ final class CreateUserController
         try {
             $email = Email::fromString($data['email']);
 
-            if (null !== $this->userRepository->findByEmail($email)) {
+            if ($this->userRepository->existsByEmail($email)) {
                 return new JsonResponse(['error' => 'User with this email already exists'], Response::HTTP_CONFLICT);
             }
 

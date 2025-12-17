@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Twitter\IAM\Infrastructure\Persistence\MySQL\Repository;
 
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\ORMInvalidArgumentException;
 use Twitter\IAM\Domain\User\Model\Email;
 use Twitter\IAM\Domain\User\Model\User;
@@ -26,14 +28,18 @@ final class MySQLUserRepository implements UserRepository
         $this->entityManager->flush();
     }
 
-    public function findByEmail(Email $email): ?User
+    /**
+     * @throws NoResultException
+     * @throws NonUniqueResultException
+     */
+    public function existsByEmail(Email $email): bool
     {
-        return $this->entityManager->createQueryBuilder()
-            ->select('u')
-            ->from(User::class, 'u')
-            ->where('u.email = :email')
-            ->setParameter('email', $email->toString())
-            ->getQuery()
-            ->getOneOrNullResult();
+        return 1 === $this->entityManager->createQueryBuilder()
+                ->select('count(u)')
+                ->from(User::class, 'u')
+                ->where('u.email = :email')
+                ->setParameter('email', $email->toString())
+                ->getQuery()
+                ->getSingleScalarResult();
     }
 }
