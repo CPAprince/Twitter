@@ -6,8 +6,8 @@ namespace Twitter\IAM\Domain\User\Model\Exception;
 
 final class InvalidEmailException extends \Exception
 {
-    public function __construct(string $message = 'Invalid email address', int $code = 0, ?\Throwable $previous = null)
+    public function __construct(string $email)
     {
-        parent::__construct($message, $code, $previous);
+        parent::__construct(sprintf('"%s" is not a valid email', $email));
     }
 }
