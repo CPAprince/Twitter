@@ -7,6 +7,7 @@
     <entity name="Twitter\IAM\Domain\User\Model\User"
             repository-class="Twitter\IAM\Domain\User\Model\UserRepository"
             table="users">
+
         <id name="id" column="id" type="user_id">
             <generator strategy="NONE"/>
         </id>
@@ -16,6 +17,7 @@
         <field name="passwordHash" column="password_hash" type="password_hash" length="60"/>
         <field name="createdAt" column="created_at" type="datetime_immutable"/>
         <field name="updatedAt" column="updated_at" type="datetime_immutable"/>
+        
     </entity>
 
 </doctrine-mapping>

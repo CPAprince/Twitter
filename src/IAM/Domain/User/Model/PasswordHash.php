@@ -15,7 +15,6 @@ final readonly class PasswordHash
 
     /**
      * @throws InvalidPasswordException
-     * @throws \RuntimeException
      */
     public static function fromPlainPassword(string $plainPassword): self
     {
@@ -23,19 +22,16 @@ final readonly class PasswordHash
             throw new InvalidPasswordException('Password must be at least 8 characters long');
         }
 
-        // Use bcrypt to generate 60 characters long hash
-        $hash = password_hash($plainPassword, PASSWORD_BCRYPT);
-
-        if (!password_verify($plainPassword, $hash)) {
-            throw new \RuntimeException('Unable to hash password');
+        try {
+            // Use bcrypt to generate 60 characters long hash
+            $hash = password_hash($plainPassword, PASSWORD_BCRYPT);
+        } catch (\Error $error) {
+            throw new \RuntimeException('Unable to hash password: '.$error->getMessage(), previous: $error);
         }
 
         return new self($hash);
     }
 
-    /**
-     * @throws \InvalidArgumentException
-     */
     public static function fromHash(string $hash): self
     {
         if (strlen($hash) < 60) {
