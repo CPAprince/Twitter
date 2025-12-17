@@ -33,7 +33,7 @@ class CreateUserCommandHandlerTest extends TestCase
     {
         $this->userRepository
             ->expects(self::once())
-            ->method('save');
+            ->method('add');
 
         $result = $this->handler->handle(
             new CreateUserCommand(
@@ -63,7 +63,7 @@ class CreateUserCommandHandlerTest extends TestCase
     public function handleFailsWhenUserAlreadyExists(): void
     {
         $this->expectException(UserAlreadyExistsException::class);
-        $this->userRepository->expects(self::never())->method('save');
+        $this->userRepository->expects(self::never())->method('add');
 
         $expectedEmail = 'test@example.com';
 
@@ -84,7 +84,7 @@ class CreateUserCommandHandlerTest extends TestCase
     public function handleFailsWhenPasswordIsInvalid(): void
     {
         $this->expectException(InvalidPasswordException::class);
-        $this->userRepository->expects(self::never())->method('save');
+        $this->userRepository->expects(self::never())->method('add');
 
         $this->userRepository
             ->expects(self::once())
@@ -111,7 +111,7 @@ class CreateUserCommandHandlerTest extends TestCase
 
         $this->userRepository
             ->expects(self::once())
-            ->method('save')
+            ->method('add')
             ->willThrowException(new \RuntimeException());
 
         $this->handler->handle(

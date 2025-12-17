@@ -36,7 +36,7 @@ final class CreateUserCommandHandler
         $user = User::create($email, $passwordHash);
 
         try {
-            $this->userRepository->save($user);
+            $this->userRepository->add($user);
         } catch (\Throwable $throwable) {
             throw new \RuntimeException('Unexpected error', previous: $throwable);
         }

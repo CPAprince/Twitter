@@ -22,7 +22,7 @@ final class MySQLUserRepository implements UserRepository
     /**
      * @throws ORMInvalidArgumentException
      */
-    public function save(User $user): void
+    public function add(User $user): void
     {
         $this->entityManager->persist($user);
         $this->entityManager->flush();
