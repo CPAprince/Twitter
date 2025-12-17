@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Twitter\Tests\Domain\User\Model;
+namespace Twitter\Tests\IAM\Domain\User\Model;
 
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;

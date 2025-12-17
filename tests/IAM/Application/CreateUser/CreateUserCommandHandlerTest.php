@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Twitter\Tests\Application\CreateUser;
+namespace Twitter\Tests\IAM\Application\CreateUser;
 
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
