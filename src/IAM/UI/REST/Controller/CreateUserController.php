@@ -20,6 +20,11 @@ final class CreateUserController
     ) {
     }
 
+    /**
+     * @throws InvalidEmailException
+     * @throws InvalidPasswordException
+     * @throws UserAlreadyExistsException
+     */
     public function __invoke(Request $request): JsonResponse
     {
         $data = json_decode($request->getContent(), associative: true);
@@ -28,19 +33,9 @@ final class CreateUserController
             return new JsonResponse(['error' => 'Email and password are required'], Response::HTTP_BAD_REQUEST);
         }
 
-        try {
-            $command = new CreateUserCommand($data['email'], $data['password']);
-            $result = $this->createUserCommandHandler->handle($command);
+        $command = new CreateUserCommand($data['email'], $data['password']);
+        $result = $this->createUserCommandHandler->handle($command);
 
-            return new JsonResponse(['id' => $result->userId], Response::HTTP_CREATED);
-        } catch (InvalidEmailException $emailException) {
-            return new JsonResponse(['error' => 'Invalid email'], Response::HTTP_UNPROCESSABLE_ENTITY);
-        } catch (InvalidPasswordException $passwordException) {
-            return new JsonResponse(['error' => 'Invalid password'], Response::HTTP_UNPROCESSABLE_ENTITY);
-        } catch (UserAlreadyExistsException $userAlreadyExistsException) {
-            return new JsonResponse(['error' => 'User already exists'], Response::HTTP_CONFLICT);
-        } catch (\Throwable $throwable) {
-            return new JsonResponse(['error' => 'Unexpected error'], Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
+        return new JsonResponse(['id' => $result->userId], Response::HTTP_CREATED);
     }
 }
