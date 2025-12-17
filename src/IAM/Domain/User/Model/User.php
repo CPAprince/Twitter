@@ -8,6 +8,7 @@ final class User
 {
     private function __construct(
         private UserId $id,
+        private array $roles,
         private Email $email,
         private PasswordHash $passwordHash,
         private \DateTimeImmutable $createdAt,
@@ -17,12 +18,24 @@ final class User
 
     public static function create(Email $email, PasswordHash $passwordHash): self
     {
-        return new self(UserId::generate(), $email, $passwordHash, new \DateTimeImmutable(), new \DateTimeImmutable());
+        return new self(
+            UserId::generate(),
+            ['ROLE_USER'],
+            $email,
+            $passwordHash,
+            new \DateTimeImmutable(),
+            new \DateTimeImmutable(),
+        );
     }
 
     public function getId(): UserId
     {
         return $this->id;
+    }
+
+    public function getRoles(): array
+    {
+        return $this->roles;
     }
 
     public function getEmail(): Email

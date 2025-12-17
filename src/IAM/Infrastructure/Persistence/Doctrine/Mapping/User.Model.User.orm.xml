@@ -11,7 +11,8 @@
             <generator strategy="NONE"/>
         </id>
 
-        <field name="email" column="email" type="email" length="320"/>
+        <field name="roles" column="roles" type="json"/>
+        <field name="email" column="email" type="email" unique="true" length="320"/>
         <field name="passwordHash" column="password_hash" type="password_hash" length="60"/>
         <field name="createdAt" column="created_at" type="datetime_immutable"/>
         <field name="updatedAt" column="updated_at" type="datetime_immutable"/>
