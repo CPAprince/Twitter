@@ -2,16 +2,20 @@ doctrine:
     dbal:
         url: '%env(resolve:DATABASE_URL)%'
         profiling_collect_backtrace: '%kernel.debug%'
+        charset: utf8mb4
+        default_table_options:
+            charset: utf8mb4
+            collation: utf8mb4_0900_ai_ci
     orm:
         validate_xml_mapping: true
         naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
         mappings:
-            Twitter:
+            IAM:
                 type: xml
                 is_bundle: false
-                dir: '%kernel.project_dir%/config/doctrine'
-                prefix: 'Twitter'
-                alias: Twitter
+                dir: '%kernel.project_dir%/src/IAM/Infrastructure/Persistence/Doctrine/Mapping'
+                prefix: 'Twitter\IAM\Domain'
+                alias: IAM
         controller_resolver:
             auto_mapping: false
 
