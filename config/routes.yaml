@@ -10,3 +10,6 @@
 health_check_module:
     resource: ../src/HealthCheck/Controller/HealthCheckController.php
     type: attribute
+iam_module:
+    resource: ../src/IAM/UI/REST/Controller/
+    type: attribute
