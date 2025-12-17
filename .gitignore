@@ -19,6 +19,8 @@ bolt.db
 /.php-cs-fixer.cache
 ###< php-cs-fixer/shim ###
 
+.phpunit.cache
+
 ###> symfony/phpunit-bridge ###
 .phpunit.result.cache
 /phpunit.xml
