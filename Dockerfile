@@ -1,16 +1,11 @@
-#syntax=docker/dockerfile:1
-
 # Adapted from https://github.com/dunglas/symfony-docker
 
-# Versions
 FROM dunglas/frankenphp:1-php8.4 AS frankenphp_upstream
 
 # The different stages of this Dockerfile are meant to be built into separate images
 # https://docs.docker.com/develop/develop-images/multistage-build/#stop-at-a-specific-build-stage
 # https://docs.docker.com/compose/compose-file/#target
 
-
-# Base FrankenPHP image
 FROM frankenphp_upstream AS frankenphp_base
 
 WORKDIR /app
@@ -38,12 +33,8 @@ RUN set -eux; \
 		zip \
 	;
 
-###> recipes ###
-###> doctrine/doctrine-bundle ###
 RUN set -eux; \
 	install-php-extensions pdo_mysql
-###< doctrine/doctrine-bundle ###
-###< recipes ###
 
 COPY --link frankenphp/conf.d/10-app.ini $PHP_INI_DIR/app.conf.d/
 COPY --link --chmod=755 frankenphp/docker-entrypoint.sh /usr/local/bin/docker-entrypoint
