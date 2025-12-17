@@ -8,6 +8,8 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Twitter\IAM\Domain\User\Model\Email;
+use Twitter\IAM\Domain\User\Model\Exception\InvalidEmailException;
+use Twitter\IAM\Domain\User\Model\Exception\InvalidPasswordException;
 use Twitter\IAM\Domain\User\Model\PasswordHash;
 use Twitter\IAM\Domain\User\Model\User;
 use Twitter\IAM\Domain\User\Model\UserRepository;
@@ -42,10 +44,14 @@ final class CreateUserController
             return new JsonResponse([
                 'id' => $user->getId()->toString(),
             ], Response::HTTP_CREATED);
-        } catch (\InvalidArgumentException $argumentException) {
+        } catch (InvalidEmailException $emailException) {
             return new JsonResponse([
-                'error' => 'Invalid email or password',
-            ], Response::HTTP_BAD_REQUEST);
+                'error' => 'Invalid email',
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        } catch (InvalidPasswordException $passwordException) {
+            return new JsonResponse([
+                'error' => 'Invalid password',
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
         } catch (\Throwable $throwable) {
             return new JsonResponse(['error' => 'Unexpected error'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }

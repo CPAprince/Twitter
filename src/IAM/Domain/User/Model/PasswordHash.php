@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Twitter\IAM\Domain\User\Model;
 
+use Twitter\IAM\Domain\User\Model\Exception\InvalidPasswordException;
+
 final readonly class PasswordHash
 {
     public function __construct(
@@ -12,10 +14,15 @@ final readonly class PasswordHash
     }
 
     /**
+     * @throws InvalidPasswordException
      * @throws \RuntimeException
      */
     public static function fromPlainPassword(string $plainPassword): self
     {
+        if (strlen($plainPassword) < 8) {
+            throw new InvalidPasswordException('Password must be at least 8 characters long');
+        }
+
         // Use bcrypt to generate 60 characters long hash
         $hash = password_hash($plainPassword, PASSWORD_BCRYPT);
 
