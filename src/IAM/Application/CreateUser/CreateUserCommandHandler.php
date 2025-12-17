@@ -38,6 +38,7 @@ final class CreateUserCommandHandler
         try {
             $this->userRepository->save($user);
         } catch (\Throwable $throwable) {
+            throw new \RuntimeException('Unexpected error', previous: $throwable);
         }
 
         return new CreateUserCommandResult($user->getId());
