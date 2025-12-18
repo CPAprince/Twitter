@@ -30,6 +30,13 @@ class CreateUserCommandHandlerTest extends TestCase
         $this->handler = new CreateUserCommandHandler($this->userRepository);
     }
 
+    protected function tearDown(): void
+    {
+        unset($this->userRepository, $this->handler);
+
+        parent::tearDown();
+    }
+
     #[Test]
     public function handleReturnsSuccessWhenUserIsCreated(): void
     {
