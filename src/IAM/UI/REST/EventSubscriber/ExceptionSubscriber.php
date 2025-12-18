@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Twitter\IAM\UI\REST\EventSubscriber;
 
+use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,6 +17,11 @@ use Twitter\IAM\Domain\User\Model\Exception\UserAlreadyExistsException;
 
 final readonly class ExceptionSubscriber implements EventSubscriberInterface
 {
+    public function __construct(
+        private LoggerInterface $logger,
+    ) {
+    }
+
     private const array EXCEPTION_MAPPING = [
         InvalidEmailException::class => [
             'code' => 'INVALID_EMAIL',
@@ -48,6 +54,12 @@ final readonly class ExceptionSubscriber implements EventSubscriberInterface
         }
 
         $throwable = $event->getThrowable();
+
+        $this->logger->error('Exception caught', [
+            'exception' => $throwable::class,
+            'message' => $throwable->getMessage(),
+            'trace' => $throwable->getTraceAsString(),
+        ]);
 
         $response = $this->createErrorResponse($throwable);
         $event->setResponse($response);

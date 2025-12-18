@@ -15,6 +15,7 @@
         "symfony/dotenv": "7.4.*",
         "symfony/flex": "^2.10",
         "symfony/framework-bundle": "7.4.*",
+        "symfony/monolog-bundle": "^4.0",
         "symfony/runtime": "7.4.*",
         "symfony/uid": "7.4.*",
         "symfony/yaml": "7.4.*"
@@ -75,7 +76,7 @@
     },
     "require-dev": {
         "doctrine/doctrine-fixtures-bundle": "^4.3.1",
-        "php-cs-fixer/shim": "^3.92.1",
+        "php-cs-fixer/shim": "^3.92.2",
         "phpstan/phpstan": "^2.1.33",
         "phpstan/phpstan-doctrine": "^2.0.12",
         "phpstan/phpstan-symfony": "^2.0.9",
