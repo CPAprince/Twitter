@@ -24,12 +24,14 @@ final class DbalRefreshTokenStore implements RefreshTokenStoreInterface
         $now = new \DateTimeImmutable();
 
         $affected = $this->connection->executeStatement(
-            'UPDATE refresh_tokens
-     SET revoked_at = :now
-     WHERE token_hash = :hash
-       AND user_id = :userId
-       AND revoked_at IS NULL
-       AND expires_at > :now',
+            <<<SQL
+UPDATE refresh_tokens
+SET revoked_at = :now
+WHERE token_hash = :hash
+  AND user_id = :userId
+  AND revoked_at IS NULL
+  AND expires_at > :now
+SQL,
             [
                 'now' => $now->format('Y-m-d H:i:s'),
                 'hash' => $this->hasher->hash($refreshToken),
