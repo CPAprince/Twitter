@@ -18,10 +18,6 @@ use Twitter\IAM\Domain\User\Model\Exception\UserAlreadyExistsException;
 
 final readonly class ExceptionSubscriber implements EventSubscriberInterface
 {
-    public function __construct(
-        private LoggerInterface $logger,
-    ) {}
-
     private const array EXCEPTION_MAPPING = [
         InvalidEmailException::class => [
             'code' => 'INVALID_EMAIL',
@@ -40,6 +36,11 @@ final readonly class ExceptionSubscriber implements EventSubscriberInterface
         ],
     ];
 
+    public function __construct(
+        private LoggerInterface $logger,
+        private string $environment = 'prod',
+    ) {}
+
     public static function getSubscribedEvents(): array
     {
         return [
@@ -55,14 +56,24 @@ final readonly class ExceptionSubscriber implements EventSubscriberInterface
 
         $throwable = $event->getThrowable();
 
-        $this->logger->error('Exception caught', [
-            'exception' => $throwable::class,
-            'message' => $throwable->getMessage(),
-            'trace' => $throwable->getTraceAsString(),
-        ]);
+        $this->logException($throwable);
 
         $response = $this->createErrorResponse($throwable);
         $event->setResponse($response);
+    }
+
+    private function logException(Throwable $throwable): void
+    {
+        $context = [
+            'exception' => $throwable::class,
+            'message' => $throwable->getMessage(),
+        ];
+
+        if ('dev' === $this->environment) {
+            $context['trace'] = $throwable->getTraceAsString();
+        }
+
+        $this->logger->error('Exception caught', $context);
     }
 
     private function createErrorResponse(Throwable $throwable): JsonResponse

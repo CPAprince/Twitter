@@ -15,6 +15,11 @@ services:
         resource: '../src/IAM/UI/REST/Controller/*'
         tags: [ 'controller.service_arguments' ]
     
+    Twitter\IAM\UI\REST\EventSubscriber\ExceptionSubscriber:
+        tags: [ 'kernel.event_subscriber' ]
+        arguments:
+            $environment: '%kernel.environment%'
+    
     Twitter\IAM\Application\CreateUser\CreateUserCommandHandler:
         arguments:
             $userRepository: '@Twitter\IAM\Domain\User\Model\UserRepository'
