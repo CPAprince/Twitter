@@ -16,8 +16,7 @@ final class CreateUserCommandHandler
 {
     public function __construct(
         private UserRepository $userRepository,
-    ) {
-    }
+    ) {}
 
     /**
      * @throws InvalidEmailException

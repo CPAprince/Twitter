@@ -13,8 +13,7 @@ final class User
         private string $passwordHash,
         private \DateTimeImmutable $createdAt,
         private \DateTimeImmutable $updatedAt,
-    ) {
-    }
+    ) {}
 
     public static function create(Email $email, PasswordHash $passwordHash): self
     {

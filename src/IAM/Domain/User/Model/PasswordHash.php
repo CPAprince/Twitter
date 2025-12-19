@@ -8,10 +8,9 @@ use Twitter\IAM\Domain\User\Model\Exception\InvalidPasswordException;
 
 final readonly class PasswordHash
 {
-    public function __construct(
+    private function __construct(
         private string $hash,
-    ) {
-    }
+    ) {}
 
     /**
      * @throws InvalidPasswordException

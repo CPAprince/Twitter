@@ -15,8 +15,7 @@ final class MySQLUserRepository implements UserRepository
 {
     public function __construct(
         private EntityManagerInterface $entityManager,
-    ) {
-    }
+    ) {}
 
     /**
      * @throws ORMInvalidArgumentException

@@ -19,7 +19,6 @@ $finder = new Finder()
     ->ignoreVCS(true);
 
 return new Config()
-    ->setRiskyAllowed(true)
     ->setUsingCache(true)
     ->setCacheFile(__DIR__.'/.phpunit.result.cache')
     ->setRules([
@@ -27,5 +26,9 @@ return new Config()
         'strict_param' => true,
         'psr_autoloading' => true,
         'declare_strict_types' => true,
+        'braces_position' => [
+            'functions_opening_brace' => 'same_line',
+            'allow_single_line_empty' => true,
+        ],
     ])
     ->setFinder($finder);

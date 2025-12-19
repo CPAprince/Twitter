@@ -17,8 +17,7 @@ final class CreateUserController
 {
     public function __construct(
         private CreateUserCommandHandler $createUserCommandHandler,
-    ) {
-    }
+    ) {}
 
     /**
      * @throws InvalidEmailException

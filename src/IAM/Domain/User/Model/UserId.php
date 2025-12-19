@@ -8,10 +8,9 @@ use Symfony\Component\Uid\Uuid;
 
 final readonly class UserId
 {
-    public function __construct(
+    private function __construct(
         private string $id,
-    ) {
-    }
+    ) {}
 
     public static function generate(): self
     {

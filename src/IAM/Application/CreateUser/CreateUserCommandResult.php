@@ -8,6 +8,5 @@ final readonly class CreateUserCommandResult
 {
     public function __construct(
         public string $userId,
-    ) {
-    }
+    ) {}
 }

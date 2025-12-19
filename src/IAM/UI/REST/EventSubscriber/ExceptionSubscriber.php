@@ -19,8 +19,7 @@ final readonly class ExceptionSubscriber implements EventSubscriberInterface
 {
     public function __construct(
         private LoggerInterface $logger,
-    ) {
-    }
+    ) {}
 
     private const array EXCEPTION_MAPPING = [
         InvalidEmailException::class => [

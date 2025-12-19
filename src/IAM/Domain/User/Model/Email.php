@@ -8,10 +8,9 @@ use Twitter\IAM\Domain\User\Model\Exception\InvalidEmailException;
 
 final readonly class Email
 {
-    public function __construct(
+    private function __construct(
         private string $email,
-    ) {
-    }
+    ) {}
 
     /**
      * @throws InvalidEmailException
