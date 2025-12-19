@@ -37,6 +37,6 @@ SQL);
 
     public function down(Schema $schema): void
     {
-        $this->addSql('DROP TABLE refresh_tokens');
+        $this->addSql('DROP TABLE IF EXISTS refresh_tokens');
     }
 }
