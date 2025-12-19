@@ -12,7 +12,7 @@ use Twitter\IAM\Domain\User\Model\PasswordHash;
 use Twitter\IAM\Domain\User\Model\User;
 use Twitter\IAM\Domain\User\Model\UserRepository;
 
-final class CreateUserCommandHandler
+final readonly class CreateUserCommandHandler
 {
     public function __construct(
         private UserRepository $userRepository,
