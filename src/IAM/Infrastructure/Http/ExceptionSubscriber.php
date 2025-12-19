@@ -21,6 +21,11 @@ final class ExceptionSubscriber implements EventSubscriberInterface
 
     public function onException(ExceptionEvent $event): void
     {
+        $path = $event->getRequest()->getPathInfo();
+        if (!str_starts_with($path, '/api')) {
+            return;
+        }
+
         $e = $event->getThrowable();
 
         if ($e instanceof AuthUnauthorizedException) {
