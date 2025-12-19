@@ -33,7 +33,7 @@ final class MySQLUserRepository implements UserRepository
     public function existsByEmail(string $email): bool
     {
         return 1 === $this->entityManager->createQueryBuilder()
-                ->select('count(u)')
+                ->select('1')
                 ->from(User::class, 'u')
                 ->where('u.email = :email')
                 ->setParameter('email', $email)
