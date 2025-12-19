@@ -42,6 +42,6 @@ final readonly class CreateUserCommandHandler
             throw new RuntimeException('Unexpected error', previous: $throwable);
         }
 
-        return new CreateUserCommandResult($user->getId());
+        return new CreateUserCommandResult($user->id());
     }
 }

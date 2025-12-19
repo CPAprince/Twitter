@@ -29,32 +29,32 @@ final class User
         );
     }
 
-    public function getId(): string
+    public function id(): string
     {
         return $this->id;
     }
 
-    public function getRoles(): array
+    public function roles(): array
     {
         return $this->roles;
     }
 
-    public function getEmail(): string
+    public function email(): string
     {
         return $this->email;
     }
 
-    public function getPasswordHash(): string
+    public function passwordHash(): string
     {
         return $this->passwordHash;
     }
 
-    public function getCreatedAt(): DateTimeImmutable
+    public function createdAt(): DateTimeImmutable
     {
         return $this->createdAt;
     }
 
-    public function getUpdatedAt(): DateTimeImmutable
+    public function updatedAt(): DateTimeImmutable
     {
         return $this->updatedAt;
     }
