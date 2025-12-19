@@ -25,11 +25,6 @@ final readonly class Email
         return new self($email);
     }
 
-    public function toString(): string
-    {
-        return $this->__toString();
-    }
-
     public function __toString(): string
     {
         return $this->email;

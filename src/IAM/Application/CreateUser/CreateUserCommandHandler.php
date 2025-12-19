@@ -29,8 +29,8 @@ final readonly class CreateUserCommandHandler
     {
         $email = Email::fromString($command->email);
 
-        if ($this->userRepository->existsByEmail($email->toString())) {
-            throw new UserAlreadyExistsException($email->toString());
+        if ($this->userRepository->existsByEmail((string) $email)) {
+            throw new UserAlreadyExistsException((string) $email);
         }
 
         $passwordHash = PasswordHash::fromPlainPassword($command->password);

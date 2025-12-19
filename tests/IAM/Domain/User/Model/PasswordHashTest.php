@@ -22,7 +22,7 @@ class PasswordHashTest extends TestCase
         $password = 'qwerty123';
         $passwordHash = PasswordHash::fromPlainPassword($password);
 
-        $this->assertTrue(password_verify($password, $passwordHash->toString()));
+        $this->assertTrue(password_verify($password, (string) $passwordHash));
     }
 
     #[Test]
@@ -38,10 +38,10 @@ class PasswordHashTest extends TestCase
     {
         $password = 'qwerty123';
         $passwordHash = PasswordHash::fromPlainPassword($password);
-        $newPasswordHash = PasswordHash::fromHash($passwordHash->toString());
+        $newPasswordHash = PasswordHash::fromHash((string) $passwordHash);
 
-        $this->assertTrue(password_verify($password, $passwordHash->toString()));
-        $this->assertEquals($passwordHash->toString(), $newPasswordHash->toString());
+        $this->assertTrue(password_verify($password, (string) $passwordHash));
+        $this->assertEquals((string) $passwordHash, (string) $newPasswordHash);
     }
 
     #[Test]

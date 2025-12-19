@@ -21,9 +21,9 @@ final class User
     {
         return new self(
             ['ROLE_USER'],
-            UserId::generate()->toString(),
-            $email->toString(),
-            $passwordHash->toString(),
+            (string) UserId::generate(),
+            (string) $email,
+            (string) $passwordHash,
             new DateTimeImmutable(),
             new DateTimeImmutable(),
         );

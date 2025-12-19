@@ -25,7 +25,6 @@ final readonly class PasswordHash
         }
 
         try {
-            // Use bcrypt to generate 60 characters long hash
             $hash = password_hash($plainPassword, PASSWORD_BCRYPT);
         } catch (Error $error) {
             throw new RuntimeException('Unable to hash password: '.$error->getMessage(), previous: $error);
@@ -46,11 +45,6 @@ final readonly class PasswordHash
     public function verify(string $plainPassword): bool
     {
         return password_verify($plainPassword, $this->hash);
-    }
-
-    public function toString(): string
-    {
-        return $this->__toString();
     }
 
     public function __toString(): string

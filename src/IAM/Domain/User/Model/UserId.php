@@ -30,11 +30,6 @@ final readonly class UserId
         return new self($id);
     }
 
-    public function toString(): string
-    {
-        return $this->__toString();
-    }
-
     public function __toString(): string
     {
         return $this->id;

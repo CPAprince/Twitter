@@ -21,16 +21,16 @@ class UserIdTest extends TestCase
     {
         $userId = UserId::generate();
 
-        $this->assertTrue(Uuid::isValid($userId->toString()));
+        $this->assertTrue(Uuid::isValid((string) $userId));
     }
 
     #[Test]
     public function fromStringValidationPassed(): void
     {
-        $userIdString = UserId::generate()->toString();
+        $userIdString = (string) UserId::generate();
         $userId = UserId::fromString($userIdString);
 
-        $this->assertEquals($userIdString, $userId->toString());
+        $this->assertEquals($userIdString, (string) $userId);
     }
 
     #[Test]
