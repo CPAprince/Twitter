@@ -6,8 +6,8 @@ namespace Twitter\IAM\Domain\User\Model\Exception;
 
 final class InvalidPasswordException extends \Exception
 {
-    public function __construct(string $message = 'Invalid password', int $code = 0, ?\Throwable $previous = null)
+    public function __construct(string $message = 'Invalid password')
     {
-        parent::__construct($message, $code, $previous);
+        parent::__construct($message);
     }
 }
