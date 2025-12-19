@@ -68,34 +68,26 @@ final readonly class ExceptionSubscriber implements EventSubscriberInterface
     private function createErrorResponse(Throwable $throwable): JsonResponse
     {
         $class = $throwable::class;
+        $code = 'INTERNAL_SERVER_ERROR';
+        $message = 'An unexpected error occurred. Please try again later';
+        $status = Response::HTTP_INTERNAL_SERVER_ERROR;
+
         if (array_key_exists($class, self::EXCEPTION_MAPPING)) {
             $config = self::EXCEPTION_MAPPING[$class];
-
-            return new JsonResponse([
-                'error' => [
-                    'code' => $config['code'],
-                    'message' => $config['message'],
-                ],
-            ], $config['status']);
+            $code = $config['code'];
+            $message = $config['message'];
+            $status = $config['status'];
+        } elseif ($throwable instanceof HttpExceptionInterface) {
+            $code = 'HTTP_ERROR';
+            $message = 'An error occurred';
+            $status = $throwable->getStatusCode();
         }
 
-        if ($throwable instanceof HttpExceptionInterface) {
-            return new JsonResponse([
-                'error' => [
-                    'code' => 'HTTP_ERROR',
-                    'message' => 'An error occurred',
-                ],
-            ], $throwable->getStatusCode());
-        }
-
-        return new JsonResponse(
-            [
-                'error' => [
-                    'code' => 'INTERNAL_SERVER_ERROR',
-                    'message' => 'An unexpected error occurred. Please try again later',
-                ],
+        return new JsonResponse([
+            'error' => [
+                'code' => $code,
+                'message' => $message,
             ],
-            Response::HTTP_INTERNAL_SERVER_ERROR,
-        );
+        ], $status);
     }
 }
