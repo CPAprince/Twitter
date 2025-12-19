@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
+use Throwable;
 use Twitter\IAM\Domain\User\Model\Exception\InvalidEmailException;
 use Twitter\IAM\Domain\User\Model\Exception\InvalidPasswordException;
 use Twitter\IAM\Domain\User\Model\Exception\UserAlreadyExistsException;
@@ -64,7 +65,7 @@ final readonly class ExceptionSubscriber implements EventSubscriberInterface
         $event->setResponse($response);
     }
 
-    private function createErrorResponse(\Throwable $throwable): JsonResponse
+    private function createErrorResponse(Throwable $throwable): JsonResponse
     {
         $class = $throwable::class;
         if (array_key_exists($class, self::EXCEPTION_MAPPING)) {

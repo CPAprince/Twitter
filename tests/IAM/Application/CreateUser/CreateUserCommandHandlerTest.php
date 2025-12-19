@@ -9,6 +9,7 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 use Symfony\Component\Uid\Uuid;
 use Twitter\IAM\Application\CreateUser\CreateUserCommand;
 use Twitter\IAM\Application\CreateUser\CreateUserCommandHandler;
@@ -116,12 +117,12 @@ class CreateUserCommandHandlerTest extends TestCase
             ->method('existsByEmail')
             ->willReturn(false);
 
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
 
         $this->userRepository
             ->expects(self::once())
             ->method('add')
-            ->willThrowException(new \RuntimeException());
+            ->willThrowException(new RuntimeException());
 
         $this->handler->handle(
             new CreateUserCommand(

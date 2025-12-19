@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Twitter\IAM\Domain\User\Model;
 
+use DateTimeImmutable;
+
 final class User
 {
     private function __construct(
@@ -11,8 +13,8 @@ final class User
         private string $id,
         private string $email,
         private string $passwordHash,
-        private \DateTimeImmutable $createdAt,
-        private \DateTimeImmutable $updatedAt,
+        private DateTimeImmutable $createdAt,
+        private DateTimeImmutable $updatedAt,
     ) {}
 
     public static function create(Email $email, PasswordHash $passwordHash): self
@@ -22,8 +24,8 @@ final class User
             UserId::generate()->toString(),
             $email->toString(),
             $passwordHash->toString(),
-            new \DateTimeImmutable(),
-            new \DateTimeImmutable(),
+            new DateTimeImmutable(),
+            new DateTimeImmutable(),
         );
     }
 
@@ -47,12 +49,12 @@ final class User
         return $this->passwordHash;
     }
 
-    public function getCreatedAt(): \DateTimeImmutable
+    public function getCreatedAt(): DateTimeImmutable
     {
         return $this->createdAt;
     }
 
-    public function getUpdatedAt(): \DateTimeImmutable
+    public function getUpdatedAt(): DateTimeImmutable
     {
         return $this->updatedAt;
     }

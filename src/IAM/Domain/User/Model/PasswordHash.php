@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Twitter\IAM\Domain\User\Model;
 
+use Error;
+use InvalidArgumentException;
+use RuntimeException;
 use Twitter\IAM\Domain\User\Model\Exception\InvalidPasswordException;
 
 final readonly class PasswordHash
@@ -24,8 +27,8 @@ final readonly class PasswordHash
         try {
             // Use bcrypt to generate 60 characters long hash
             $hash = password_hash($plainPassword, PASSWORD_BCRYPT);
-        } catch (\Error $error) {
-            throw new \RuntimeException('Unable to hash password: '.$error->getMessage(), previous: $error);
+        } catch (Error $error) {
+            throw new RuntimeException('Unable to hash password: '.$error->getMessage(), previous: $error);
         }
 
         return new self($hash);
@@ -34,7 +37,7 @@ final readonly class PasswordHash
     public static function fromHash(string $hash): self
     {
         if (strlen($hash) < 60) {
-            throw new \InvalidArgumentException('Password hash is too short');
+            throw new InvalidArgumentException('Password hash is too short');
         }
 
         return new self($hash);

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Twitter\Tests\IAM\Domain\User\Model;
 
+use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
@@ -35,7 +36,7 @@ class UserIdTest extends TestCase
     #[Test]
     public function fromStringPassedInvalidValue(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
 
         UserId::fromString('abracadabra');
     }

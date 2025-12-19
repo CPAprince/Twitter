@@ -30,5 +30,16 @@ return new Config()
             'functions_opening_brace' => 'next_line_unless_newline_at_signature_end',
         ],
         'single_line_empty_body' => true,
+        'ordered_imports' => ['sort_algorithm' => 'alpha'],
+        'fully_qualified_strict_types' => [
+            'import_symbols' => true,
+        ],
+        'no_leading_import_slash' => true,
+        'no_unused_imports' => true,
+        'global_namespace_import' => [
+            'import_classes' => true,
+            'import_constants' => true,
+            'import_functions' => true,
+        ],
     ])
     ->setFinder($finder);

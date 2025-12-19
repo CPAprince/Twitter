@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Twitter\IAM\Domain\User\Model;
 
+use InvalidArgumentException;
 use Symfony\Component\Uid\Uuid;
 
 final readonly class UserId
@@ -18,12 +19,12 @@ final readonly class UserId
     }
 
     /**
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public static function fromString(string $id): self
     {
         if (!Uuid::isValid($id)) {
-            throw new \InvalidArgumentException('Invalid user ID');
+            throw new InvalidArgumentException('Invalid user ID');
         }
 
         return new self($id);

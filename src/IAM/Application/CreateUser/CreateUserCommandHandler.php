@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Twitter\IAM\Application\CreateUser;
 
+use RuntimeException;
+use Throwable;
 use Twitter\IAM\Domain\User\Model\Email;
 use Twitter\IAM\Domain\User\Model\Exception\InvalidEmailException;
 use Twitter\IAM\Domain\User\Model\Exception\InvalidPasswordException;
@@ -36,8 +38,8 @@ final readonly class CreateUserCommandHandler
 
         try {
             $this->userRepository->add($user);
-        } catch (\Throwable $throwable) {
-            throw new \RuntimeException('Unexpected error', previous: $throwable);
+        } catch (Throwable $throwable) {
+            throw new RuntimeException('Unexpected error', previous: $throwable);
         }
 
         return new CreateUserCommandResult($user->getId());
