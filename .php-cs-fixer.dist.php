@@ -26,6 +26,7 @@ return new Config()
         'strict_param' => true,
         'psr_autoloading' => true,
         'declare_strict_types' => true,
+        'method_chaining_indentation' => true,
         'curly_braces_position' => [
             'functions_opening_brace' => 'next_line_unless_newline_at_signature_end',
         ],
