@@ -7,6 +7,7 @@ namespace Twitter\IAM\UI\REST\Controller;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\UnsupportedMediaTypeHttpException;
 use Symfony\Component\Routing\Attribute\Route;
 use Twitter\IAM\Application\Logout\LogoutService;
 use Twitter\IAM\Domain\Auth\Exception\AuthUnauthorizedException;
@@ -21,7 +22,7 @@ final class TokenController
     ) {
     }
 
-    #[Route('/api/token', name: 'api_token_logout', methods: ['DELETE'])]
+    #[Route('/api/tokens', name: 'api_tokens_logout', methods: ['DELETE'])]
     public function logout(Request $request): Response
     {
         $user = $this->security->getUser();
@@ -34,7 +35,7 @@ final class TokenController
         }
 
         if ('json' !== $request->getContentTypeFormat()) {
-            throw new ValidationErrorException('Content-Type must be application/json.');
+            throw new UnsupportedMediaTypeHttpException('Unsupported Media Type. Use application/json.');
         }
 
         try {
