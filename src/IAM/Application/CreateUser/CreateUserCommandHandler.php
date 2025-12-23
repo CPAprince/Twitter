@@ -4,12 +4,9 @@ declare(strict_types=1);
 
 namespace Twitter\IAM\Application\CreateUser;
 
-use RuntimeException;
-use Throwable;
 use Twitter\IAM\Domain\User\Model\Email;
 use Twitter\IAM\Domain\User\Model\Exception\InvalidEmailException;
 use Twitter\IAM\Domain\User\Model\Exception\InvalidPasswordException;
-use Twitter\IAM\Domain\User\Model\Exception\UserAlreadyExistsException;
 use Twitter\IAM\Domain\User\Model\PasswordHash;
 use Twitter\IAM\Domain\User\Model\User;
 use Twitter\IAM\Domain\User\Model\UserRepository;
@@ -23,24 +20,15 @@ final readonly class CreateUserCommandHandler
     /**
      * @throws InvalidEmailException
      * @throws InvalidPasswordException
-     * @throws UserAlreadyExistsException
      */
     public function handle(CreateUserCommand $command): CreateUserCommandResult
     {
-        $email = Email::fromString($command->email);
+        $user = User::create(
+            Email::fromString($command->email),
+            PasswordHash::fromPlainPassword($command->password),
+        );
 
-        if ($this->userRepository->existsByEmail((string) $email)) {
-            throw new UserAlreadyExistsException((string) $email);
-        }
-
-        $passwordHash = PasswordHash::fromPlainPassword($command->password);
-        $user = User::create($email, $passwordHash);
-
-        try {
-            $this->userRepository->add($user);
-        } catch (Throwable $throwable) {
-            throw new RuntimeException('Unexpected error', previous: $throwable);
-        }
+        $this->userRepository->add($user);
 
         return new CreateUserCommandResult($user->id());
     }

@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace Twitter\IAM\Infrastructure\Persistence\MySQL\Repository;
 
+use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\ORMInvalidArgumentException;
+use Twitter\IAM\Domain\User\Model\Exception\UserAlreadyExistsException;
 use Twitter\IAM\Domain\User\Model\User;
 use Twitter\IAM\Domain\User\Model\UserRepository;
 
@@ -16,12 +17,16 @@ final readonly class MySQLUserRepository implements UserRepository
     ) {}
 
     /**
-     * @throws ORMInvalidArgumentException
+     * @throws UserAlreadyExistsException
      */
     public function add(User $user): void
     {
-        $this->entityManager->persist($user);
-        $this->entityManager->flush();
+        try {
+            $this->entityManager->persist($user);
+            $this->entityManager->flush();
+        } catch (UniqueConstraintViolationException) {
+            throw new UserAlreadyExistsException($user->email());
+        }
     }
 
     public function existsByEmail(string $email): bool
