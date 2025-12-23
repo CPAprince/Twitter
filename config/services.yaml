@@ -5,14 +5,8 @@ services:
         autowire: true
         autoconfigure: true
     
-    Twitter\:
-        resource: '../src/'
-        exclude:
-            - '../src/Kernel.php'
-            - '../src/*/Domain/*/Model/'
-    
     Twitter\IAM\UI\REST\Controller\:
-        resource: '../src/IAM/UI/REST/Controller/*'
+        resource: '../src/IAM/UI/REST/Controller/*Controller.php'
         tags: [ 'controller.service_arguments' ]
     
     Twitter\IAM\UI\REST\EventSubscriber\ExceptionSubscriber:

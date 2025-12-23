@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Twitter\IAM\UI\REST\EventSubscriber;
 
+use Assert\LazyAssertionException;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -83,6 +84,13 @@ final readonly class ExceptionSubscriber implements EventSubscriberInterface
         $message = 'An unexpected error occurred. Please try again later';
         $status = Response::HTTP_INTERNAL_SERVER_ERROR;
 
+        $assertionErrors = $this->lazyAssertionErrorsIntoArray($throwable);
+        if (!empty($assertionErrors)) {
+            return new JsonResponse([
+                'errors' => $assertionErrors,
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
         if (array_key_exists($class, self::EXCEPTION_MAPPING)) {
             $config = self::EXCEPTION_MAPPING[$class];
             $code = $config['code'];
@@ -100,5 +108,17 @@ final readonly class ExceptionSubscriber implements EventSubscriberInterface
                 'message' => $message,
             ],
         ], $status);
+    }
+
+    private function lazyAssertionErrorsIntoArray(Throwable $throwable): array
+    {
+        $errors = [];
+        if ($throwable instanceof LazyAssertionException) {
+            foreach ($throwable->getErrorExceptions() as $errorException) {
+                $errors[] = ['message' => $errorException->getMessage()];
+            }
+        }
+
+        return $errors;
     }
 }
