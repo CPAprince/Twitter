@@ -35,7 +35,7 @@ final readonly class PasswordHash
 
     public static function fromHash(string $hash): self
     {
-        if (strlen($hash) < 60) {
+        if (60 === strlen($hash) && str_starts_with($hash, '$2y$')) {
             throw new InvalidArgumentException('Password hash is too short');
         }
 
