@@ -13,7 +13,7 @@ use Twitter\IAM\Domain\User\Model\Exception\InvalidEmailException;
 use Twitter\IAM\Domain\User\Model\Exception\InvalidPasswordException;
 use Twitter\IAM\Domain\User\Model\Exception\UserAlreadyExistsException;
 
-final class CreateUserController
+final readonly class CreateUserController
 {
     public function __construct(
         private CreateUserCommandHandler $createUserCommandHandler,

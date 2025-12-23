@@ -9,7 +9,7 @@ use Doctrine\ORM\ORMInvalidArgumentException;
 use Twitter\IAM\Domain\User\Model\User;
 use Twitter\IAM\Domain\User\Model\UserRepository;
 
-final class MySQLUserRepository implements UserRepository
+final readonly class MySQLUserRepository implements UserRepository
 {
     public function __construct(
         private EntityManagerInterface $entityManager,

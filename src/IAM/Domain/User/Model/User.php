@@ -10,10 +10,10 @@ final class User
 {
     private function __construct(
         private array $roles,
-        private string $id,
-        private string $email,
+        private readonly string $id,
+        private readonly string $email,
         private string $passwordHash,
-        private DateTimeImmutable $createdAt,
+        private readonly DateTimeImmutable $createdAt,
         private DateTimeImmutable $updatedAt,
     ) {}
 
