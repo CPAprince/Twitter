@@ -16,10 +16,13 @@ use Twitter\IAM\Domain\User\Model\PasswordHash;
 #[CoversClass(PasswordHash::class)]
 class PasswordHashTest extends TestCase
 {
+    /**
+     * @throws InvalidPasswordException
+     */
     #[Test]
     public function fromPlainPasswordValidationPassed(): void
     {
-        $password = 'qwerty123';
+        $password = 'Qwerty.123';
         $passwordHash = PasswordHash::fromPlainPassword($password);
 
         $this->assertTrue(password_verify($password, (string) $passwordHash));
@@ -33,10 +36,13 @@ class PasswordHashTest extends TestCase
         PasswordHash::fromPlainPassword('qwerty1');
     }
 
+    /**
+     * @throws InvalidPasswordException
+     */
     #[Test]
     public function fromHashValidationPassed(): void
     {
-        $password = 'qwerty123';
+        $password = 'Qwerty.123';
         $passwordHash = PasswordHash::fromPlainPassword($password);
         $newPasswordHash = PasswordHash::fromHash((string) $passwordHash);
 
@@ -52,21 +58,27 @@ class PasswordHashTest extends TestCase
         PasswordHash::fromHash('abracadabra');
     }
 
+    /**
+     * @throws InvalidPasswordException
+     */
     #[Test]
     public function verifyPlainPassword(): void
     {
-        $password = 'qwerty123';
+        $password = 'Qwerty.123';
         $passwordHash = PasswordHash::fromPlainPassword($password);
 
         $this->assertTrue($passwordHash->verify($password));
     }
 
+    /**
+     * @throws InvalidPasswordException
+     */
     #[Test]
     public function verifyPlainPasswordMismatch(): void
     {
-        $password = 'qwerty123';
+        $password = 'Qwerty.123';
         $passwordHash = PasswordHash::fromPlainPassword($password);
 
-        $this->assertFalse($passwordHash->verify('qwerty1'));
+        $this->assertFalse($passwordHash->verify(''));
     }
 }

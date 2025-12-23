@@ -21,7 +21,7 @@ final readonly class PasswordHash
     public static function fromPlainPassword(string $plainPassword): self
     {
         // https://regex101.com/r/oZ6r5G/1
-        if (preg_match("/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*\-_.]).{8,}$/m", $plainPassword)) {
+        if (!preg_match("/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*\-_.]).{8,}$/m", $plainPassword)) {
             throw new InvalidPasswordException('Password must contain at least one uppercase letter, one lowercase letter, one digit and one special character');
         }
 
@@ -36,8 +36,8 @@ final readonly class PasswordHash
 
     public static function fromHash(string $hash): self
     {
-        if (60 === strlen($hash) && str_starts_with($hash, '$2y$')) {
-            throw new InvalidArgumentException('Password hash is too short');
+        if (60 !== strlen($hash)) {
+            throw new InvalidArgumentException('Password hash length does not match');
         }
 
         return new self($hash);

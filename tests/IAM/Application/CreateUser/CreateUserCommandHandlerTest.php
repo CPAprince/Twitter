@@ -38,6 +38,11 @@ class CreateUserCommandHandlerTest extends TestCase
         parent::tearDown();
     }
 
+    /**
+     * @throws InvalidEmailException
+     * @throws InvalidPasswordException
+     * @throws UserAlreadyExistsException
+     */
     #[Test]
     public function handleReturnsSuccessWhenUserIsCreated(): void
     {
@@ -48,13 +53,17 @@ class CreateUserCommandHandlerTest extends TestCase
         $result = $this->handler->handle(
             new CreateUserCommand(
                 'test@example.com',
-                'qwerty123',
+                'Qwerty.123',
             ),
         );
 
         $this->assertTrue(Uuid::isValid($result->userId));
     }
 
+    /**
+     * @throws InvalidPasswordException
+     * @throws UserAlreadyExistsException
+     */
     #[Test]
     public function handleFailsWhenEmailIsInvalid(): void
     {
@@ -64,11 +73,15 @@ class CreateUserCommandHandlerTest extends TestCase
         $this->handler->handle(
             new CreateUserCommand(
                 'test@example',
-                'qwerty123',
+                'Qwerty.123',
             ),
         );
     }
 
+    /**
+     * @throws InvalidEmailException
+     * @throws InvalidPasswordException
+     */
     #[Test]
     public function handleFailsWhenUserAlreadyExists(): void
     {
@@ -85,11 +98,15 @@ class CreateUserCommandHandlerTest extends TestCase
         $this->handler->handle(
             new CreateUserCommand(
                 $expectedEmail,
-                'qwerty123',
+                'Qwerty.123',
             ),
         );
     }
 
+    /**
+     * @throws InvalidEmailException
+     * @throws UserAlreadyExistsException
+     */
     #[Test]
     public function handleFailsWhenPasswordIsInvalid(): void
     {
@@ -109,6 +126,11 @@ class CreateUserCommandHandlerTest extends TestCase
         );
     }
 
+    /**
+     * @throws InvalidEmailException
+     * @throws InvalidPasswordException
+     * @throws UserAlreadyExistsException
+     */
     #[Test]
     public function handleSaveFailsOnUnexpectedException(): void
     {
@@ -127,7 +149,7 @@ class CreateUserCommandHandlerTest extends TestCase
         $this->handler->handle(
             new CreateUserCommand(
                 'test@example.com',
-                'qwerty123',
+                'Qwerty.123',
             ),
         );
     }

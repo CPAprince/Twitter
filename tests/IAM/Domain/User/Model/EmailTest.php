@@ -15,6 +15,9 @@ use Twitter\IAM\Domain\User\Model\Exception\InvalidEmailException;
 #[CoversClass(Email::class)]
 class EmailTest extends TestCase
 {
+    /**
+     * @throws InvalidEmailException
+     */
     #[Test]
     public function fromStringValidationPassed(): void
     {
@@ -29,6 +32,6 @@ class EmailTest extends TestCase
     {
         $this->expectException(InvalidEmailException::class);
 
-        $email = Email::fromString('test@example');
+        Email::fromString('test@example');
     }
 }
