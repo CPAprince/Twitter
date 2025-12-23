@@ -20,8 +20,9 @@ final readonly class PasswordHash
      */
     public static function fromPlainPassword(string $plainPassword): self
     {
-        if (strlen($plainPassword) < 8) {
-            throw new InvalidPasswordException('Password must be at least 8 characters long');
+        // https://regex101.com/r/oZ6r5G/1
+        if (preg_match("/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*\-_.]).{8,}$/m", $plainPassword)) {
+            throw new InvalidPasswordException('Password must contain at least one uppercase letter, one lowercase letter, one digit and one special character');
         }
 
         try {
