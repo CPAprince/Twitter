@@ -15,23 +15,41 @@ use Twitter\IAM\Domain\User\Model\Exception\InvalidEmailException;
 #[CoversClass(Email::class)]
 class EmailTest extends TestCase
 {
-    /**
-     * @throws InvalidEmailException
-     */
     #[Test]
-    public function fromStringValidationPassed(): void
+    public function itCanBeCreatedFromAValidEmailString(): void
     {
-        $emailString = 'test@example.com';
-        $email = Email::fromString($emailString);
+        $value = 'test@example.com';
 
-        $this->assertEquals($emailString, (string) $email);
+        $email = Email::fromString($value);
+
+        self::assertSame($value, (string) $email);
     }
 
     #[Test]
-    public function fromStringPassedInvalidEmail(): void
+    public function itThrowsWhenCreatedFromAnInvalidEmailString(): void
     {
         $this->expectException(InvalidEmailException::class);
 
         Email::fromString('test@example');
+    }
+
+    #[Test]
+    public function twoEmailsWithTheSameValueAreEqual(): void
+    {
+        $value = 'test@example.com';
+
+        $a = Email::fromString($value);
+        $b = Email::fromString($value);
+
+        self::assertEquals((string) $a, (string) $b);
+    }
+
+    #[Test]
+    public function emailsWithDifferentValuesAreNotEqual(): void
+    {
+        $a = Email::fromString('a@example.com');
+        $b = Email::fromString('b@example.com');
+
+        self::assertNotEquals((string) $a, (string) $b);
     }
 }
