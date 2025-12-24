@@ -21,7 +21,7 @@ final class Version20251217102810 extends AbstractMigration
             CREATE TABLE users (
                 roles JSON NOT NULL,
                 email VARCHAR(320) NOT NULL,
-                password_hash VARCHAR(60) NOT NULL,
+                password_hash CHAR(60) NOT NULL,
                 created_at DATETIME NOT NULL,
                 updated_at DATETIME NOT NULL,
                 id BINARY(16) NOT NULL,
