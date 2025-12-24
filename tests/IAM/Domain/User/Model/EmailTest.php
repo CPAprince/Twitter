@@ -16,7 +16,7 @@ use Twitter\IAM\Domain\User\Model\Exception\InvalidEmailException;
 class EmailTest extends TestCase
 {
     #[Test]
-    public function itCanBeCreatedFromAValidEmailString(): void
+    public function canBeCreatedFromAValidEmailString(): void
     {
         $value = 'test@example.com';
 
@@ -26,7 +26,7 @@ class EmailTest extends TestCase
     }
 
     #[Test]
-    public function itThrowsWhenCreatedFromAnInvalidEmailString(): void
+    public function throwsWhenCreatedFromAnInvalidEmailString(): void
     {
         $this->expectException(InvalidEmailException::class);
 
