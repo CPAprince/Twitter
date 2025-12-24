@@ -11,7 +11,6 @@ use Twitter\IAM\Application\CreateUser\CreateUserCommand;
 use Twitter\IAM\Application\CreateUser\CreateUserCommandHandler;
 use Twitter\IAM\Domain\User\Model\Exception\InvalidEmailException;
 use Twitter\IAM\Domain\User\Model\Exception\InvalidPasswordException;
-use Twitter\IAM\Domain\User\Model\Exception\UserAlreadyExistsException;
 
 final readonly class CreateUserController
 {
@@ -22,7 +21,6 @@ final readonly class CreateUserController
     /**
      * @throws InvalidEmailException
      * @throws InvalidPasswordException
-     * @throws UserAlreadyExistsException
      */
     public function __invoke(
         #[MapRequestPayload]
