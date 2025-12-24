@@ -1,4 +1,4 @@
 doctrine_migrations:
     migrations_paths:
-        'Twitter\IAM\Infrastructure\Persistence\MySQL\Migrations': '%kernel.project_dir%/src/IAM/Infrastructure/Persistence/MySQL/Migrations'
+        'Twitter\IAM\Infrastructure\Persistence\MySQL\Migration': '%kernel.project_dir%/src/IAM/Infrastructure/Persistence/MySQL/Migration'
     enable_profiler: false

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Twitter\IAM\Infrastructure\Persistence\MySQL\Migrations;
+namespace Twitter\IAM\Infrastructure\Persistence\MySQL\Migration;
 
 use Doctrine\DBAL\Schema\Schema;
 use Doctrine\Migrations\AbstractMigration;
