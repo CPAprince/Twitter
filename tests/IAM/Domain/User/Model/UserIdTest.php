@@ -26,10 +26,10 @@ class UserIdTest extends TestCase
     #[Test]
     public function canBeRecreatedFromItsStringRepresentation(): void
     {
-        $original = UserId::generate();
-        $restored = UserId::fromString((string) $original);
+        $original = '019b4cf2-b0a7-7609-973c-5aa222c3f487';
+        $restored = UserId::fromString($original);
 
-        self::assertSame((string) $original, (string) $restored);
+        self::assertSame($original, (string) $restored);
     }
 
     #[Test]

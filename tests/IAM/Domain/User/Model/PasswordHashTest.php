@@ -17,14 +17,13 @@ use Twitter\IAM\Domain\User\Model\PasswordHash;
 #[CoversClass(PasswordHash::class)]
 class PasswordHashTest extends TestCase
 {
-    private const string VALID_PASSWORD = 'Pswd.123';
-
     #[Test]
     public function hashesAndVerifiesAValidPlainPassword(): void
     {
-        $passwordHash = PasswordHash::fromPlainPassword(self::VALID_PASSWORD);
+        $password = 'Pswd.123';
+        $passwordHash = PasswordHash::fromPlainPassword($password);
 
-        self::assertTrue(password_verify(self::VALID_PASSWORD, (string) $passwordHash));
+        self::assertTrue(password_verify($password, (string) $passwordHash));
     }
 
     #[Test]
@@ -32,25 +31,17 @@ class PasswordHashTest extends TestCase
     {
         self::expectException(InvalidPasswordException::class);
 
-        $shortPassword = substr(self::VALID_PASSWORD, 0, -1);
-        PasswordHash::fromPlainPassword($shortPassword);
+        PasswordHash::fromPlainPassword('Pswd.12');
     }
 
     #[Test]
     public function createsAValueObjectFromExistingHash(): void
     {
-        $passwordHash = PasswordHash::fromPlainPassword(self::VALID_PASSWORD);
+        $password = 'Pswd.123';
+        $passwordHash = PasswordHash::fromPlainPassword($password);
 
-        self::assertTrue(
-            password_verify(
-                self::VALID_PASSWORD,
-                (string) $passwordHash,
-            ),
-        );
-        self::assertEquals(
-            (string) $passwordHash,
-            (string) PasswordHash::fromHash((string) $passwordHash),
-        );
+        self::assertTrue(password_verify($password, (string) $passwordHash));
+        self::assertEquals((string) $passwordHash, (string) PasswordHash::fromHash((string) $passwordHash));
     }
 
     #[Test]
@@ -65,7 +56,7 @@ class PasswordHashTest extends TestCase
     #[DataProvider('passwordVerificationProvider')]
     public function verifiesPlainPasswordsCorrectly(string $input, bool $expected): void
     {
-        $passwordHash = PasswordHash::fromPlainPassword(self::VALID_PASSWORD);
+        $passwordHash = PasswordHash::fromPlainPassword('Pswd.123');
 
         self::assertSame($expected, $passwordHash->verify($input));
     }
@@ -73,7 +64,7 @@ class PasswordHashTest extends TestCase
     public static function passwordVerificationProvider(): array
     {
         return [
-            'valid password' => [self::VALID_PASSWORD, true],
+            'valid password' => ['Pswd.123', true],
             'empty password' => ['', false],
             'short password' => ['Psd.123', false],
             'password with no uppercase letter' => ['pswd.123', false],
