@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Twitter\IAM\Domain\User\Model\Exception;
+namespace Twitter\IAM\Domain\User\Exception;
 
 use Exception;
 

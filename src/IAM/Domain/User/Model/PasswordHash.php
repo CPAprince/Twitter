@@ -7,7 +7,7 @@ namespace Twitter\IAM\Domain\User\Model;
 use Error;
 use InvalidArgumentException;
 use RuntimeException;
-use Twitter\IAM\Domain\User\Model\Exception\InvalidPasswordException;
+use Twitter\IAM\Domain\User\Exception\InvalidPasswordException;
 
 final readonly class PasswordHash
 {

@@ -14,9 +14,9 @@ use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Throwable;
-use Twitter\IAM\Domain\User\Model\Exception\InvalidEmailException;
-use Twitter\IAM\Domain\User\Model\Exception\InvalidPasswordException;
-use Twitter\IAM\Domain\User\Model\Exception\UserAlreadyExistsException;
+use Twitter\IAM\Domain\User\Exception\InvalidEmailException;
+use Twitter\IAM\Domain\User\Exception\InvalidPasswordException;
+use Twitter\IAM\Domain\User\Exception\UserAlreadyExistsException;
 
 final readonly class ExceptionSubscriber implements EventSubscriberInterface
 {

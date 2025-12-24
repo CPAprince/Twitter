@@ -6,7 +6,7 @@ namespace Twitter\IAM\Infrastructure\Persistence\MySQL\Repository;
 
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\ORM\EntityManagerInterface;
-use Twitter\IAM\Domain\User\Model\Exception\UserAlreadyExistsException;
+use Twitter\IAM\Domain\User\Exception\UserAlreadyExistsException;
 use Twitter\IAM\Domain\User\Model\User;
 use Twitter\IAM\Domain\User\Model\UserRepository;
 

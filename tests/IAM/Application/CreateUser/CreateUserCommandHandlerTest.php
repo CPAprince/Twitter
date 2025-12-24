@@ -12,9 +12,9 @@ use PHPUnit\Framework\TestCase;
 use RuntimeException;
 use Twitter\IAM\Application\CreateUser\CreateUserCommand;
 use Twitter\IAM\Application\CreateUser\CreateUserCommandHandler;
-use Twitter\IAM\Domain\User\Model\Exception\InvalidEmailException;
-use Twitter\IAM\Domain\User\Model\Exception\InvalidPasswordException;
-use Twitter\IAM\Domain\User\Model\Exception\UserAlreadyExistsException;
+use Twitter\IAM\Domain\User\Exception\InvalidEmailException;
+use Twitter\IAM\Domain\User\Exception\InvalidPasswordException;
+use Twitter\IAM\Domain\User\Exception\UserAlreadyExistsException;
 use Twitter\IAM\Domain\User\Model\UserRepository;
 
 #[Group('unit')]

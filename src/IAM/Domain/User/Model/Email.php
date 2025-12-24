@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Twitter\IAM\Domain\User\Model;
 
-use Twitter\IAM\Domain\User\Model\Exception\InvalidEmailException;
+use Twitter\IAM\Domain\User\Exception\InvalidEmailException;
 
 final readonly class Email
 {
