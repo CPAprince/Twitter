@@ -12,6 +12,11 @@ final readonly class Email
         private string $email,
     ) {}
 
+    public function __toString(): string
+    {
+        return $this->email;
+    }
+
     /**
      * @throws InvalidEmailException
      */
@@ -23,10 +28,5 @@ final readonly class Email
         }
 
         return new self($email);
-    }
-
-    public function __toString(): string
-    {
-        return $this->email;
     }
 }

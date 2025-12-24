@@ -15,6 +15,11 @@ final readonly class PasswordHash
         private string $hash,
     ) {}
 
+    public function __toString(): string
+    {
+        return $this->hash;
+    }
+
     /**
      * @throws InvalidPasswordException
      */
@@ -46,10 +51,5 @@ final readonly class PasswordHash
     public function verify(string $plainPassword): bool
     {
         return password_verify($plainPassword, $this->hash);
-    }
-
-    public function __toString(): string
-    {
-        return $this->hash;
     }
 }

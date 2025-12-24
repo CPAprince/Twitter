@@ -13,6 +13,11 @@ final readonly class UserId
         private string $id,
     ) {}
 
+    public function __toString(): string
+    {
+        return $this->id;
+    }
+
     public static function generate(): self
     {
         return new self(Uuid::v7()->toRfc4122());
@@ -28,10 +33,5 @@ final readonly class UserId
         }
 
         return new self($id);
-    }
-
-    public function __toString(): string
-    {
-        return $this->id;
     }
 }
