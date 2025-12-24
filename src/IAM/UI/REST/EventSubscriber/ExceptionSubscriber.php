@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Twitter\IAM\UI\REST\EventSubscriber;
 
+use Assert\InvalidArgumentException;
 use Assert\LazyAssertionException;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -84,11 +85,8 @@ final readonly class ExceptionSubscriber implements EventSubscriberInterface
         $message = 'An unexpected error occurred. Please try again later';
         $status = Response::HTTP_INTERNAL_SERVER_ERROR;
 
-        $assertionErrors = $this->lazyAssertionErrorsIntoArray($throwable);
-        if (!empty($assertionErrors)) {
-            return new JsonResponse([
-                'errors' => $assertionErrors,
-            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        if ($response = $this->validationErrorResponse($throwable)) {
+            return $response;
         }
 
         if (array_key_exists($class, self::EXCEPTION_MAPPING)) {
@@ -110,15 +108,26 @@ final readonly class ExceptionSubscriber implements EventSubscriberInterface
         ], $status);
     }
 
-    private function lazyAssertionErrorsIntoArray(Throwable $throwable): array
+    private function validationErrorResponse(Throwable $throwable): ?JsonResponse
     {
-        $errors = [];
-        if ($throwable instanceof LazyAssertionException) {
-            foreach ($throwable->getErrorExceptions() as $errorException) {
-                $errors[] = ['message' => $errorException->getMessage()];
-            }
+        if (!$throwable instanceof LazyAssertionException) {
+            return null;
         }
 
-        return $errors;
+        return new JsonResponse(
+            ['errors' => $this->mapLazyAssertionErrors($throwable)],
+            Response::HTTP_UNPROCESSABLE_ENTITY
+        );
+    }
+
+    private function mapLazyAssertionErrors(LazyAssertionException $exception): array
+    {
+        return array_map(
+            static fn (InvalidArgumentException $error): array => [
+                'field' => $error->getPropertyPath(),
+                'message' => $error->getMessage(),
+            ],
+            $exception->getErrorExceptions()
+        );
     }
 }
