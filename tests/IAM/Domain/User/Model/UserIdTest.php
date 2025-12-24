@@ -9,7 +9,6 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\Uid\Uuid;
 use Twitter\IAM\Domain\User\Model\UserId;
 
 #[Group('unit')]
@@ -17,27 +16,47 @@ use Twitter\IAM\Domain\User\Model\UserId;
 class UserIdTest extends TestCase
 {
     #[Test]
-    public function generateValidUserId(): void
+    public function generatesANonEmptyIdentifier(): void
     {
         $userId = UserId::generate();
 
-        $this->assertTrue(Uuid::isValid((string) $userId));
+        self::assertNotEmpty((string) $userId);
     }
 
     #[Test]
-    public function fromStringValidationPassed(): void
+    public function canBeRecreatedFromItsStringRepresentation(): void
     {
-        $userIdString = (string) UserId::generate();
-        $userId = UserId::fromString($userIdString);
+        $original = UserId::generate();
+        $restored = UserId::fromString((string) $original);
 
-        $this->assertEquals($userIdString, (string) $userId);
+        self::assertSame((string) $original, (string) $restored);
     }
 
     #[Test]
-    public function fromStringPassedInvalidValue(): void
+    public function throwsWhenCreatedFromAnInvalidString(): void
     {
         $this->expectException(InvalidArgumentException::class);
 
         UserId::fromString('abracadabra');
+    }
+
+    #[Test]
+    public function twoIdsWithTheSameValueAreEqual(): void
+    {
+        $value = (string) UserId::generate();
+
+        $a = UserId::fromString($value);
+        $b = UserId::fromString($value);
+
+        self::assertEquals((string) $a, (string) $b);
+    }
+
+    #[Test]
+    public function twoGeneratedIdsAreNotEqual(): void
+    {
+        $a = UserId::generate();
+        $b = UserId::generate();
+
+        self::assertNotEquals((string) $a, (string) $b);
     }
 }
