@@ -28,16 +28,4 @@ final readonly class MySQLUserRepository implements UserRepository
             throw new UserAlreadyExistsException($user->email());
         }
     }
-
-    public function existsByEmail(string $email): bool
-    {
-        return 1 === (int) $this->entityManager
-            ->createQueryBuilder()
-            ->select('count(u)')
-            ->from(User::class, 'u')
-            ->where('u.email = :email')
-            ->setParameter('email', $email)
-            ->getQuery()
-            ->getSingleScalarResult();
-    }
 }
