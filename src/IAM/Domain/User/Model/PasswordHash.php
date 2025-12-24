@@ -11,6 +11,8 @@ use Twitter\IAM\Domain\User\Exception\InvalidPasswordException;
 
 final readonly class PasswordHash
 {
+    public const int HASH_LENGTH = 60;
+
     private function __construct(
         private string $hash,
     ) {}
@@ -41,7 +43,7 @@ final readonly class PasswordHash
 
     public static function fromHash(string $hash): self
     {
-        if (60 !== strlen($hash) || !str_starts_with($hash, '$2y$')) {
+        if (self::HASH_LENGTH !== strlen($hash) || !str_starts_with($hash, '$2y$')) {
             throw new InvalidArgumentException('Password hash is invalid');
         }
 
