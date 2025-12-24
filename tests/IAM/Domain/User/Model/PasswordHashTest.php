@@ -6,6 +6,7 @@ namespace Twitter\Tests\IAM\Domain\User\Model;
 
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -16,69 +17,68 @@ use Twitter\IAM\Domain\User\Model\PasswordHash;
 #[CoversClass(PasswordHash::class)]
 class PasswordHashTest extends TestCase
 {
-    /**
-     * @throws InvalidPasswordException
-     */
-    #[Test]
-    public function fromPlainPasswordValidationPassed(): void
-    {
-        $password = 'Qwerty.123';
-        $passwordHash = PasswordHash::fromPlainPassword($password);
+    private const string VALID_PASSWORD = 'Pswd.123';
 
-        $this->assertTrue(password_verify($password, (string) $passwordHash));
+    #[Test]
+    public function hashesAndVerifiesAValidPlainPassword(): void
+    {
+        $passwordHash = PasswordHash::fromPlainPassword(self::VALID_PASSWORD);
+
+        self::assertTrue(password_verify(self::VALID_PASSWORD, (string) $passwordHash));
     }
 
     #[Test]
-    public function fromPlainPasswordPassedPasswordIsTooShort(): void
+    public function rejectsATooShortPlainPassword(): void
     {
-        $this->expectException(InvalidPasswordException::class);
+        self::expectException(InvalidPasswordException::class);
 
-        PasswordHash::fromPlainPassword('qwerty1');
-    }
-
-    /**
-     * @throws InvalidPasswordException
-     */
-    #[Test]
-    public function fromHashValidationPassed(): void
-    {
-        $password = 'Qwerty.123';
-        $passwordHash = PasswordHash::fromPlainPassword($password);
-        $newPasswordHash = PasswordHash::fromHash((string) $passwordHash);
-
-        $this->assertTrue(password_verify($password, (string) $passwordHash));
-        $this->assertEquals((string) $passwordHash, (string) $newPasswordHash);
+        $shortPassword = substr(self::VALID_PASSWORD, 0, -1);
+        PasswordHash::fromPlainPassword($shortPassword);
     }
 
     #[Test]
-    public function fromHashPassedHashIsTooShort(): void
+    public function createsAValueObjectFromExistingHash(): void
     {
-        $this->expectException(InvalidArgumentException::class);
+        $passwordHash = PasswordHash::fromPlainPassword(self::VALID_PASSWORD);
+
+        self::assertTrue(
+            password_verify(
+                self::VALID_PASSWORD,
+                (string) $passwordHash,
+            ),
+        );
+        self::assertEquals(
+            (string) $passwordHash,
+            (string) PasswordHash::fromHash((string) $passwordHash),
+        );
+    }
+
+    #[Test]
+    public function rejectsAnInvalidPasswordHash(): void
+    {
+        self::expectException(InvalidArgumentException::class);
 
         PasswordHash::fromHash('abracadabra');
     }
 
-    /**
-     * @throws InvalidPasswordException
-     */
     #[Test]
-    public function verifyPlainPassword(): void
+    #[DataProvider('passwordVerificationProvider')]
+    public function verifiesPlainPasswordsCorrectly(string $input, bool $expected): void
     {
-        $password = 'Qwerty.123';
-        $passwordHash = PasswordHash::fromPlainPassword($password);
+        $passwordHash = PasswordHash::fromPlainPassword(self::VALID_PASSWORD);
 
-        $this->assertTrue($passwordHash->verify($password));
+        self::assertSame($expected, $passwordHash->verify($input));
     }
 
-    /**
-     * @throws InvalidPasswordException
-     */
-    #[Test]
-    public function verifyPlainPasswordMismatch(): void
+    public static function passwordVerificationProvider(): array
     {
-        $password = 'Qwerty.123';
-        $passwordHash = PasswordHash::fromPlainPassword($password);
-
-        $this->assertFalse($passwordHash->verify(''));
+        return [
+            'valid password' => [self::VALID_PASSWORD, true],
+            'empty password' => ['', false],
+            'short password' => ['Psd.123', false],
+            'password with no uppercase letter' => ['pswd.123', false],
+            'password with no lowercase letter' => ['PSWD.123', false],
+            'password with no number' => ['Pas.word', false],
+        ];
     }
 }
