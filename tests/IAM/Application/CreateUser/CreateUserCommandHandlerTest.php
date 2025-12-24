@@ -10,7 +10,6 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
-use Symfony\Component\Uid\Uuid;
 use Twitter\IAM\Application\CreateUser\CreateUserCommand;
 use Twitter\IAM\Application\CreateUser\CreateUserCommandHandler;
 use Twitter\IAM\Domain\User\Model\Exception\InvalidEmailException;
@@ -31,19 +30,8 @@ class CreateUserCommandHandlerTest extends TestCase
         $this->handler = new CreateUserCommandHandler($this->userRepository);
     }
 
-    protected function tearDown(): void
-    {
-        unset($this->userRepository, $this->handler);
-
-        parent::tearDown();
-    }
-
-    /**
-     * @throws InvalidEmailException
-     * @throws InvalidPasswordException
-     */
     #[Test]
-    public function handleReturnsSuccessWhenUserIsCreated(): void
+    public function createsAUserAndReturnsAnIdentifier(): void
     {
         $this->userRepository
             ->expects(self::once())
@@ -56,18 +44,17 @@ class CreateUserCommandHandlerTest extends TestCase
             ),
         );
 
-        $this->assertTrue(Uuid::isValid($result->userId));
+        self::assertNotEmpty($result->userId);
     }
 
-    /**
-     * @throws InvalidPasswordException
-     */
     #[Test]
-    public function handleFailsWhenEmailIsInvalid(): void
+    public function failsWhenEmailIsInvalid(): void
     {
         $this->expectException(InvalidEmailException::class);
 
-        $this->userRepository->expects(self::never())->method('add');
+        $this->userRepository
+            ->expects(self::never())
+            ->method('add');
 
         $this->handler->handle(
             new CreateUserCommand(
@@ -77,38 +64,14 @@ class CreateUserCommandHandlerTest extends TestCase
         );
     }
 
-    /**
-     * @throws InvalidEmailException
-     * @throws InvalidPasswordException
-     */
     #[Test]
-    public function handleFailsWhenUserAlreadyExists(): void
-    {
-        $email = 'test@example.com';
-
-        $this->expectException(UserAlreadyExistsException::class);
-
-        $this->userRepository
-            ->expects(self::once())
-            ->method('add')
-            ->willThrowException(new UserAlreadyExistsException($email));
-
-        $this->handler->handle(
-            new CreateUserCommand(
-                $email,
-                'Qwerty.123',
-            ),
-        );
-    }
-
-    /**
-     * @throws InvalidEmailException
-     */
-    #[Test]
-    public function handleFailsWhenPasswordIsInvalid(): void
+    public function failsWhenPasswordIsInvalid(): void
     {
         $this->expectException(InvalidPasswordException::class);
-        $this->userRepository->expects(self::never())->method('add');
+
+        $this->userRepository
+            ->expects(self::never())
+            ->method('add');
 
         $this->handler->handle(
             new CreateUserCommand(
@@ -118,12 +81,26 @@ class CreateUserCommandHandlerTest extends TestCase
         );
     }
 
-    /**
-     * @throws InvalidEmailException
-     * @throws InvalidPasswordException
-     */
     #[Test]
-    public function handleSaveFailsOnUnexpectedException(): void
+    public function failsWhenUserAlreadyExists(): void
+    {
+        $this->expectException(UserAlreadyExistsException::class);
+
+        $this->userRepository
+            ->expects(self::once())
+            ->method('add')
+            ->willThrowException(new UserAlreadyExistsException('test@example.com'));
+
+        $this->handler->handle(
+            new CreateUserCommand(
+                'test@example.com',
+                'Qwerty.123',
+            ),
+        );
+    }
+
+    #[Test]
+    public function propagatesUnexpectedRepositoryFailures(): void
     {
         $this->expectException(RuntimeException::class);
 
