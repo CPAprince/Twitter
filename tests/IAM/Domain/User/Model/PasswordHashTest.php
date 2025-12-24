@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Twitter\Tests\IAM\Domain\User\Model;
 
+use Generator;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -61,15 +62,13 @@ class PasswordHashTest extends TestCase
         self::assertSame($expected, $passwordHash->verify($input));
     }
 
-    public static function passwordVerificationProvider(): array
+    public static function passwordVerificationProvider(): Generator
     {
-        return [
-            'valid password' => ['Pswd.123', true],
-            'empty password' => ['', false],
-            'short password' => ['Psd.123', false],
-            'password with no uppercase letter' => ['pswd.123', false],
-            'password with no lowercase letter' => ['PSWD.123', false],
-            'password with no number' => ['Pas.word', false],
-        ];
+        yield 'valid password' => ['Pswd.123', true];
+        yield 'empty password' => ['', false];
+        yield 'short password' => ['Psd.123', false];
+        yield 'password with no uppercase letter' => ['pswd.123', false];
+        yield 'password with no lowercase letter' => ['PSWD.123', false];
+        yield 'password with no number' => ['Pas.word', false];
     }
 }
