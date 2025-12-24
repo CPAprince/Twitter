@@ -36,8 +36,8 @@ final readonly class PasswordHash
 
     public static function fromHash(string $hash): self
     {
-        if (60 !== strlen($hash)) {
-            throw new InvalidArgumentException('Password hash length does not match');
+        if (60 !== strlen($hash) || !str_starts_with($hash, '$2y$')) {
+            throw new InvalidArgumentException('Password hash is invalid');
         }
 
         return new self($hash);
