@@ -41,7 +41,7 @@ class EmailTest extends TestCase
         $a = Email::fromString($value);
         $b = Email::fromString($value);
 
-        self::assertEquals((string) $a, (string) $b);
+        self::assertSame((string) $a, (string) $b);
     }
 
     #[Test]
@@ -50,6 +50,6 @@ class EmailTest extends TestCase
         $a = Email::fromString('a@example.com');
         $b = Email::fromString('b@example.com');
 
-        self::assertNotEquals((string) $a, (string) $b);
+        self::assertNotSame((string) $a, (string) $b);
     }
 }
