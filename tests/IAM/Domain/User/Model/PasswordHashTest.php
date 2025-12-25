@@ -54,6 +54,31 @@ class PasswordHashTest extends TestCase
     }
 
     #[Test]
+    #[DataProvider('plainPasswordValidationProvider')]
+    public function validatesPlainPasswordFormat(string $password, bool $shouldBeAccepted): void
+    {
+        if (!$shouldBeAccepted) {
+            $this->expectException(InvalidPasswordException::class);
+        }
+
+        $hash = PasswordHash::fromPlainPassword($password);
+
+        self::assertTrue(password_verify($password, (string) $hash));
+    }
+
+    public static function plainPasswordValidationProvider(): Generator
+    {
+        yield 'valid password' => ['Pswd.123', true];
+        yield 'short password' => ['Ps.1a$', false];
+        yield 'no uppercase letter' => ['pswd.123$', false];
+        yield 'no lowercase letter' => ['PSWD.123$', false];
+        yield 'no number' => ['Password.$', false];
+        yield 'no special character' => ['Password123', false];
+        yield 'valid with a different special char' => ['Abcd123!', true];
+        yield 'valid with a dash and underscore' => ['Abcd-123_', true];
+    }
+
+    #[Test]
     #[DataProvider('passwordVerificationProvider')]
     public function verifiesPlainPasswordsCorrectly(string $input, bool $expected): void
     {
