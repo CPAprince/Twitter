@@ -1,5 +1,3 @@
-# yaml-language-server: $schema=../vendor/symfony/dependency-injection/Loader/schema/services.schema.json
-
 services:
     _defaults:
         autowire: true
@@ -22,7 +20,7 @@ services:
         class: Twitter\IAM\Infrastructure\Persistence\MySQL\Repository\MySQLUserRepository
     Twitter\:
         resource: '../src/'
-    Twitter\IAM\Infrastructure\Persistence\Auth\RefreshTokenHasher:
+    Twitter\IAM\Infrastructure\Auth\RefreshTokenHasher:
         arguments:
             $secret: '%kernel.secret%'
-    Twitter\IAM\Application\Logout\RefreshTokenStoreInterface: '@Twitter\IAM\Infrastructure\Persistence\MySQL\Logout\DbalRefreshTokenStore'
+    Twitter\IAM\Application\Logout\RefreshTokenRepository: '@Twitter\IAM\Infrastructure\Persistence\MySQL\Logout\MySQLRefreshToken'
