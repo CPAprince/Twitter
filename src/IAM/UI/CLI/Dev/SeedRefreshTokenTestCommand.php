@@ -12,11 +12,14 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Uid\Uuid;
-use Twitter\IAM\Infrastructure\Persistence\Auth\RefreshTokenHasher;
-use Twitter\Shared\Infrastructure\Persistence\UuidBinaryConverter;
+use Twitter\IAM\Infrastructure\Auth\RefreshTokenHasher;
+use Twitter\Shared\Infrastructure\Persistence\Doctrine\UuidBinaryConverter;
 
+/**
+ * @deprecated Dev-only command. TODO: remove after logout flow is covered by proper fixtures/tests.
+ */
 #[AsCommand(name: 'app:seed-refresh', description: 'Seed one refresh token row for logout testing')]
-final class SeedRefreshTokenCommand extends Command
+final class SeedRefreshTokenTestCommand extends Command
 {
     public function __construct(
         private readonly Connection $connection,
@@ -34,15 +37,30 @@ final class SeedRefreshTokenCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $userId = (string) $input->getArgument('userId');
-        $refreshToken = (string) $input->getArgument('refreshToken');
+        $userId = trim((string) $input->getArgument('userId'));
+        $refreshToken = trim((string) $input->getArgument('refreshToken'));
+
+        if ('' === $userId || '' === $refreshToken) {
+            $output->writeln('ERROR: userId and refreshToken are required.');
+
+            return Command::FAILURE;
+        }
+
+        try {
+            // Validate UUID format and convert to binary(16)
+            $userIdBytes = UuidBinaryConverter::toBytes($userId);
+        } catch (\InvalidArgumentException) {
+            $output->writeln('ERROR: Invalid userId UUID.');
+
+            return Command::FAILURE;
+        }
 
         $expiresAt = (new \DateTimeImmutable())->modify('+1 day');
         $now = new \DateTimeImmutable();
 
         $this->connection->insert('refresh_tokens', [
             'id' => Uuid::v7()->toBinary(),
-            'user_id' => UuidBinaryConverter::toBytes($userId),
+            'user_id' => $userIdBytes,
             'token_hash' => $this->hasher->hash($refreshToken),
             'expires_at' => $expiresAt->format('Y-m-d H:i:s'),
             'revoked_at' => null,
@@ -51,11 +69,15 @@ final class SeedRefreshTokenCommand extends Command
             'id' => ParameterType::BINARY,
             'user_id' => ParameterType::BINARY,
             'token_hash' => ParameterType::BINARY,
+            'expires_at' => ParameterType::STRING,
+            'revoked_at' => ParameterType::NULL,
+            'created_at' => ParameterType::STRING,
         ]);
 
         $output->writeln('OK seeded refresh_tokens row.');
         $output->writeln('userId: '.$userId);
         $output->writeln('refreshToken: '.$refreshToken);
+        $output->writeln('expiresAt: '.$expiresAt->format(\DateTimeInterface::ATOM));
 
         return Command::SUCCESS;
     }
