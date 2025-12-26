@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Twitter\IAM\Domain\Auth\Exception;
 
-final class AuthTokenInvalidException extends \Exception
+final class TokenInvalidException extends \Exception
 {
     public const ERROR_CODE = 'AUTH_TOKEN_INVALID';
 
