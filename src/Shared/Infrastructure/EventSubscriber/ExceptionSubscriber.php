@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Twitter\IAM\UI\REST\EventSubscriber;
+namespace Twitter\Shared\Infrastructure\EventSubscriber;
 
 use Assert\InvalidArgumentException;
 use Assert\LazyAssertionException;

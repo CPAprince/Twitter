@@ -9,7 +9,7 @@ services:
         resource: '../src/IAM/UI/REST/Controller/*Controller.php'
         tags: [ 'controller.service_arguments' ]
     
-    Twitter\IAM\UI\REST\EventSubscriber\ExceptionSubscriber:
+    Twitter\Shared\Infrastructure\EventSubscriber\ExceptionSubscriber:
         tags: [ 'kernel.event_subscriber' ]
         arguments:
             $environment: '%kernel.environment%'
