@@ -8,7 +8,7 @@ final class ValidationErrorException extends \Exception
 {
     public const ERROR_CODE = 'VALIDATION_ERROR';
 
-    public function __construct(string $message = 'Validation error.')
+    public function __construct(string $message)
     {
         parent::__construct($message);
     }
