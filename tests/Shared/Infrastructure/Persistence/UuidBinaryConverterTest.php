@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Twitter\Tests\Shared\Infrastructure\Persistence;
 
 use PHPUnit\Framework\TestCase;
-use Twitter\Shared\Infrastructure\Persistence\UuidBinaryConverter;
+use Twitter\Shared\Infrastructure\Persistence\Doctrine\UuidBinaryConverter;
 
 final class UuidBinaryConverterTest extends TestCase
 {
