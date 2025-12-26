@@ -9,13 +9,17 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Twitter\IAM\Application\Logout\LogoutService;
-use Twitter\IAM\Domain\Auth\Exception\AuthTokenInvalidException;
+use Twitter\IAM\Application\Logout\LogoutCommand;
+use Twitter\IAM\Application\Logout\LogoutHandler;
+use Twitter\IAM\Domain\Auth\Exception\TokenInvalidException;
 
+/**
+ * @deprecated Dev-only command. TODO: remove after logout flow is covered by proper fixtures/tests.
+ */
 #[AsCommand(name: 'app:logout-test', description: 'Revoke refresh token (test)')]
 final class LogoutTestCommand extends Command
 {
-    public function __construct(private readonly LogoutService $service)
+    public function __construct(private readonly LogoutHandler $handler)
     {
         parent::__construct();
     }
@@ -29,16 +33,22 @@ final class LogoutTestCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $userId = (string) $input->getArgument('userId');
-        $refreshToken = (string) $input->getArgument('refreshToken');
+        $userId = trim((string) $input->getArgument('userId'));
+        $refreshToken = trim((string) $input->getArgument('refreshToken'));
+
+        if ('' === $userId || '' === $refreshToken) {
+            $output->writeln('ERROR: userId and refreshToken are required.');
+
+            return Command::FAILURE;
+        }
 
         try {
-            $this->service->logout($userId, $refreshToken);
+            ($this->handler)(new LogoutCommand(userId: $userId, refreshToken: $refreshToken));
             $output->writeln('OK revoked.');
 
             return Command::SUCCESS;
-        } catch (AuthTokenInvalidException $e) {
-            $output->writeln('ERROR: '.AuthTokenInvalidException::ERROR_CODE.' — '.$e->getMessage());
+        } catch (TokenInvalidException $e) {
+            $output->writeln('ERROR: '.TokenInvalidException::ERROR_CODE.' — '.$e->getMessage());
 
             return Command::FAILURE;
         }
