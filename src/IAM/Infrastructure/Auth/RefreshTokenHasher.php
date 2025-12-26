@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Twitter\IAM\Infrastructure\Persistence\Auth;
+namespace Twitter\IAM\Infrastructure\Auth;
 
-final class RefreshTokenHasher
+final readonly class RefreshTokenHasher
 {
-    public function __construct(private readonly string $secret)
+    public function __construct(private string $secret)
     {
     }
 
