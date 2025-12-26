@@ -27,7 +27,6 @@ final readonly class PasswordHash
      */
     public static function fromPlainPassword(string $plainPassword): self
     {
-        // https://regex101.com/r/oZ6r5G/1
         if (!preg_match("/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*\-_.]).{8,}$/m", $plainPassword)) {
             throw new InvalidPasswordException('Password must contain at least one uppercase letter, one lowercase letter, one digit and one special character');
         }
