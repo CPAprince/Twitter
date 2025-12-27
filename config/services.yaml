@@ -4,5 +4,19 @@ services:
     _defaults:
         autowire: true
         autoconfigure: true
-    Twitter\:
-        resource: '../src/'
+    
+    Twitter\IAM\UI\REST\Controller\:
+        resource: '../src/IAM/UI/REST/Controller/*Controller.php'
+        tags: [ 'controller.service_arguments' ]
+    
+    Twitter\Shared\Infrastructure\EventSubscriber\ExceptionSubscriber:
+        tags: [ 'kernel.event_subscriber' ]
+        arguments:
+            $environment: '%kernel.environment%'
+    
+    Twitter\IAM\Application\CreateUser\CreateUserCommandHandler:
+        arguments:
+            $userRepository: '@Twitter\IAM\Domain\User\Model\UserRepository'
+    
+    Twitter\IAM\Domain\User\Model\UserRepository:
+        class: Twitter\IAM\Infrastructure\Persistence\MySQL\Repository\MySQLUserRepository
