@@ -79,11 +79,11 @@ final class ProfileTest extends TestCase
     {
         yield 'empty value' => [''];
         yield 'less then 3 characters long' => ['Jo'];
-        yield 'more then 60 characters long' => [str_repeat('a', 61)];
+        yield 'more then 50 characters long' => [str_repeat('a', 51)];
     }
 
     public static function invalidBioProvider(): Generator
     {
-        yield 'more then 160 characters long' => [str_repeat('b', 161)];
+        yield 'more then 300 characters long' => [str_repeat('b', 301)];
     }
 }

@@ -19,8 +19,8 @@ final class Version20251227091316 extends AbstractMigration
         $this->addSql(
             <<<SQL
             CREATE TABLE profiles (
-                name VARCHAR(60) NOT NULL,
-                bio VARCHAR(160) DEFAULT NULL,
+                name VARCHAR(50) NOT NULL,
+                bio VARCHAR(300) DEFAULT NULL,
                 created_at DATETIME NOT NULL,
                 updated_at DATETIME NOT NULL,
                 user_id BINARY(16) NOT NULL,

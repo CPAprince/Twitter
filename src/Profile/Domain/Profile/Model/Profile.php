@@ -27,10 +27,10 @@ final class Profile
             ->that($name, 'name')
             ->notBlank()
             ->minLength(3)
-            ->maxLength(60)
+            ->maxLength(50)
             ->that($bio, 'bio')
             ->nullOr()
-            ->maxLength(160)
+            ->maxLength(300)
             ->verifyNow();
 
         return new self(
