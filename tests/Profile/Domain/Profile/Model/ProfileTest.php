@@ -1,9 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Twitter\Tests\Profile\Domain\Profile\Model;
 
-use Assert\InvalidArgumentException;
+use Assert\LazyAssertionException;
+use Generator;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -13,11 +17,8 @@ use Twitter\Profile\Domain\Profile\Model\Profile;
 #[CoversClass(Profile::class)]
 final class ProfileTest extends TestCase
 {
-    /**
-     * Test that a valid Profile object can be successfully created.
-     */
     #[Test]
-    public function createValidProfile(): void
+    public function createsProfileWithValidData(): void
     {
         $userId = '019b5f3f-d110-7908-9177-5df439942a8b';
         $name = 'John Doe';
@@ -32,11 +33,8 @@ final class ProfileTest extends TestCase
         $this->assertNotNull($profile->updatedAt());
     }
 
-    /**
-     * Test that a Profile object can be created without a bio.
-     */
     #[Test]
-    public function createWithoutBio(): void
+    public function createsProfileWithoutBio(): void
     {
         $userId = '019b5f3f-d110-7908-9177-5df439942a8b';
         $name = 'Jane Doe';
@@ -46,60 +44,48 @@ final class ProfileTest extends TestCase
         $this->assertSame('', $profile->bio());
     }
 
-    /**
-     * Test that creating a Profile with an invalid UUID throws an exception.
-     */
     #[Test]
-    public function createInvalidUserId(): void
+    #[DataProvider('invalidUserIdProvider')]
+    public function rejectsInvalidUserId(string $userId): void
     {
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(LazyAssertionException::class);
 
-        Profile::create('invalid-uuid', 'John Doe');
+        Profile::create($userId, 'John Doe');
     }
 
-    /**
-     * Test that creating a Profile with a blank name throws an exception.
-     */
     #[Test]
-    public function createBlankName(): void
+    #[DataProvider('invalidNameProvider')]
+    public function rejectsInvalidName(string $name): void
     {
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(LazyAssertionException::class);
 
-        Profile::create('019b5f3f-d110-7908-9177-5df439942a8b', '');
-    }
-
-    /**
-     * Test that creating a Profile with a name shorter than 3 characters throws an exception.
-     */
-    #[Test]
-    public function createShortName(): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-
-        Profile::create('019b5f3f-d110-7908-9177-5df439942a8b', 'Jo');
-    }
-
-    /**
-     * Test that creating a Profile with a name longer than 60 characters throws an exception.
-     */
-    #[Test]
-    public function createLongName(): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-
-        $name = str_repeat('a', 61);
         Profile::create('019b5f3f-d110-7908-9177-5df439942a8b', $name);
     }
 
-    /**
-     * Test that creating a Profile with a bio longer than 160 characters throws an exception.
-     */
     #[Test]
-    public function createLongBio(): void
+    #[DataProvider('invalidBioProvider')]
+    public function rejectsInvalidBio(string $bio): void
     {
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(LazyAssertionException::class);
 
-        $bio = str_repeat('b', 161);
-        Profile::create('019b5f3f-d110-7908-9177-5df439942a8b', 'John Doe', $bio);
+        Profile::create('019b5f3f-d110-7908-9177-5df439942a8b', 'Jo', $bio);
+    }
+
+    public static function invalidUserIdProvider(): Generator
+    {
+        yield 'invalid uuid' => ['invalid-uuid'];
+        yield 'empty value' => [''];
+    }
+
+    public static function invalidNameProvider(): Generator
+    {
+        yield 'empty value' => [''];
+        yield 'less then 3 characters long' => ['Jo'];
+        yield 'more then 60 characters long' => [str_repeat('a', 61)];
+    }
+
+    public static function invalidBioProvider(): Generator
+    {
+        yield 'more then 160 characters long' => [str_repeat('b', 161)];
     }
 }
