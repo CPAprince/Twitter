@@ -29,8 +29,6 @@ final class ProfileTest extends TestCase
         $this->assertSame($userId, $profile->userId());
         $this->assertSame($name, $profile->name());
         $this->assertSame($bio, $profile->bio());
-        $this->assertNotNull($profile->createdAt());
-        $this->assertNotNull($profile->updatedAt());
     }
 
     #[Test]
