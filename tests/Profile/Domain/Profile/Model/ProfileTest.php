@@ -66,7 +66,7 @@ final class ProfileTest extends TestCase
     {
         $this->expectException(LazyAssertionException::class);
 
-        Profile::create('019b5f3f-d110-7908-9177-5df439942a8b', 'Jo', $bio);
+        Profile::create('019b5f3f-d110-7908-9177-5df439942a8b', 'John Doe', $bio);
     }
 
     public static function invalidUserIdProvider(): Generator
