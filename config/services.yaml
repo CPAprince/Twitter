@@ -23,4 +23,4 @@ services:
     Twitter\IAM\Infrastructure\Auth\RefreshTokenHasher:
         arguments:
             $secret: '%kernel.secret%'
-    Twitter\IAM\Application\Logout\RefreshTokenRepository: '@Twitter\IAM\Infrastructure\Persistence\MySQL\Logout\MySQLRefreshToken'
+    Twitter\IAM\Application\Repository\RefreshTokenRepository: '@Twitter\IAM\Infrastructure\Persistence\MySQL\Repository\MySQLRefreshToken'
