@@ -4,11 +4,17 @@ declare(strict_types=1);
 
 namespace Twitter\IAM\UI\REST\Request;
 
-final class LogoutRequest
+use Twitter\IAM\Domain\Auth\Exception\ValidationErrorException;
+
+final readonly class LogoutRequest
 {
     public function __construct(
-        private readonly string $refreshToken,
-    ) {}
+        private string $refreshToken,
+    ) {
+        if ('' === trim($this->refreshToken)) {
+            throw new ValidationErrorException('refreshToken is required.');
+        }
+    }
 
     public function getRefreshToken(): string
     {
