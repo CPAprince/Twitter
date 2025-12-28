@@ -7,6 +7,11 @@ namespace Twitter\IAM\UI\REST\Request;
 final class LogoutRequest
 {
     public function __construct(
-        public readonly string $refreshToken,
+        private readonly string $refreshToken,
     ) {}
+
+    public function getRefreshToken(): string
+    {
+        return $this->refreshToken;
+    }
 }

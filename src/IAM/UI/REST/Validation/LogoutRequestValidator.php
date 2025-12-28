@@ -11,7 +11,7 @@ final class LogoutRequestValidator
 {
     public function validate(LogoutRequest $request): void
     {
-        if ('' === $request->refreshToken) {
+        if ('' === $request->getRefreshToken()) {
             throw new ValidationErrorException('refreshToken is required.');
         }
     }

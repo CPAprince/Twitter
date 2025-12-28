@@ -37,7 +37,7 @@ final readonly class RevokeRefreshTokenController
 
         ($this->logoutHandler)(new LogoutCommand(
             userId: $user->getId(),
-            refreshToken: $logoutRequest->refreshToken,
+            refreshToken: $logoutRequest->getRefreshToken(),
         ));
 
         return new Response(status: Response::HTTP_NO_CONTENT);

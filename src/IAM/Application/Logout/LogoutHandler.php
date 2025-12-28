@@ -10,6 +10,9 @@ final class LogoutHandler
 
     public function __invoke(LogoutCommand $command): void
     {
-        $this->store->revoke($command->refreshToken, $command->userId);
+        $this->store->revoke(
+            $command->getRefreshToken(),
+            $command->getUserId(),
+        );
     }
 }
