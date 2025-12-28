@@ -8,6 +8,5 @@ final class LogoutRequest
 {
     public function __construct(
         public readonly string $refreshToken,
-    ) {
-    }
+    ) {}
 }

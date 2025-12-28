@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Twitter\IAM\Domain\Auth\Exception;
 
-final class UnauthorizedException extends \Exception
+use Exception;
+
+final class UnauthorizedException extends Exception
 {
     public const ERROR_CODE = 'AUTH_UNAUTHORIZED';
 

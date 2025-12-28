@@ -22,8 +22,7 @@ final readonly class RevokeRefreshTokenController
         private LogoutHandler $logoutHandler,
         private LogoutRequestMapper $requestMapper,
         private LogoutRequestValidator $validator,
-    ) {
-    }
+    ) {}
 
     #[Route('/api/tokens', name: 'api_tokens_logout', methods: ['DELETE'])]
     public function logout(Request $request): Response

@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace Twitter\IAM\UI\CLI\Dev;
 
+use DateTimeImmutable;
+use DateTimeInterface;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\ParameterType;
+use InvalidArgumentException;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -49,14 +52,14 @@ final class SeedRefreshTokenTestCommand extends Command
         try {
             // Validate UUID format and convert to binary(16)
             $userIdBytes = UuidBinaryConverter::toBytes($userId);
-        } catch (\InvalidArgumentException) {
+        } catch (InvalidArgumentException) {
             $output->writeln('ERROR: Invalid userId UUID.');
 
             return Command::FAILURE;
         }
 
-        $expiresAt = (new \DateTimeImmutable())->modify('+1 day');
-        $now = new \DateTimeImmutable();
+        $expiresAt = (new DateTimeImmutable())->modify('+1 day');
+        $now = new DateTimeImmutable();
 
         $this->connection->insert('refresh_tokens', [
             'id' => Uuid::v7()->toBinary(),
@@ -77,7 +80,7 @@ final class SeedRefreshTokenTestCommand extends Command
         $output->writeln('OK seeded refresh_tokens row.');
         $output->writeln('userId: '.$userId);
         $output->writeln('refreshToken: '.$refreshToken);
-        $output->writeln('expiresAt: '.$expiresAt->format(\DateTimeInterface::ATOM));
+        $output->writeln('expiresAt: '.$expiresAt->format(DateTimeInterface::ATOM));
 
         return Command::SUCCESS;
     }

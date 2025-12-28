@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Twitter\IAM\UI\CLI\Maintenance;
 
+use DateTimeImmutable;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -24,7 +25,7 @@ final class CleanupRefreshTokensCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $deleted = $this->refreshTokenRepository->deleteRevokedExpired(new \DateTimeImmutable());
+        $deleted = $this->refreshTokenRepository->deleteRevokedExpired(new DateTimeImmutable());
 
         $output->writeln(sprintf('OK. Deleted %d refresh token(s).', $deleted));
 

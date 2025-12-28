@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Twitter\Tests\IAM\Infrastructure\Persistence\MySQL\Logout;
 
+use DateTimeImmutable;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\ParameterType;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -34,7 +35,7 @@ final class DeleteRevokedExpiredTest extends TestCase
     #[Test]
     public function itDeletesOnlyRevokedAndExpiredTokens(): void
     {
-        $now = new \DateTimeImmutable('2025-12-26 12:00:00');
+        $now = new DateTimeImmutable('2025-12-26 12:00:00');
 
         $this->connection
             ->expects(self::once())

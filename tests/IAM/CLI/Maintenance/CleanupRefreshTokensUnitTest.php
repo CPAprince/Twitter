@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Twitter\Tests\IAM\UI\CLI\Maintenance;
 
+use DateTimeImmutable;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
@@ -24,7 +25,7 @@ final class CleanupRefreshTokensUnitTest extends TestCase
         $repo
             ->expects(self::once())
             ->method('deleteRevokedExpired')
-            ->with(self::isInstanceOf(\DateTimeImmutable::class))
+            ->with(self::isInstanceOf(DateTimeImmutable::class))
             ->willReturn(5);
 
         $command = new CleanupRefreshTokensCommand($repo);

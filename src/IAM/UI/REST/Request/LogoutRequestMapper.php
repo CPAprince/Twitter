@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Twitter\IAM\UI\REST\Request;
 
+use JsonException;
 use Symfony\Component\HttpFoundation\Request;
 use Twitter\IAM\Domain\Auth\Exception\BadRequestException;
 
@@ -17,7 +18,7 @@ final class LogoutRequestMapper
                 associative: true,
                 flags: JSON_THROW_ON_ERROR,
             );
-        } catch (\JsonException) {
+        } catch (JsonException) {
             throw new BadRequestException('Invalid JSON.');
         }
 

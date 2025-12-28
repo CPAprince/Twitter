@@ -6,9 +6,7 @@ namespace Twitter\IAM\Infrastructure\Auth;
 
 final readonly class RefreshTokenHasher
 {
-    public function __construct(private string $secret)
-    {
-    }
+    public function __construct(private string $secret) {}
 
     public function hash(string $refreshToken): string
     {

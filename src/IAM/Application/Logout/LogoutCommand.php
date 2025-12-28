@@ -9,6 +9,5 @@ final readonly class LogoutCommand
     public function __construct(
         public string $userId,
         public string $refreshToken,
-    ) {
-    }
+    ) {}
 }

@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
+use Throwable;
 use Twitter\IAM\Domain\Auth\Exception\BadRequestException;
 use Twitter\IAM\Domain\Auth\Exception\TokenInvalidException;
 use Twitter\IAM\Domain\Auth\Exception\UnauthorizedException;
@@ -52,8 +53,7 @@ final readonly class ExceptionSubscriber implements EventSubscriberInterface
     public function __construct(
         private LoggerInterface $logger,
         private string $environment = 'prod',
-    ) {
-    }
+    ) {}
 
     public static function getSubscribedEvents(): array
     {
@@ -80,7 +80,7 @@ final readonly class ExceptionSubscriber implements EventSubscriberInterface
         $event->setResponse($this->createErrorResponse($throwable));
     }
 
-    private function logException(\Throwable $throwable): void
+    private function logException(Throwable $throwable): void
     {
         $context = [
             'exception' => $throwable::class,
@@ -94,7 +94,7 @@ final readonly class ExceptionSubscriber implements EventSubscriberInterface
         $this->logger->error('Exception caught', $context);
     }
 
-    private function createErrorResponse(\Throwable $throwable): JsonResponse
+    private function createErrorResponse(Throwable $throwable): JsonResponse
     {
         $class = $throwable::class;
 

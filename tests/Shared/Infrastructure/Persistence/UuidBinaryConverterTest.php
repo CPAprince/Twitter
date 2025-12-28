@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Twitter\Tests\Shared\Infrastructure\Persistence;
 
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use Twitter\Shared\Infrastructure\Persistence\Doctrine\UuidBinaryConverter;
 
@@ -23,7 +24,7 @@ final class UuidBinaryConverterTest extends TestCase
 
     public function testToBytesThrowsOnInvalidUuid(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
 
         UuidBinaryConverter::toBytes('not-a-uuid');
     }

@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Twitter\IAM\Domain\Auth\Exception;
 
-final class ValidationErrorException extends \Exception
+use Exception;
+
+final class ValidationErrorException extends Exception
 {
     public const ERROR_CODE = 'VALIDATION_ERROR';
 

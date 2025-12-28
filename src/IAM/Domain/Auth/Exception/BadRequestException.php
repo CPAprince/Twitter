@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Twitter\IAM\Domain\Auth\Exception;
 
-final class BadRequestException extends \RuntimeException
+use RuntimeException;
+
+final class BadRequestException extends RuntimeException
 {
     public const ERROR_CODE = 'BAD_REQUEST';
 
