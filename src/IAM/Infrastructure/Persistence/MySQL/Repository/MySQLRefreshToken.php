@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Twitter\IAM\Infrastructure\Persistence\MySQL\Logout;
+namespace Twitter\IAM\Infrastructure\Persistence\MySQL\Repository;
 
 use DateTimeImmutable;
 use Doctrine\DBAL\Connection;

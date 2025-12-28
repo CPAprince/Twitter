@@ -12,7 +12,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Twitter\IAM\Domain\Auth\Exception\TokenInvalidException;
 use Twitter\IAM\Infrastructure\Auth\RefreshTokenHasher;
-use Twitter\IAM\Infrastructure\Persistence\MySQL\Logout\MySQLRefreshToken;
+use Twitter\IAM\Infrastructure\Persistence\MySQL\Repository\MySQLRefreshToken;
 
 #[Group('unit')]
 #[CoversClass(MySQLRefreshToken::class)]
