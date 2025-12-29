@@ -12,7 +12,7 @@ use Twitter\IAM\Domain\Auth\Exception\TokenInvalidException;
 use Twitter\IAM\Infrastructure\Auth\RefreshTokenHasher;
 use Twitter\Shared\Infrastructure\Persistence\Doctrine\UuidBinaryConverter;
 
-final class MySQLRefreshToken implements RefreshTokenRepository
+final class MySQLRefreshTokenRepository implements RefreshTokenRepository
 {
     public function __construct(
         private readonly Connection $connection,

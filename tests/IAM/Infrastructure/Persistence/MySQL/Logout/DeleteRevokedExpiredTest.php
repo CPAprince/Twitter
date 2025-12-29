@@ -13,14 +13,14 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Twitter\IAM\Infrastructure\Auth\RefreshTokenHasher;
-use Twitter\IAM\Infrastructure\Persistence\MySQL\Repository\MySQLRefreshToken;
+use Twitter\IAM\Infrastructure\Persistence\MySQL\Repository\MySQLRefreshTokenRepository;
 
 #[Group('unit')]
-#[CoversClass(MySQLRefreshToken::class)]
+#[CoversClass(MySQLRefreshTokenRepository::class)]
 final class DeleteRevokedExpiredTest extends TestCase
 {
     private Connection&MockObject $connection;
-    private MySQLRefreshToken $store;
+    private MySQLRefreshTokenRepository $store;
 
     private const string SECRET = 'test_secret';
 
@@ -29,7 +29,7 @@ final class DeleteRevokedExpiredTest extends TestCase
         $this->connection = $this->createMock(Connection::class);
 
         $hasher = new RefreshTokenHasher(self::SECRET);
-        $this->store = new MySQLRefreshToken($this->connection, $hasher);
+        $this->store = new MySQLRefreshTokenRepository($this->connection, $hasher);
     }
 
     #[Test]

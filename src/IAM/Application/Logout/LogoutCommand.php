@@ -16,7 +16,7 @@ final readonly class LogoutCommand
         return $this->userId;
     }
 
-    public function getRefreshToken(): string
+    public function refreshToken(): string
     {
         return $this->refreshToken;
     }
