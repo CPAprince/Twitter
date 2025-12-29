@@ -17,6 +17,8 @@ use Throwable;
 use Twitter\IAM\Domain\User\Exception\InvalidEmailException;
 use Twitter\IAM\Domain\User\Exception\InvalidPasswordException;
 use Twitter\IAM\Domain\User\Exception\UserAlreadyExistsException;
+use Twitter\Profile\Domain\Profile\Exception\ProfileAlreadyExistsException;
+use Twitter\Profile\Domain\Profile\Exception\UserNotFoundException;
 
 final readonly class ExceptionSubscriber implements EventSubscriberInterface
 {
@@ -34,6 +36,16 @@ final readonly class ExceptionSubscriber implements EventSubscriberInterface
         UserAlreadyExistsException::class => [
             'code' => 'USER_ALREADY_EXISTS',
             'message' => 'A user with this email already exists',
+            'status' => Response::HTTP_CONFLICT,
+        ],
+        UserNotFoundException::class => [
+            'code' => 'USER_NOT_FOUND',
+            'message' => 'The user with this ID was not found',
+            'status' => Response::HTTP_NOT_FOUND,
+        ],
+        ProfileAlreadyExistsException::class => [
+            'code' => 'PROFILE_ALREADY_EXISTS',
+            'message' => 'A profile with this user already exists',
             'status' => Response::HTTP_CONFLICT,
         ],
     ];

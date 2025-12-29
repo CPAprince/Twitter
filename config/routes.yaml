@@ -10,3 +10,7 @@ api_create_user:
 iam_module:
     resource: ../src/IAM/UI/REST/Controller/
     type: attribute
+    
+api_create_profile:
+    resource: ../src/Profile/UI/REST/Controller/CreateProfile/CreateProfileController.php
+    type: attribute

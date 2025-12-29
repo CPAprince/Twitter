@@ -17,6 +17,11 @@ doctrine:
                 dir: '%kernel.project_dir%/src/IAM/Infrastructure/Persistence/Doctrine/Mapping'
                 prefix: Twitter\IAM\Domain
                 is_bundle: false
+            Profile:
+                type: xml
+                dir: '%kernel.project_dir%/src/Profile/Infrastructure/Persistence/Doctrine/Mapping'
+                prefix: Twitter\Profile\Domain
+                is_bundle: false
 when@test:
     doctrine:
         dbal:
