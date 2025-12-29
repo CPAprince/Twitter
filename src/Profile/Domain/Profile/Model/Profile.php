@@ -19,18 +19,10 @@ final class Profile
 
     public static function create(string $userId, string $name, ?string $bio = null): self
     {
-        Assert::lazy()
-            ->tryAll()
-            ->that($userId, 'userId')
-            ->notBlank()
-            ->uuid()
-            ->that($name, 'name')
-            ->notBlank()
-            ->minLength(3)
-            ->maxLength(50)
-            ->that($bio, 'bio')
-            ->nullOr()
-            ->maxLength(300)
+        Assert::lazy()->tryAll()
+            ->that($userId, 'userId')->notBlank()->uuid()
+            ->that($name, 'name')->notBlank()->minLength(3)->maxLength(50)
+            ->that($bio, 'bio')->nullOr()->maxLength(300)
             ->verifyNow();
 
         return new self(
