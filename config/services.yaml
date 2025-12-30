@@ -10,6 +10,9 @@ services:
         arguments:
             $environment: '%kernel.environment%'
     
+    Twitter\Shared\Infrastructure\EventSubscriber\DoctrineResetSubscriber:
+        tags: [ 'kernel.event_subscriber' ]
+    
     Twitter\IAM\UI\REST\Controller\:
         resource: '../src/IAM/UI/REST/Controller/*Controller.php'
         tags: [ 'controller.service_arguments' ]
@@ -17,20 +20,17 @@ services:
     Twitter\IAM\Application\CreateUser\CreateUserCommandHandler:
         arguments:
             $userRepository: '@Twitter\IAM\Domain\User\Model\UserRepository'
-    
+
     Twitter\IAM\Domain\User\Model\UserRepository:
         class: Twitter\IAM\Infrastructure\Persistence\MySQL\Repository\MySQLUserRepository
 
     Twitter\Profile\UI\REST\Controller\:
         resource: '../src/Profile/UI/REST/Controller/*/*Controller.php'
         tags: [ 'controller.service_arguments' ]
-        
+
     Twitter\Profile\Application\UseCase\CreateProfile\CreateProfileCommandHandler:
         arguments:
             $profileRepository: '@Twitter\Profile\Domain\Profile\Model\ProfileRepository'
 
     Twitter\Profile\Domain\Profile\Model\ProfileRepository:
         class: Twitter\Profile\Infrastructure\Persistence\MySQL\Repository\MySQLProfileRepository
-
-    Twitter\Shared\Infrastructure\EventSubscriber\DoctrineResetSubscriber:
-        tags: [ 'kernel.event_subscriber' ]
