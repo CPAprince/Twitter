@@ -12,9 +12,7 @@ use Twitter\IAM\Domain\User\Model\UserRepository;
 
 final readonly class MySQLUserRepository implements UserRepository
 {
-    public function __construct(
-        private EntityManagerInterface $entityManager,
-    ) {}
+    public function __construct(private EntityManagerInterface $entityManager) {}
 
     /**
      * @throws UserAlreadyExistsException
