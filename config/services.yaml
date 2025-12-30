@@ -31,3 +31,6 @@ services:
 
     Twitter\Profile\Domain\Profile\Model\ProfileRepository:
         class: Twitter\Profile\Infrastructure\Persistence\MySQL\Repository\MySQLProfileRepository
+
+    Twitter\Shared\Infrastructure\EventSubscriber\DoctrineResetSubscriber:
+        tags: [ 'kernel.event_subscriber' ]
