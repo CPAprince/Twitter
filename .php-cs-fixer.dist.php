@@ -19,6 +19,7 @@ $finder = new Finder()
     ->ignoreVCS(true);
 
 return new Config()
+    ->setRiskyAllowed(true)
     ->setUsingCache(true)
     ->setCacheFile(__DIR__.'/.phpunit.result.cache')
     ->setRules([

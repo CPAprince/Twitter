@@ -7,6 +7,9 @@ health_check_module:
 api_create_user:
     resource: ../src/IAM/UI/REST/Controller/CreateUserController.php
     type: attribute
+iam_module:
+    resource: ../src/IAM/UI/REST/Controller/
+    type: attribute
     
 api_create_profile:
     resource: ../src/Profile/UI/REST/Controller/CreateProfile/CreateProfileController.php

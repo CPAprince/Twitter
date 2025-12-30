@@ -6,6 +6,7 @@ use Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle;
 use Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle;
 use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
 use Symfony\Bundle\MonologBundle\MonologBundle;
+use Symfony\Bundle\SecurityBundle\SecurityBundle;
 
 return [
     FrameworkBundle::class => ['all' => true],
@@ -13,4 +14,5 @@ return [
     DoctrineMigrationsBundle::class => ['all' => true],
     DoctrineFixturesBundle::class => ['dev' => true, 'test' => true],
     MonologBundle::class => ['all' => true],
+    SecurityBundle::class => ['all' => true],
 ];
