@@ -21,6 +21,10 @@ final readonly class CreateTweetController
         $command = new CreateTweetCommand($request->userId(), $request->content());
         $result = $this->handler->handle($command);
 
-        return new JsonResponse(['tweetId' => $result->tweetId], Response::HTTP_CREATED);
+        return new JsonResponse([
+            'tweetId' => $result->tweetId,
+            'createdAt' => $result->createdAt->format(DATE_RFC3339),
+            'updatedAt' => $result->updatedAt->format(DATE_RFC3339),
+        ], Response::HTTP_CREATED);
     }
 }

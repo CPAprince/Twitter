@@ -16,6 +16,10 @@ final readonly class CreateTweetCommandHandler
         $tweet = Tweet::create($command->userId, $command->content);
         $this->tweetRepository->add($tweet);
 
-        return new CreateTweetCommandResult($tweet->id());
+        return new CreateTweetCommandResult(
+            $tweet->id(),
+            $tweet->createdAt(),
+            $tweet->updatedAt(),
+        );
     }
 }
