@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Twitter\Tweet\Domain\Tweet\Model;
 
+use Assert\Assert;
 use DateTimeImmutable;
+use Symfony\Component\Uid\Uuid;
 
 final class Tweet
 {
@@ -15,6 +17,20 @@ final class Tweet
         private readonly DateTimeImmutable $createdAt = new DateTimeImmutable(),
         private DateTimeImmutable $updatedAt = new DateTimeImmutable(),
     ) {}
+
+    public static function create(string $userId, string $content): self
+    {
+        Assert::lazy()->tryAll()
+            ->that($userId, 'userId')->notBlank()->uuid()
+            ->that($content, 'content')->notBlank()->maxLength(280)
+            ->verifyNow();
+
+        return new self(
+            Uuid::v7()->toRfc4122(),
+            $userId,
+            $content,
+        );
+    }
 
     public function id(): string
     {
