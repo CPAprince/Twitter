@@ -8,15 +8,19 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Attribute\Route;
-use Twitter\Tweet\Domain\Tweet\Model\Tweet;
+use Twitter\Tweet\Application\UseCase\CreateTweet\CreateTweetCommand;
+use Twitter\Tweet\Application\UseCase\CreateTweet\CreateTweetCommandHandler;
 
 #[Route('/api/tweets', name: 'api_create_tweet', methods: ['POST'])]
 final readonly class CreateTweetController
 {
+    public function __construct(private CreateTweetCommandHandler $handler) {}
+
     public function __invoke(#[MapRequestPayload] CreateTweetRequest $request): JsonResponse
     {
-        return new JsonResponse([
-            'tweetId' => Tweet::create($request->userId(), $request->content())->id(),
-        ], Response::HTTP_CREATED);
+        $command = new CreateTweetCommand($request->userId(), $request->content());
+        $result = $this->handler->handle($command);
+
+        return new JsonResponse(['tweetId' => $result->tweetId], Response::HTTP_CREATED);
     }
 }
