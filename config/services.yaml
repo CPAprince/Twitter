@@ -29,11 +29,11 @@ services:
         arguments:
             $secret: '%env(APP_SECRET)%'
 
-    Twitter\IAM\Application\Logout\RefreshTokenRepository:
-        class: Twitter\IAM\Infrastructure\Persistence\MySQL\Repository\MySQLRefreshTokenRepository
-
     Twitter\IAM\Domain\User\Model\UserRepository:
         class: Twitter\IAM\Infrastructure\Persistence\MySQL\Repository\MySQLUserRepository
+    
+    Twitter\IAM\Application\Logout\RefreshTokenRepository:
+        class: Twitter\IAM\Infrastructure\Persistence\MySQL\Repository\MySQLRefreshTokenRepository
 
     Twitter\Profile\UI\REST\Controller\:
         resource: '../src/Profile/UI/REST/Controller/*/*Controller.php'
