@@ -17,6 +17,8 @@ final class HealthCheckController
         return new JsonResponse([
             'status' => 'ok',
             'checkedAt' => new DateTimeImmutable()->format(DateTimeInterface::RFC3339),
+            'RANDOM' => rand(1000000000, 9999999999),
+            'UUIDrandom' => 'RAND: '.uuid_create(),
         ]);
     }
 }

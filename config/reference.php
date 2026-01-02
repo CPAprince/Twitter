@@ -1096,7 +1096,7 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *             password_attribute?: scalar|null|Param, // Default: null
  *         },
  *         lexik_jwt?: array{
- *             class?: scalar|null, // Default: "Lexik\\Bundle\\JWTAuthenticationBundle\\Security\\User\\JWTUser"
+ *             class?: scalar|null|Param, // Default: "Lexik\\Bundle\\JWTAuthenticationBundle\\Security\\User\\JWTUser"
  *         },
  *     }>,
  *     firewalls: array<string, array{ // Default: []
@@ -1157,8 +1157,8 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *             user?: scalar|null|Param, // Default: "REMOTE_USER"
  *         },
  *         jwt?: array{
- *             provider?: scalar|null, // Default: null
- *             authenticator?: scalar|null, // Default: "lexik_jwt_authentication.security.jwt_authenticator"
+ *             provider?: scalar|null|Param, // Default: null
+ *             authenticator?: scalar|null|Param, // Default: "lexik_jwt_authentication.security.jwt_authenticator"
  *         },
  *         login_link?: array{
  *             check_route: scalar|null|Param, // Route that will validate the login link - e.g. "app_login_link_verify".
@@ -1360,88 +1360,88 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *     role_hierarchy?: array<string, string|list<scalar|null|Param>>,
  * }
  * @psalm-type LexikJwtAuthenticationConfig = array{
- *     public_key?: scalar|null, // The key used to sign tokens (useless for HMAC). If not set, the key will be automatically computed from the secret key. // Default: null
- *     additional_public_keys?: list<scalar|null>,
- *     secret_key?: scalar|null, // The key used to sign tokens. It can be a raw secret (for HMAC), a raw RSA/ECDSA key or the path to a file itself being plaintext or PEM. // Default: null
- *     pass_phrase?: scalar|null, // The key passphrase (useless for HMAC) // Default: ""
- *     token_ttl?: scalar|null, // Default: 3600
- *     allow_no_expiration?: bool, // Allow tokens without "exp" claim (i.e. indefinitely valid, no lifetime) to be considered valid. Caution: usage of this should be rare. // Default: false
- *     clock_skew?: scalar|null, // Default: 0
+ *     public_key?: scalar|null|Param, // The key used to sign tokens (useless for HMAC). If not set, the key will be automatically computed from the secret key. // Default: null
+ *     additional_public_keys?: list<scalar|null|Param>,
+ *     secret_key?: scalar|null|Param, // The key used to sign tokens. It can be a raw secret (for HMAC), a raw RSA/ECDSA key or the path to a file itself being plaintext or PEM. // Default: null
+ *     pass_phrase?: scalar|null|Param, // The key passphrase (useless for HMAC) // Default: ""
+ *     token_ttl?: scalar|null|Param, // Default: 3600
+ *     allow_no_expiration?: bool|Param, // Allow tokens without "exp" claim (i.e. indefinitely valid, no lifetime) to be considered valid. Caution: usage of this should be rare. // Default: false
+ *     clock_skew?: scalar|null|Param, // Default: 0
  *     encoder?: array{
- *         service?: scalar|null, // Default: "lexik_jwt_authentication.encoder.lcobucci"
- *         signature_algorithm?: scalar|null, // Default: "RS256"
+ *         service?: scalar|null|Param, // Default: "lexik_jwt_authentication.encoder.lcobucci"
+ *         signature_algorithm?: scalar|null|Param, // Default: "RS256"
  *     },
- *     user_id_claim?: scalar|null, // Default: "username"
+ *     user_id_claim?: scalar|null|Param, // Default: "username"
  *     token_extractors?: array{
  *         authorization_header?: bool|array{
- *             enabled?: bool, // Default: true
- *             prefix?: scalar|null, // Default: "Bearer"
- *             name?: scalar|null, // Default: "Authorization"
+ *             enabled?: bool|Param, // Default: true
+ *             prefix?: scalar|null|Param, // Default: "Bearer"
+ *             name?: scalar|null|Param, // Default: "Authorization"
  *         },
  *         cookie?: bool|array{
- *             enabled?: bool, // Default: false
- *             name?: scalar|null, // Default: "BEARER"
+ *             enabled?: bool|Param, // Default: false
+ *             name?: scalar|null|Param, // Default: "BEARER"
  *         },
  *         query_parameter?: bool|array{
- *             enabled?: bool, // Default: false
- *             name?: scalar|null, // Default: "bearer"
+ *             enabled?: bool|Param, // Default: false
+ *             name?: scalar|null|Param, // Default: "bearer"
  *         },
  *         split_cookie?: bool|array{
- *             enabled?: bool, // Default: false
- *             cookies?: list<scalar|null>,
+ *             enabled?: bool|Param, // Default: false
+ *             cookies?: list<scalar|null|Param>,
  *         },
  *     },
- *     remove_token_from_body_when_cookies_used?: scalar|null, // Default: true
+ *     remove_token_from_body_when_cookies_used?: scalar|null|Param, // Default: true
  *     set_cookies?: array<string, array{ // Default: []
- *         lifetime?: scalar|null, // The cookie lifetime. If null, the "token_ttl" option value will be used // Default: null
- *         samesite?: "none"|"lax"|"strict", // Default: "lax"
- *         path?: scalar|null, // Default: "/"
- *         domain?: scalar|null, // Default: null
- *         secure?: scalar|null, // Default: true
- *         httpOnly?: scalar|null, // Default: true
- *         partitioned?: scalar|null, // Default: false
- *         split?: list<scalar|null>,
+ *         lifetime?: scalar|null|Param, // The cookie lifetime. If null, the "token_ttl" option value will be used // Default: null
+ *         samesite?: "none"|"lax"|"strict"|Param, // Default: "lax"
+ *         path?: scalar|null|Param, // Default: "/"
+ *         domain?: scalar|null|Param, // Default: null
+ *         secure?: scalar|null|Param, // Default: true
+ *         httpOnly?: scalar|null|Param, // Default: true
+ *         partitioned?: scalar|null|Param, // Default: false
+ *         split?: list<scalar|null|Param>,
  *     }>,
  *     api_platform?: bool|array{ // API Platform compatibility: add check_path in OpenAPI documentation.
- *         enabled?: bool, // Default: false
- *         check_path?: scalar|null, // The login check path to add in OpenAPI. // Default: null
- *         username_path?: scalar|null, // The path to the username in the JSON body. // Default: null
- *         password_path?: scalar|null, // The path to the password in the JSON body. // Default: null
+ *         enabled?: bool|Param, // Default: false
+ *         check_path?: scalar|null|Param, // The login check path to add in OpenAPI. // Default: null
+ *         username_path?: scalar|null|Param, // The path to the username in the JSON body. // Default: null
+ *         password_path?: scalar|null|Param, // The path to the password in the JSON body. // Default: null
  *     },
  *     access_token_issuance?: bool|array{
- *         enabled?: bool, // Default: false
+ *         enabled?: bool|Param, // Default: false
  *         signature?: array{
- *             algorithm: scalar|null, // The algorithm use to sign the access tokens.
- *             key: scalar|null, // The signature key. It shall be JWK encoded.
+ *             algorithm: scalar|null|Param, // The algorithm use to sign the access tokens.
+ *             key: scalar|null|Param, // The signature key. It shall be JWK encoded.
  *         },
  *         encryption?: bool|array{
- *             enabled?: bool, // Default: false
- *             key_encryption_algorithm: scalar|null, // The key encryption algorithm is used to encrypt the token.
- *             content_encryption_algorithm: scalar|null, // The key encryption algorithm is used to encrypt the token.
- *             key: scalar|null, // The encryption key. It shall be JWK encoded.
+ *             enabled?: bool|Param, // Default: false
+ *             key_encryption_algorithm: scalar|null|Param, // The key encryption algorithm is used to encrypt the token.
+ *             content_encryption_algorithm: scalar|null|Param, // The key encryption algorithm is used to encrypt the token.
+ *             key: scalar|null|Param, // The encryption key. It shall be JWK encoded.
  *         },
  *     },
  *     access_token_verification?: bool|array{
- *         enabled?: bool, // Default: false
+ *         enabled?: bool|Param, // Default: false
  *         signature?: array{
- *             header_checkers?: list<scalar|null>,
- *             claim_checkers?: list<scalar|null>,
- *             mandatory_claims?: list<scalar|null>,
- *             allowed_algorithms?: list<scalar|null>,
- *             keyset: scalar|null, // The signature keyset. It shall be JWKSet encoded.
+ *             header_checkers?: list<scalar|null|Param>,
+ *             claim_checkers?: list<scalar|null|Param>,
+ *             mandatory_claims?: list<scalar|null|Param>,
+ *             allowed_algorithms?: list<scalar|null|Param>,
+ *             keyset: scalar|null|Param, // The signature keyset. It shall be JWKSet encoded.
  *         },
  *         encryption?: bool|array{
- *             enabled?: bool, // Default: false
- *             continue_on_decryption_failure?: bool, // If enable, non-encrypted tokens or tokens that failed during decryption or verification processes are accepted. // Default: false
- *             header_checkers?: list<scalar|null>,
- *             allowed_key_encryption_algorithms?: list<scalar|null>,
- *             allowed_content_encryption_algorithms?: list<scalar|null>,
- *             keyset: scalar|null, // The encryption keyset. It shall be JWKSet encoded.
+ *             enabled?: bool|Param, // Default: false
+ *             continue_on_decryption_failure?: bool|Param, // If enable, non-encrypted tokens or tokens that failed during decryption or verification processes are accepted. // Default: false
+ *             header_checkers?: list<scalar|null|Param>,
+ *             allowed_key_encryption_algorithms?: list<scalar|null|Param>,
+ *             allowed_content_encryption_algorithms?: list<scalar|null|Param>,
+ *             keyset: scalar|null|Param, // The encryption keyset. It shall be JWKSet encoded.
  *         },
  *     },
  *     blocklist_token?: bool|array{
- *         enabled?: bool, // Default: false
- *         cache?: scalar|null, // Storage to track blocked tokens // Default: "cache.app"
+ *         enabled?: bool|Param, // Default: false
+ *         cache?: scalar|null|Param, // Storage to track blocked tokens // Default: "cache.app"
  *     },
  * }
  * @psalm-type ConfigType = array{
