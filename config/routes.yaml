@@ -11,3 +11,6 @@ api_create_user:
 api_create_profile:
     resource: ../src/Profile/UI/REST/Controller/CreateProfile/CreateProfileController.php
     type: attribute
+
+api_login_check:
+    path: /api/token
