@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace Twitter\Tweet\UI\REST\CreateTweet;
 
-use Assert\Assert;
+use Assert\Assertion;
+use Assert\AssertionFailedException;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,10 +23,13 @@ final readonly class CreateTweetController
         private CreateTweetCommandHandler $handler,
     ) {}
 
+    /**
+     * @throws AssertionFailedException
+     */
     public function __invoke(#[MapRequestPayload] CreateTweetRequest $request): JsonResponse
     {
         $authUser = $this->security->getUser();
-        Assert::that($request->userId())->same($authUser->getUserIdentifier());
+        Assertion::same($request->userId(), $authUser->getUserIdentifier());
 
         $command = new CreateTweetCommand($request->userId(), $request->content());
         $result = $this->handler->handle($command);
