@@ -31,6 +31,7 @@ services:
 
     Twitter\IAM\Domain\User\Model\UserRepository:
         class: Twitter\IAM\Infrastructure\Persistence\MySQL\Repository\MySQLUserRepository
+        tags: [ 'doctrine.repository_service' ]
     
     Twitter\IAM\Application\Logout\RefreshTokenRepository:
         class: Twitter\IAM\Infrastructure\Persistence\MySQL\Repository\MySQLRefreshTokenRepository
