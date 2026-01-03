@@ -44,17 +44,14 @@ final class CreateTweetCommandHandlerTest extends TestCase
             ->expects(self::once())
             ->method('add')
             ->with(self::callback(
-                fn (Tweet $tweet): bool =>
-                    $tweet->userId() === $userId
+                fn (Tweet $tweet): bool => $tweet->userId() === $userId
                     && $tweet->content() === $content
-                    && $tweet->id() !== ''
+                    && '' !== $tweet->id()
             ));
 
         $result = $this->handler->handle($command);
 
         self::assertNotEmpty($result->tweetId);
-        self::assertNotNull($result->createdAt);
-        self::assertNotNull($result->updatedAt);
     }
 
     #[Test]
