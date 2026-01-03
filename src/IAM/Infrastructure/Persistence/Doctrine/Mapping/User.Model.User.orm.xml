@@ -8,6 +8,7 @@
 <!--            repository-class="Twitter\IAM\Domain\User\Model\UserRepository"-->
 <!--            table="users">-->
     <entity name="Twitter\IAM\Domain\User\Model\User"
+            repository-class="Twitter\IAM\Domain\User\Model\UserRepository"
             table="users">
 
         <id name="id" column="id" type="uuid">
