@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Twitter\Shared\Infrastructure\EventSubscriber;
 
+use Assert\AssertionFailedException;
 use Assert\InvalidArgumentException;
 use Assert\LazyAssertionException;
 use Psr\Log\LoggerInterface;
@@ -22,7 +23,8 @@ use Twitter\IAM\Domain\User\Exception\InvalidEmailException;
 use Twitter\IAM\Domain\User\Exception\InvalidPasswordException;
 use Twitter\IAM\Domain\User\Exception\UserAlreadyExistsException;
 use Twitter\Profile\Domain\Profile\Exception\ProfileAlreadyExistsException;
-use Twitter\Profile\Domain\Profile\Exception\UserNotFoundException;
+use Twitter\Profile\Domain\Profile\Exception\UserNotFoundException as ProfileUserNotFoundExceptionAlias;
+use Twitter\Tweet\Domain\Tweet\Exception\UserNotFoundException as TweetUserNotFoundExceptionAlias;
 
 final readonly class ExceptionSubscriber implements EventSubscriberInterface
 {
@@ -63,7 +65,12 @@ final readonly class ExceptionSubscriber implements EventSubscriberInterface
             'message' => 'A user with this email already exists',
             'status' => Response::HTTP_CONFLICT,
         ],
-        UserNotFoundException::class => [
+        ProfileUserNotFoundExceptionAlias::class => [
+            'code' => 'USER_NOT_FOUND',
+            'message' => 'The user with this ID was not found',
+            'status' => Response::HTTP_NOT_FOUND,
+        ],
+        TweetUserNotFoundExceptionAlias::class => [
             'code' => 'USER_NOT_FOUND',
             'message' => 'The user with this ID was not found',
             'status' => Response::HTTP_NOT_FOUND,
@@ -147,14 +154,20 @@ final readonly class ExceptionSubscriber implements EventSubscriberInterface
 
     private function validationErrorResponse(Throwable $throwable): ?JsonResponse
     {
-        if (!$throwable instanceof LazyAssertionException) {
-            return null;
+        if ($throwable instanceof LazyAssertionException) {
+            return new JsonResponse([
+                'errors' => $this->mapLazyAssertionErrors($throwable),
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        } elseif ($throwable instanceof AssertionFailedException) {
+            return new JsonResponse([
+                'error' => [
+                    'message' => $throwable->getMessage(),
+                    'field' => $throwable->getPropertyPath(),
+                ],
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        return new JsonResponse(
-            ['errors' => $this->mapLazyAssertionErrors($throwable)],
-            Response::HTTP_UNPROCESSABLE_ENTITY
-        );
+        return null;
     }
 
     private function mapLazyAssertionErrors(LazyAssertionException $exception): array
