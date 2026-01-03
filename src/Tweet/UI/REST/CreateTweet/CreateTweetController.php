@@ -7,13 +7,14 @@ namespace Twitter\Tweet\UI\REST\CreateTweet;
 use Assert\Assert;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Attribute\Route;
 use Twitter\Tweet\Application\UseCase\CreateTweet\CreateTweetCommand;
 use Twitter\Tweet\Application\UseCase\CreateTweet\CreateTweetCommandHandler;
 
-#[Route('/api/tweets', name: 'api_create_tweet', methods: ['POST'])]
+#[Route('/api/tweets', name: 'api_create_tweet', methods: [Request::METHOD_POST])]
 final readonly class CreateTweetController
 {
     public function __construct(
