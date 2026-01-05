@@ -154,30 +154,34 @@ final readonly class ExceptionSubscriber implements EventSubscriberInterface
 
     private function validationErrorResponse(Throwable $throwable): ?JsonResponse
     {
-        if ($throwable instanceof LazyAssertionException) {
-            return new JsonResponse([
-                'errors' => $this->mapLazyAssertionErrors($throwable),
-            ], Response::HTTP_UNPROCESSABLE_ENTITY);
-        } elseif ($throwable instanceof AssertionFailedException) {
-            return new JsonResponse([
-                'error' => [
-                    'message' => $throwable->getMessage(),
-                    'field' => $throwable->getPropertyPath(),
-                ],
-            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        if (!$throwable instanceof AssertionFailedException) {
+            return null;
         }
 
-        return null;
+        return new JsonResponse([
+            'errors' => $this->mapValidationErrors($throwable),
+        ], Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
-    private function mapLazyAssertionErrors(LazyAssertionException $exception): array
+    private function mapValidationErrors(Throwable $throwable): array
     {
-        return array_map(
-            static fn (InvalidArgumentException $error): array => [
-                'field' => $error->getPropertyPath(),
-                'message' => $error->getMessage(),
-            ],
-            $exception->getErrorExceptions()
-        );
+        if ($throwable instanceof LazyAssertionException) {
+            return array_map(
+                static fn (InvalidArgumentException $error): array => [
+                    'field' => $error->getPropertyPath(),
+                    'message' => $error->getMessage(),
+                ],
+                $throwable->getErrorExceptions()
+            );
+        }
+
+        if ($throwable instanceof AssertionFailedException) {
+            return [
+                'field' => $throwable->getPropertyPath(),
+                'message' => $throwable->getMessage(),
+            ];
+        }
+
+        return [];
     }
 }
