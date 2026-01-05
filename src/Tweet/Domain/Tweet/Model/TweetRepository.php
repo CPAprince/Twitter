@@ -10,7 +10,7 @@ interface TweetRepository
 {
     public function add(Tweet $tweet): void;
 
-    public function save(Tweet $tweet): void;
+    public function flush(): void;
 
     /**
      * @throws TweetNotFoundException

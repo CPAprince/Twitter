@@ -25,7 +25,7 @@ final readonly class UpdateTweetCommandHandler
         }
 
         $tweet->updateContent($command->content);
-        $this->tweetRepository->save($tweet);
+        $this->tweetRepository->flush();
 
         return new UpdateTweetCommandResult($tweet->content(), $tweet->updatedAt());
     }

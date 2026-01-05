@@ -30,7 +30,7 @@ final readonly class MySQLTweetRepository implements TweetRepository
         }
     }
 
-    public function save(Tweet $tweet): void
+    public function flush(): void
     {
         $this->entityManager->flush();
     }
