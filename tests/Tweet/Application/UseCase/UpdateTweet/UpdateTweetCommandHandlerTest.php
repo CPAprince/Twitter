@@ -8,6 +8,7 @@ use DateTimeImmutable;
 use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Twitter\Tweet\Application\UseCase\UpdateTweet\UpdateTweetCommand;
 use Twitter\Tweet\Application\UseCase\UpdateTweet\UpdateTweetCommandHandler;
@@ -20,6 +21,15 @@ use Twitter\Tweet\Domain\Tweet\Model\TweetRepository;
 #[CoversMethod(UpdateTweetCommandHandler::class, 'handle')]
 final class UpdateTweetCommandHandlerTest extends TestCase
 {
+    private UpdateTweetCommandHandler $handler;
+    private MockObject|TweetRepository $tweetRepository;
+
+    protected function setUp(): void
+    {
+        $this->tweetRepository = $this->createMock(TweetRepository::class);
+        $this->handler = new UpdateTweetCommandHandler($this->tweetRepository);
+    }
+
     /**
      * @throws TweetAccessDeniedException
      * @throws TweetNotFoundException
@@ -34,18 +44,15 @@ final class UpdateTweetCommandHandlerTest extends TestCase
 
         $tweetId = $tweet->id();
 
-        $repository = $this->createMock(TweetRepository::class);
-        $repository
+        $this->tweetRepository
             ->expects(self::once())
             ->method('getById')
             ->with($tweetId)
             ->willReturn($tweet);
 
-        $repository
+        $this->tweetRepository
             ->expects(self::once())
             ->method('flush');
-
-        $handler = new UpdateTweetCommandHandler($repository);
 
         $command = new UpdateTweetCommand(
             '123e4567-e89b-12d3-a456-426614174000',
@@ -53,7 +60,7 @@ final class UpdateTweetCommandHandlerTest extends TestCase
             'New content',
         );
 
-        $result = $handler->handle($command);
+        $result = $this->handler->handle($command);
 
         self::assertSame('New content', $result->content);
         self::assertSame('New content', $tweet->content());
@@ -71,27 +78,24 @@ final class UpdateTweetCommandHandlerTest extends TestCase
             'Content',
         );
 
-        $repository = $this->createMock(TweetRepository::class);
-        $repository
+        $this->tweetRepository
             ->expects(self::once())
             ->method('getById')
             ->willReturn($tweet);
 
-        $repository
+        $this->tweetRepository
             ->expects(self::never())
             ->method('flush');
 
-        $handler = new UpdateTweetCommandHandler($repository);
-
         $command = new UpdateTweetCommand(
-            'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee',
+            'definitely-not-the-owner-id',
             $tweet->id(),
             'New content',
         );
 
         $this->expectException(TweetAccessDeniedException::class);
 
-        $handler->handle($command);
+        $this->handler->handle($command);
     }
 
     /**
@@ -100,19 +104,14 @@ final class UpdateTweetCommandHandlerTest extends TestCase
     #[Test]
     public function propagatesTweetNotFoundException(): void
     {
-        $repository = $this->createMock(TweetRepository::class);
-        $repository
+        $this->tweetRepository
             ->expects(self::once())
             ->method('getById')
-            ->willThrowException(
-                new TweetNotFoundException('non-existent-id')
-            );
+            ->willThrowException(new TweetNotFoundException('non-existent-id'));
 
-        $repository
+        $this->tweetRepository
             ->expects(self::never())
             ->method('flush');
-
-        $handler = new UpdateTweetCommandHandler($repository);
 
         $command = new UpdateTweetCommand(
             '123e4567-e89b-12d3-a456-426614174000',
@@ -122,6 +121,6 @@ final class UpdateTweetCommandHandlerTest extends TestCase
 
         $this->expectException(TweetNotFoundException::class);
 
-        $handler->handle($command);
+        $this->handler->handle($command);
     }
 }
