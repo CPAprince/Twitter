@@ -22,6 +22,10 @@ tweet_module:
 api_update_tweet:
     resource: ../src/Tweet/UI/REST/UpdateTweet/UpdateTweetController.php
     type: attribute
+    
+api_update_tweet:
+    resource: ../src/Tweet/UI/REST/UpdateTweet/UpdateTweetController.php
+    type: attribute
 
 api_login_check:
     path: /api/token
