@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Twitter\Tweet\UI\REST\UpdateTweet;
 
 use Assert\Assert;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,7 +17,10 @@ use Twitter\Tweet\Application\UseCase\UpdateTweet\UpdateTweetCommandHandler;
 #[Route('/api/tweets/{tweetId}', name: 'api_update_tweet', methods: [Request::METHOD_PATCH])]
 final readonly class UpdateTweetController
 {
-    public function __construct(private UpdateTweetCommandHandler $commandHandler) {}
+    public function __construct(
+        private Security $security,
+        private UpdateTweetCommandHandler $commandHandler,
+    ) {}
 
     public function __invoke(
         string $tweetId,
@@ -24,7 +28,9 @@ final readonly class UpdateTweetController
     ): Response {
         Assert::that($tweetId)->uuid();
 
-        $command = new UpdateTweetCommand($tweetId, $request->content());
+        $authUser = $this->security->getUser();
+
+        $command = new UpdateTweetCommand($authUser->getUserIdentifier(), $tweetId, $request->content());
         $result = $this->commandHandler->handle($command);
 
         return new JsonResponse([
