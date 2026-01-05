@@ -7,7 +7,6 @@ namespace Twitter\Shared\Infrastructure\EventSubscriber;
 use Lexik\Bundle\JWTAuthenticationBundle\Event\JWTCreatedEvent;
 use Twitter\IAM\Domain\User\Model\User;
 
-
 final class JWTCreatedListener
 {
     public function __invoke(JWTCreatedEvent $event): void
