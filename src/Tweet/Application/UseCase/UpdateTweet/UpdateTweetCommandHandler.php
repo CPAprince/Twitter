@@ -4,19 +4,23 @@ declare(strict_types=1);
 
 namespace Twitter\Tweet\Application\UseCase\UpdateTweet;
 
-use Assert\Assert;
-use Assert\Assertion;
+use Twitter\Tweet\Domain\Tweet\Exception\TweetAccessDeniedException;
 use Twitter\Tweet\Domain\Tweet\Model\TweetRepository;
 
 final readonly class UpdateTweetCommandHandler
 {
     public function __construct(private TweetRepository $tweetRepository) {}
 
+    /**
+     * @throws TweetAccessDeniedException
+     */
     public function handle(UpdateTweetCommand $command): UpdateTweetCommandResult
     {
         $tweet = $this->tweetRepository->getById($command->tweetId);
 
-        Assert::that($command->userId)->same($tweet->userId());
+        if ($command->userId !== $tweet->userId()) {
+            throw new TweetAccessDeniedException($command->userId);
+        }
 
         $tweet->updateContent($command->content);
         $this->tweetRepository->save($tweet);
