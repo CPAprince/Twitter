@@ -13,6 +13,8 @@ use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Attribute\Route;
 use Twitter\Tweet\Application\UseCase\UpdateTweet\UpdateTweetCommand;
 use Twitter\Tweet\Application\UseCase\UpdateTweet\UpdateTweetCommandHandler;
+use Twitter\Tweet\Domain\Tweet\Exception\TweetAccessDeniedException;
+use Twitter\Tweet\Domain\Tweet\Exception\TweetNotFoundException;
 
 #[Route('/api/tweets/{tweetId}', name: 'api_update_tweet', methods: [Request::METHOD_PATCH])]
 final readonly class UpdateTweetController
@@ -22,6 +24,10 @@ final readonly class UpdateTweetController
         private UpdateTweetCommandHandler $commandHandler,
     ) {}
 
+    /**
+     * @throws TweetAccessDeniedException
+     * @throws TweetNotFoundException
+     */
     public function __invoke(
         string $tweetId,
         #[MapRequestPayload] UpdateTweetRequest $request,

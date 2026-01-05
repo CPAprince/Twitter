@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Twitter\Tweet\Application\UseCase\UpdateTweet;
 
 use Twitter\Tweet\Domain\Tweet\Exception\TweetAccessDeniedException;
+use Twitter\Tweet\Domain\Tweet\Exception\TweetNotFoundException;
 use Twitter\Tweet\Domain\Tweet\Model\TweetRepository;
 
 final readonly class UpdateTweetCommandHandler
@@ -13,6 +14,7 @@ final readonly class UpdateTweetCommandHandler
 
     /**
      * @throws TweetAccessDeniedException
+     * @throws TweetNotFoundException
      */
     public function handle(UpdateTweetCommand $command): UpdateTweetCommandResult
     {
