@@ -43,3 +43,14 @@ services:
 
     Twitter\Tweet\Domain\Tweet\Model\TweetRepository:
         class: Twitter\Tweet\Infrastructure\Persistence\MySQL\Repository\MySQLTweetRepository
+    
+    Twitter\Like\Domain\Like\Model\LikeRepository:
+        class: Twitter\Like\Infrastructure\Persistence\MySQL\Repository\MySQLLikeRepository
+
+    Twitter\Like\UI\REST\Controller\:
+        resource: '../src/Like/UI/REST/Controller/*Controller.php'
+        tags: [ 'controller.service_arguments' ]
+
+    Twitter\Like\Application\UseCase\ToggleLike\ToggleLikeCommandHandler:
+        arguments:
+            $likeRepository: '@Twitter\Like\Domain\Like\Model\LikeRepository'
