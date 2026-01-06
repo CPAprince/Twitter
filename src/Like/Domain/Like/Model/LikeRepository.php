@@ -6,7 +6,12 @@ namespace Twitter\Like\Domain\Like\Model;
 
 interface LikeRepository
 {
+    /**
+     * @throws LikeAlreadyExistsException
+     */
     public function add(Like $like): void;
+
     public function remove(Like $like): void;
+
     public function findOneByTweetAndUser(string $tweetId, string $userId): ?Like;
 }
