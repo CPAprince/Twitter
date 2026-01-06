@@ -19,6 +19,7 @@ use Twitter\IAM\Domain\User\Exception\InvalidPasswordException;
 use Twitter\IAM\Domain\User\Exception\UserAlreadyExistsException;
 use Twitter\Profile\Domain\Profile\Exception\ProfileAlreadyExistsException;
 use Twitter\Profile\Domain\Profile\Exception\UserNotFoundException;
+use Twitter\Tweet\Domain\Tweet\Exception\TweetNotFoundException;
 
 final readonly class ExceptionSubscriber implements EventSubscriberInterface
 {
@@ -47,6 +48,11 @@ final readonly class ExceptionSubscriber implements EventSubscriberInterface
             'code' => 'PROFILE_ALREADY_EXISTS',
             'message' => 'A profile with this user already exists',
             'status' => Response::HTTP_CONFLICT,
+        ],
+        TweetNotFoundException::class => [
+            'code' => 'TWEET_NOT_FOUND',
+            'message' => 'The tweet with this ID was not found',
+            'status' => Response::HTTP_NOT_FOUND,
         ],
     ];
 
