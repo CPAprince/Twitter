@@ -47,6 +47,10 @@ services:
     Twitter\Profile\Application\UseCase\CreateProfile\CreateProfileCommandHandler:
         arguments:
             $profileRepository: '@Twitter\Profile\Domain\Profile\Model\ProfileRepository'
+            
+    Twitter\Profile\Application\UseCase\GetProfile\GetProfileQueryHandler:
+        arguments:
+            $profileRepository: '@Twitter\Profile\Domain\Profile\Model\ProfileRepository'
 
     Twitter\Profile\Domain\Profile\Model\ProfileRepository:
         class: Twitter\Profile\Infrastructure\Persistence\MySQL\Repository\MySQLProfileRepository
