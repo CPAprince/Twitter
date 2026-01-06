@@ -3,4 +3,5 @@ doctrine_migrations:
         'Twitter\IAM\Infrastructure\Persistence\MySQL\Migration': '%kernel.project_dir%/src/IAM/Infrastructure/Persistence/MySQL/Migration'
         'Twitter\Profile\Infrastructure\Persistence\MySQL\Migration': '%kernel.project_dir%/src/Profile/Infrastructure/Persistence/MySQL/Migration'
         'Twitter\Tweet\Infrastructure\Persistence\MySQL\Migration': '%kernel.project_dir%/src/Tweet/Infrastructure/Persistence/MySQL/Migration'
+        'Twitter\Like\Infrastructure\Persistence\MySQL\Migration': '%kernel.project_dir%/src/Like/Infrastructure/Persistence/MySQL/Migration'
     enable_profiler: false
