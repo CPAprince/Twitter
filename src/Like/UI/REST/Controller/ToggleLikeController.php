@@ -27,8 +27,9 @@ final class ToggleLikeController extends AbstractController
      */
     public function __invoke(string $tweetId, #[CurrentUser] User $user): JsonResponse
     {
-        $command = new ToggleLikeCommand($tweetId, $user->id()->toString());
+        $command = new ToggleLikeCommand($tweetId, $user->id());
         $result = $this->handler->handle($command);
+
         return $this->json([
             'liked' => $result->liked,
         ], Response::HTTP_OK);

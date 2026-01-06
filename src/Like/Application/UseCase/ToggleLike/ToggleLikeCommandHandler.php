@@ -26,6 +26,7 @@ final readonly class ToggleLikeCommandHandler
 
         if (!is_null($existingLike)) {
             $this->likeRepository->remove($existingLike);
+
             return new ToggleLikeCommandResult(false);
         }
 

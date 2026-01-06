@@ -13,8 +13,7 @@ final class Like
         private readonly string $tweetId,
         private readonly string $userId,
         private readonly DateTimeImmutable $createdAt,
-    ) {
-    }
+    ) {}
 
     public static function create(string $tweetId, string $userId): self
     {

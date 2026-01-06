@@ -6,10 +6,10 @@ namespace Twitter\Like\Infrastructure\Persistence\MySQL\Repository;
 
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\ORM\EntityManagerInterface;
+use Override;
 use Twitter\Like\Domain\Like\Exception\LikeAlreadyExistsException;
 use Twitter\Like\Domain\Like\Model\Like;
 use Twitter\Like\Domain\Like\Model\LikeRepository;
-use Override;
 
 final readonly class MySQLLikeRepository implements LikeRepository
 {
