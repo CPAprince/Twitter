@@ -9,6 +9,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Twitter\Like\Domain\Like\Exception\LikeAlreadyExistsException;
 use Twitter\Like\Domain\Like\Model\Like;
 use Twitter\Like\Domain\Like\Model\LikeRepository;
+use Override;
 
 final readonly class MySQLLikeRepository implements LikeRepository
 {
@@ -17,6 +18,7 @@ final readonly class MySQLLikeRepository implements LikeRepository
     /**
      * @throws LikeAlreadyExistsException
      */
+    #[Override]
     public function add(Like $like): void
     {
         try {
@@ -27,12 +29,14 @@ final readonly class MySQLLikeRepository implements LikeRepository
         }
     }
 
+    #[Override]
     public function remove(Like $like): void
     {
         $this->entityManager->remove($like);
         $this->entityManager->flush();
     }
 
+    #[Override]
     public function findOneByTweetAndUser(string $tweetId, string $userId): ?Like
     {
         return $this->entityManager->find(Like::class, [
