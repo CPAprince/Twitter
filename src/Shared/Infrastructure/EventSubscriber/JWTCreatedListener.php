@@ -18,10 +18,7 @@ final class JWTCreatedListener
             return;
         }
 
-        if (method_exists($user, 'id')) {
-            $payload['id'] = $user->id();
-        }
-
+        $payload['id'] = $user->id();
         $event->setData($payload);
     }
 }

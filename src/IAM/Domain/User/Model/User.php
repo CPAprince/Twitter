@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Twitter\IAM\Domain\User\Model;
 
 use DateTimeImmutable;
+use Override;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -41,7 +42,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->roles;
     }
 
-    #[\Override]
+    #[Override]
     public function getRoles(): array
     {
         $roles = $this->roles;
@@ -55,7 +56,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->email;
     }
 
-    #[\Override]
+    #[Override]
     public function getUserIdentifier(): string
     {
         return $this->email();
@@ -66,7 +67,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->passwordHash;
     }
 
-    #[\Override]
+    #[Override]
     public function getPassword(): string
     {
         return $this->passwordHash;
@@ -82,6 +83,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->updatedAt;
     }
 
-    #[\Override]
+    #[Override]
     public function eraseCredentials(): void {}
 }
