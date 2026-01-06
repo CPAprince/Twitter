@@ -40,3 +40,10 @@ services:
 
     Twitter\Profile\Domain\Profile\Model\ProfileRepository:
         class: Twitter\Profile\Infrastructure\Persistence\MySQL\Repository\MySQLProfileRepository
+
+    Twitter\Tweet\Domain\Tweet\Model\TweetRepository:
+        class: Twitter\Tweet\Infrastructure\Persistence\MySQL\Repository\MySQLTweetRepository
+        
+    Twitter\Tweet\UI\REST\:
+        resource: '../src/Tweet/UI/REST/*/*Controller.php'
+        tags: [ 'controller.service_arguments' ]
