@@ -23,6 +23,7 @@ use Twitter\IAM\Domain\User\Exception\InvalidEmailException;
 use Twitter\IAM\Domain\User\Exception\InvalidPasswordException;
 use Twitter\IAM\Domain\User\Exception\UserAlreadyExistsException;
 use Twitter\Profile\Domain\Profile\Exception\ProfileAlreadyExistsException;
+use Twitter\Profile\Domain\Profile\Exception\ProfileNotFoundException;
 use Twitter\Profile\Domain\Profile\Exception\UserNotFoundException as ProfileUserNotFoundExceptionAlias;
 use Twitter\Tweet\Domain\Tweet\Exception\TweetAccessDeniedException;
 use Twitter\Tweet\Domain\Tweet\Exception\TweetNotFoundException;
@@ -80,6 +81,11 @@ final readonly class ExceptionSubscriber implements EventSubscriberInterface
         TweetUserNotFoundExceptionAlias::class => [
             'code' => 'USER_NOT_FOUND',
             'message' => 'The user with this ID was not found',
+            'status' => Response::HTTP_NOT_FOUND,
+        ],
+        ProfileNotFoundException::class => [
+            'code' => 'PROFILE_NOT_FOUND',
+            'message' => 'The profile with this user ID was not found',
             'status' => Response::HTTP_NOT_FOUND,
         ],
         ProfileAlreadyExistsException::class => [
