@@ -11,6 +11,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\CurrentUser;
+use Twitter\IAM\Domain\User\Model\User;
 use Twitter\Tweet\Application\UseCase\UpdateTweet\UpdateTweetCommand;
 use Twitter\Tweet\Application\UseCase\UpdateTweet\UpdateTweetCommandHandler;
 use Twitter\Tweet\Domain\Tweet\Exception\TweetAccessDeniedException;
@@ -19,10 +21,7 @@ use Twitter\Tweet\Domain\Tweet\Exception\TweetNotFoundException;
 #[Route('/api/tweets/{tweetId}', name: 'api_update_tweet', methods: [Request::METHOD_PATCH])]
 final readonly class UpdateTweetController
 {
-    public function __construct(
-        private Security $security,
-        private UpdateTweetCommandHandler $commandHandler,
-    ) {}
+    public function __construct(private UpdateTweetCommandHandler $commandHandler) {}
 
     /**
      * @throws TweetAccessDeniedException
@@ -31,12 +30,11 @@ final readonly class UpdateTweetController
     public function __invoke(
         string $tweetId,
         #[MapRequestPayload] UpdateTweetRequest $request,
+        #[CurrentUser] User $authUser,
     ): Response {
         Assert::that($tweetId)->uuid();
 
-        $authUser = $this->security->getUser();
-
-        $command = new UpdateTweetCommand($authUser->getUserIdentifier(), $tweetId, $request->content());
+        $command = new UpdateTweetCommand($authUser->id(), $tweetId, $request->content());
         $result = $this->commandHandler->handle($command);
 
         return new JsonResponse([
