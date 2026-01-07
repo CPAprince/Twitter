@@ -1,3 +1,5 @@
+# yaml-language-server: $schema=../../vendor/symfony/dependency-injection/Loader/schema/services.schema.json
+
 doctrine_migrations:
     migrations_paths:
         'Twitter\IAM\Infrastructure\Persistence\MySQL\Migration': '%kernel.project_dir%/src/IAM/Infrastructure/Persistence/MySQL/Migration'
