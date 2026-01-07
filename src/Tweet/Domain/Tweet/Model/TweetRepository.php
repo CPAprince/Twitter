@@ -12,4 +12,11 @@ interface TweetRepository
      * @throws TweetNotFoundException
      */
     public function getById(string $tweetId): Tweet;
+
+    /**
+     * Returns all tweets sorted by createdAt DESC (newest first).
+     *
+     * @return list<Tweet>
+     */
+    public function getAllTweets(): array;
 }
