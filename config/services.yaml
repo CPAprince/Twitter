@@ -41,5 +41,8 @@ services:
     Twitter\Profile\Domain\Profile\Model\ProfileRepository:
         class: Twitter\Profile\Infrastructure\Persistence\MySQL\Repository\MySQLProfileRepository
 
+    Twitter\Shared\Infrastructure\EventSubscriber\JWTCreatedListener:
+        tags:
+            - { name: kernel.event_listener, event: lexik_jwt_authentication.on_jwt_created }
     Twitter\Tweet\Domain\Tweet\Model\TweetRepository:
         class: Twitter\Tweet\Infrastructure\Persistence\MySQL\Repository\MySQLTweetRepository
