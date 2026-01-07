@@ -20,15 +20,21 @@ services:
     Twitter\IAM\Application\CreateUser\CreateUserCommandHandler:
         arguments:
             $userRepository: '@Twitter\IAM\Domain\User\Model\UserRepository'
+            
+    Twitter\IAM\Application\Logout\LogoutHandler:
+        arguments:
+            $repository: '@Twitter\IAM\Application\Logout\RefreshTokenRepository'
+            
+    Twitter\IAM\Infrastructure\Auth\RefreshTokenHasher:
+        arguments:
+            $secret: '%env(APP_SECRET)%'
 
     Twitter\IAM\Domain\User\Model\UserRepository:
         class: Twitter\IAM\Infrastructure\Persistence\MySQL\Repository\MySQLUserRepository
-    Twitter\:
-        resource: '../src/'
-    Twitter\IAM\Infrastructure\Auth\RefreshTokenHasher:
-        arguments:
-            $secret: '%kernel.secret%'
-    Twitter\IAM\Application\Repository\RefreshTokenRepository: '@Twitter\IAM\Infrastructure\Persistence\MySQL\Repository\MySQLRefreshToken'
+        tags: [ 'doctrine.repository_service' ]
+    
+    Twitter\IAM\Application\Logout\RefreshTokenRepository:
+        class: Twitter\IAM\Infrastructure\Persistence\MySQL\Repository\MySQLRefreshTokenRepository
 
     Twitter\Profile\UI\REST\Controller\:
         resource: '../src/Profile/UI/REST/Controller/*/*Controller.php'
@@ -44,5 +50,13 @@ services:
     Twitter\Shared\Infrastructure\EventSubscriber\JWTCreatedListener:
         tags:
             - { name: kernel.event_listener, event: lexik_jwt_authentication.on_jwt_created }
+    Twitter\Tweet\UI\REST\:
+        resource: '../src/Tweet/UI/REST/*/*Controller.php'
+        tags: [ 'controller.service_arguments' ]
+        
+    Twitter\Tweet\Application\UseCase\CreateTweet\CreateTweetCommandHandler:
+        arguments:
+            $tweetRepository: '@Twitter\Tweet\Domain\Tweet\Model\TweetRepository'
+
     Twitter\Tweet\Domain\Tweet\Model\TweetRepository:
         class: Twitter\Tweet\Infrastructure\Persistence\MySQL\Repository\MySQLTweetRepository
