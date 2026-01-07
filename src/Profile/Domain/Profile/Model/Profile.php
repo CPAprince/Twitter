@@ -44,9 +44,25 @@ final class Profile
         return $this->name;
     }
 
+    public function changeName(string $name): void
+    {
+        Assert::lazy()
+            ->that($name, 'name')->notBlank()->minLength(3)->maxLength(50);
+
+        $this->name = $name;
+    }
+
     public function bio(): string
     {
         return $this->bio;
+    }
+
+    public function changeBio(string $bio): void
+    {
+        Assert::lazy()
+            ->that($bio, 'bio')->maxLength(300);
+
+        $this->bio = $bio;
     }
 
     public function createdAt(): DateTimeImmutable
