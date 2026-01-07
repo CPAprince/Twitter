@@ -5,7 +5,6 @@
                   https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
 
     <entity name="Twitter\Tweet\Domain\Tweet\Model\Tweet"
-            repository-class="Twitter\Tweet\Domain\Tweet\Model\TweetRepository"
             table="tweets">
 
         <id name="id" column="id" type="uuid">
