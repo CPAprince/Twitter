@@ -4,34 +4,33 @@ declare(strict_types=1);
 
 namespace Twitter\Tweet\UI\REST\CreateTweet;
 
-use Assert\Assertion;
-use Assert\AssertionFailedException;
-use Symfony\Bundle\SecurityBundle\Security;
+use Assert\Assert;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\CurrentUser;
+use Twitter\IAM\Domain\User\Model\User;
 use Twitter\Tweet\Application\UseCase\CreateTweet\CreateTweetCommand;
 use Twitter\Tweet\Application\UseCase\CreateTweet\CreateTweetCommandHandler;
 
-#[Route('/api/tweets', name: 'api_create_tweet', methods: [Request::METHOD_POST])]
+#[Route('/api/{userId}/tweets', name: 'api_create_tweet', methods: [Request::METHOD_POST])]
 final readonly class CreateTweetController
 {
-    public function __construct(
-        private Security $security,
-        private CreateTweetCommandHandler $handler,
-    ) {}
+    public function __construct(private CreateTweetCommandHandler $handler) {}
 
-    /**
-     * @throws AssertionFailedException
-     */
-    public function __invoke(#[MapRequestPayload] CreateTweetRequest $request): JsonResponse
-    {
-        $authUser = $this->security->getUser();
-        Assertion::same($request->userId(), $authUser->getUserIdentifier());
+    public function __invoke(
+        string $userId,
+        #[MapRequestPayload] CreateTweetRequest $request,
+        #[CurrentUser] User $authUser,
+    ): JsonResponse {
+        Assert::lazy()->tryAll()
+            ->that($userId)->uuid()
+            ->that($userId, 'authUserId')->same($authUser->id())
+            ->verifyNow();
 
-        $command = new CreateTweetCommand($request->userId(), $request->content());
+        $command = new CreateTweetCommand($userId, $request->content());
         $result = $this->handler->handle($command);
 
         return new JsonResponse([

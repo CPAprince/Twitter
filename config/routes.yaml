@@ -15,8 +15,8 @@ api_create_profile:
     resource: ../src/Profile/UI/REST/Controller/CreateProfile/CreateProfileController.php
     type: attribute
     
-api_create_tweet:
-    resource: ../src/Tweet/UI/REST/CreateTweet/CreateTweetController.php
+tweet_module:
+    resource: ../src/Tweet/UI/REST/*/*Controller.php
     type: attribute
 
 api_login_check:
