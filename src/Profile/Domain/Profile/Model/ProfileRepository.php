@@ -14,4 +14,6 @@ interface ProfileRepository
      * @throws ProfileNotFoundException
      */
     public function getByUserId(string $userId): Profile;
+
+    public function flush(): void;
 }

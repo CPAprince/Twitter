@@ -50,4 +50,9 @@ final readonly class MySQLProfileRepository implements ProfileRepository
 
         return $profile;
     }
+
+    public function flush(): void
+    {
+        $this->entityManager->flush();
+    }
 }
