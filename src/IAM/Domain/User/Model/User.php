@@ -59,7 +59,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Override]
     public function getUserIdentifier(): string
     {
-        return $this->id();
+        return $this->email();
     }
 
     public function passwordHash(): string
