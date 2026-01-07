@@ -59,8 +59,7 @@ final class Profile
 
     public function changeBio(string $bio): void
     {
-        Assert::lazy()
-            ->that($bio, 'bio')->maxLength(300);
+        Assert::that($bio)->maxLength(300);
 
         $this->bio = $bio;
     }
