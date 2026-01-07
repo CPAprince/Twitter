@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Twitter\Tweet\Application\UseCase\GetTweet\GetTweetCommand;
 use Twitter\Tweet\Application\UseCase\GetTweet\GetTweetCommandHandler;
+use Twitter\Tweet\Application\UseCase\Shared\TweetResponse;
 
 #[Route('/api/tweets/{tweetId}', name: 'tweets_get', methods: ['GET'])]
 final readonly class GetTweetController
@@ -17,17 +18,25 @@ final readonly class GetTweetController
 
     public function __invoke(string $tweetId): JsonResponse
     {
-        $dto = $this->handler->handle(new GetTweetCommand($tweetId));
+        $tweetResponse = $this->handler->handle(new GetTweetCommand($tweetId));
 
-        return new JsonResponse([
-            'id' => $dto->id,
-            'content' => $dto->content,
-            'createdAt' => $dto->createdAt->format(DATE_RFC3339),
-            'updatedAt' => $dto->updatedAt->format(DATE_RFC3339),
+        return new JsonResponse(
+            self::mapTweetResponse($tweetResponse),
+            Response::HTTP_OK
+        );
+    }
+
+    private static function mapTweetResponse(TweetResponse $tweetResponse): array
+    {
+        return [
+            'id' => $tweetResponse->id,
+            'content' => $tweetResponse->content,
+            'createdAt' => $tweetResponse->createdAt->format(DATE_RFC3339),
+            'updatedAt' => $tweetResponse->updatedAt->format(DATE_RFC3339),
             'author' => [
-                'id' => $dto->authorId,
-                'name' => $dto->authorName,
+                'id' => $tweetResponse->authorId,
+                'name' => $tweetResponse->authorName,
             ],
-        ], Response::HTTP_OK);
+        ];
     }
 }
