@@ -47,7 +47,8 @@ final class Profile
     public function changeName(string $name): void
     {
         Assert::lazy()
-            ->that($name, 'name')->notBlank()->minLength(3)->maxLength(50);
+            ->that($name, 'name')->notBlank()->minLength(3)->maxLength(50)
+            ->verifyNow();
 
         $this->name = $name;
     }
