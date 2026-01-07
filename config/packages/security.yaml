@@ -9,8 +9,6 @@ security:
             entity:
                 class: Twitter\IAM\Domain\User\Model\User
                 property: email
-        #users_in_memory: { memory: null }
-    
 
     firewalls:
         dev:
