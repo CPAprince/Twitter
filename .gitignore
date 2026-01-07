@@ -19,4 +19,6 @@ bolt.db
 .phpunit.result.cache
 /phpunit.xml
 
-/src/IAM/UI/CLI/Dev/
+###> lexik/jwt-authentication-bundle ###
+/config/jwt/*.pem
+###< lexik/jwt-authentication-bundle ###

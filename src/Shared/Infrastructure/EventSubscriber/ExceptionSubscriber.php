@@ -14,6 +14,10 @@ use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Throwable;
+use Twitter\IAM\Domain\Auth\Exception\BadRequestException;
+use Twitter\IAM\Domain\Auth\Exception\TokenInvalidException;
+use Twitter\IAM\Domain\Auth\Exception\UnauthorizedException;
+use Twitter\IAM\Domain\Auth\Exception\ValidationErrorException;
 use Twitter\IAM\Domain\User\Exception\InvalidEmailException;
 use Twitter\IAM\Domain\User\Exception\InvalidPasswordException;
 use Twitter\IAM\Domain\User\Exception\UserAlreadyExistsException;
@@ -24,6 +28,27 @@ use Twitter\Tweet\Domain\Tweet\Exception\TweetNotFoundException;
 final readonly class ExceptionSubscriber implements EventSubscriberInterface
 {
     private const array EXCEPTION_MAPPING = [
+        BadRequestException::class => [
+            'code' => BadRequestException::ERROR_CODE,
+            'message' => 'Bad request.',
+            'status' => Response::HTTP_BAD_REQUEST,
+        ],
+        UnauthorizedException::class => [
+            'code' => UnauthorizedException::ERROR_CODE,
+            'message' => 'Unauthorized.',
+            'status' => Response::HTTP_UNAUTHORIZED,
+        ],
+        TokenInvalidException::class => [
+            'code' => TokenInvalidException::ERROR_CODE,
+            'message' => 'Invalid or expired token.',
+            'status' => Response::HTTP_UNAUTHORIZED,
+        ],
+        ValidationErrorException::class => [
+            'code' => ValidationErrorException::ERROR_CODE,
+            'message' => 'Validation failed.',
+            'status' => Response::HTTP_UNPROCESSABLE_ENTITY,
+        ],
+
         InvalidEmailException::class => [
             'code' => 'INVALID_EMAIL',
             'message' => 'The provided email address is invalid',

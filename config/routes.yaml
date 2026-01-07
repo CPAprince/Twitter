@@ -19,3 +19,5 @@ tweet_module:
     resource: ../src/Tweet/UI/REST/
     type: attribute
 
+api_login_check:
+    path: /api/token

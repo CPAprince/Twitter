@@ -34,6 +34,11 @@ Run migrations
 docker compose exec php php bin/console doctrine:migrations:migrate --no-interaction
 ```
 
+Generate keys for JWT
+```shell
+docker compose exec php php bin/console lexik:jwt:generate-keypair
+```
+
 Open https://localhost
 
 ## License

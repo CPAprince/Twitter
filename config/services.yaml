@@ -4,19 +4,19 @@ services:
     _defaults:
         autowire: true
         autoconfigure: true
-    
+
     Twitter\Shared\Infrastructure\EventSubscriber\ExceptionSubscriber:
         tags: [ 'kernel.event_subscriber' ]
         arguments:
             $environment: '%kernel.environment%'
-    
+
     Twitter\Shared\Infrastructure\EventSubscriber\DoctrineResetSubscriber:
         tags: [ 'kernel.event_subscriber' ]
-    
+
     Twitter\IAM\UI\REST\Controller\:
         resource: '../src/IAM/UI/REST/Controller/*Controller.php'
         tags: [ 'controller.service_arguments' ]
-    
+
     Twitter\IAM\Application\CreateUser\CreateUserCommandHandler:
         arguments:
             $userRepository: '@Twitter\IAM\Domain\User\Model\UserRepository'
@@ -47,3 +47,8 @@ services:
     Twitter\Tweet\UI\REST\:
         resource: '../src/Tweet/UI/REST/*/*Controller.php'
         tags: [ 'controller.service_arguments' ]
+        
+    Twitter\Shared\Infrastructure\EventSubscriber\JWTCreatedListener:
+        tags:
+            - { name: kernel.event_listener, event: lexik_jwt_authentication.on_jwt_created }
+
