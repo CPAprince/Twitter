@@ -42,6 +42,7 @@ final readonly class UpdateProfileController
         return new JsonResponse([
             'name' => $result->name,
             'bio' => $result->bio,
+            'updatedAt' => $result->updatedAt->format(DATE_RFC3339),
         ], Response::HTTP_OK);
     }
 }

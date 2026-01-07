@@ -29,6 +29,10 @@ final readonly class UpdateProfileCommandHandler
 
         $this->profileRepository->flush();
 
-        return new UpdateProfileCommandResult($profile->name(), $profile->bio());
+        return new UpdateProfileCommandResult(
+            $profile->name(),
+            $profile->bio(),
+            $profile->updatedAt(),
+        );
     }
 }
