@@ -6,13 +6,17 @@ namespace Twitter\IAM\Infrastructure\Persistence\MySQL\Repository;
 
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\EntityRepository;
 use Twitter\IAM\Domain\User\Exception\UserAlreadyExistsException;
 use Twitter\IAM\Domain\User\Model\User;
 use Twitter\IAM\Domain\User\Model\UserRepository;
 
-final readonly class MySQLUserRepository implements UserRepository
+final class MySQLUserRepository extends EntityRepository implements UserRepository
 {
-    public function __construct(private EntityManagerInterface $entityManager) {}
+    public function __construct(private readonly EntityManagerInterface $entityManager)
+    {
+        parent::__construct($entityManager, $entityManager->getClassMetadata(User::class));
+    }
 
     /**
      * @throws UserAlreadyExistsException

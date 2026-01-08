@@ -8,6 +8,7 @@ use Twitter\Tweet\Domain\Tweet\Exception\TweetNotFoundException;
 
 interface TweetRepository
 {
+    public function add(Tweet $tweet): void;
     /**
      * @throws TweetNotFoundException
      */
