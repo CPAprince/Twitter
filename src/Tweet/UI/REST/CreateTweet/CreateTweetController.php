@@ -15,19 +15,19 @@ use Twitter\IAM\Domain\User\Model\User;
 use Twitter\Tweet\Application\UseCase\CreateTweet\CreateTweetCommand;
 use Twitter\Tweet\Application\UseCase\CreateTweet\CreateTweetCommandHandler;
 
-#[Route('/api/{userId}/tweets', name: 'api_create_tweet', methods: [Request::METHOD_POST])]
+#[Route('/api/tweets', name: 'api_create_tweet', methods: [Request::METHOD_POST])]
 final readonly class CreateTweetController
 {
     public function __construct(private CreateTweetCommandHandler $handler) {}
 
     public function __invoke(
-        string $userId,
         #[MapRequestPayload] CreateTweetRequest $request,
         #[CurrentUser] User $authUser,
     ): JsonResponse {
+        $userId = $authUser->id();
+
         Assert::lazy()->tryAll()
             ->that($userId)->uuid()
-            ->that($userId, 'authUserId')->same($authUser->id())
             ->verifyNow();
 
         $command = new CreateTweetCommand($userId, $request->content());
