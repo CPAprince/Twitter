@@ -13,6 +13,10 @@ services:
     Twitter\Shared\Infrastructure\EventSubscriber\DoctrineResetSubscriber:
         tags: [ 'kernel.event_subscriber' ]
 
+    Twitter\Shared\Infrastructure\EventSubscriber\JWTCreatedListener:
+        tags:
+            - { name: kernel.event_listener, event: lexik_jwt_authentication.on_jwt_created }
+
     Twitter\IAM\UI\REST\Controller\:
         resource: '../src/IAM/UI/REST/Controller/*Controller.php'
         tags: [ 'controller.service_arguments' ]
@@ -20,11 +24,11 @@ services:
     Twitter\IAM\Application\CreateUser\CreateUserCommandHandler:
         arguments:
             $userRepository: '@Twitter\IAM\Domain\User\Model\UserRepository'
-            
+
     Twitter\IAM\Application\Logout\LogoutHandler:
         arguments:
             $repository: '@Twitter\IAM\Application\Logout\RefreshTokenRepository'
-            
+
     Twitter\IAM\Infrastructure\Auth\RefreshTokenHasher:
         arguments:
             $secret: '%env(APP_SECRET)%'
@@ -32,7 +36,7 @@ services:
     Twitter\IAM\Domain\User\Model\UserRepository:
         class: Twitter\IAM\Infrastructure\Persistence\MySQL\Repository\MySQLUserRepository
         tags: [ 'doctrine.repository_service' ]
-    
+
     Twitter\IAM\Application\Logout\RefreshTokenRepository:
         class: Twitter\IAM\Infrastructure\Persistence\MySQL\Repository\MySQLRefreshTokenRepository
 
@@ -47,16 +51,23 @@ services:
     Twitter\Profile\Domain\Profile\Model\ProfileRepository:
         class: Twitter\Profile\Infrastructure\Persistence\MySQL\Repository\MySQLProfileRepository
 
-    Twitter\Shared\Infrastructure\EventSubscriber\JWTCreatedListener:
-        tags:
-            - { name: kernel.event_listener, event: lexik_jwt_authentication.on_jwt_created }
     Twitter\Tweet\UI\REST\:
         resource: '../src/Tweet/UI/REST/*/*Controller.php'
         tags: [ 'controller.service_arguments' ]
-        
+
+    Twitter\Tweet\Domain\Tweet\Model\TweetRepository:
+        class: Twitter\Tweet\Infrastructure\Persistence\MySQL\Repository\MySQLTweetRepository
+
     Twitter\Tweet\Application\UseCase\CreateTweet\CreateTweetCommandHandler:
         arguments:
             $tweetRepository: '@Twitter\Tweet\Domain\Tweet\Model\TweetRepository'
 
-    Twitter\Tweet\Domain\Tweet\Model\TweetRepository:
-        class: Twitter\Tweet\Infrastructure\Persistence\MySQL\Repository\MySQLTweetRepository
+    Twitter\Tweet\Application\UseCase\GetTweet\GetTweetCommandHandler:
+        arguments:
+            $tweetRepository: '@Twitter\Tweet\Domain\Tweet\Model\TweetRepository'
+            $profileRepository: '@Twitter\Profile\Domain\Profile\Model\ProfileRepository'
+            
+    Twitter\Tweet\Application\UseCase\GetTweets\GetTweetsCommandHandler:
+        arguments:
+            $tweetRepository: '@Twitter\Tweet\Domain\Tweet\Model\TweetRepository'
+            $profileRepository: '@Twitter\Profile\Domain\Profile\Model\ProfileRepository'
