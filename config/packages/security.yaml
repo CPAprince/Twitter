@@ -22,6 +22,12 @@ security:
                 success_handler: lexik_jwt_authentication.handler.authentication_success
                 failure_handler: lexik_jwt_authentication.handler.authentication_failure
 
+        refresh:
+            pattern: ^/api/token
+            stateless: true
+            refresh_jwt:
+                check_path: /api/token
+        
         api:
             pattern: ^/api
             stateless: true

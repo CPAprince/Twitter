@@ -83,6 +83,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->updatedAt;
     }
 
-    #[Override]
+    #[\Deprecated]
     public function eraseCredentials(): void {}
 }

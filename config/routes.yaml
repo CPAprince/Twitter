@@ -21,3 +21,8 @@ tweet_module:
 
 api_login_check:
     path: /api/token
+    methods: [POST]
+    
+api_refresh_token:
+    path: /api/token/
+    methods: [PATCH]
