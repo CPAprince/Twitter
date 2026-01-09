@@ -26,9 +26,7 @@ final readonly class CreateTweetController
     ): JsonResponse {
         $userId = $authUser->id();
 
-        Assert::lazy()->tryAll()
-            ->that($userId)->uuid()
-            ->verifyNow();
+        Assert::that($userId)->uuid();
 
         $command = new CreateTweetCommand($userId, $request->content());
         $result = $this->handler->handle($command);
