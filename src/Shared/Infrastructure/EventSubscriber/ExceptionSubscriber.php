@@ -82,7 +82,7 @@ final readonly class ExceptionSubscriber implements EventSubscriberInterface
             'status' => Response::HTTP_CONFLICT,
         ],
         TweetNotFoundException::class => [
-            'code' => 'TWEET_NOT_FOUND',
+            'code' => TweetNotFoundException::ERROR_CODE,
             'message' => 'The tweet with this ID was not found',
             'status' => Response::HTTP_NOT_FOUND,
         ],
