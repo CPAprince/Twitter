@@ -35,7 +35,7 @@ final class UpdateTweetCommandHandlerTest extends TestCase
      * @throws TweetNotFoundException
      */
     #[Test]
-    public function updatesTweetWhenUserIsOwner(): void
+    public function updatesTweetForOwner(): void
     {
         $tweet = Tweet::create(
             '123e4567-e89b-12d3-a456-426614174000',
