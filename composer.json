@@ -38,8 +38,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Twitter\\": "src/",
-            "App\\": "src/"
+            "Twitter\\": "src/"
         }
     },
     "autoload-dev": {
