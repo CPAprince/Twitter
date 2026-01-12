@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Twitter\IAM\Domain\User\Model;
 
 use DateTimeImmutable;
+use Deprecated;
 use Override;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -83,6 +84,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->updatedAt;
     }
 
-    #[\Deprecated]
+    #[Deprecated]
     public function eraseCredentials(): void {}
 }
