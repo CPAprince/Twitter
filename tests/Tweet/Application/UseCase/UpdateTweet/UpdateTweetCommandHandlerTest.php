@@ -102,7 +102,7 @@ final class UpdateTweetCommandHandlerTest extends TestCase
      * @throws TweetAccessDeniedException
      */
     #[Test]
-    public function propagatesTweetNotFoundException(): void
+    public function throwsExceptionWhenTweetDoesNotExist(): void
     {
         $this->tweetRepository
             ->expects(self::once())
