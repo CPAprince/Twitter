@@ -18,7 +18,7 @@ use Twitter\Tweet\Domain\Tweet\Model\Tweet;
 final class TweetUpdateContentTest extends TestCase
 {
     #[Test]
-    public function updatesContentAndUpdatedAt(): void
+    public function updatesContentAndRefreshesUpdatedAt(): void
     {
         $tweet = Tweet::create(
             '123e4567-e89b-12d3-a456-426614174000',
