@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Twitter\Like\Domain\Like\Exception;
 
 use Exception;

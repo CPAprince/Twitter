@@ -49,7 +49,7 @@ final class ToggleLikeCommandHandlerTest extends TestCase
             ->method('add')
             ->with(
                 self::callback(
-                    fn(Like $like): bool => $like->tweetId() === $tweetId
+                    fn (Like $like): bool => $like->tweetId() === $tweetId
                         && $like->userId() === $userId,
                 ),
             );
