@@ -50,7 +50,7 @@ final class TweetUpdateContentTest extends TestCase
         $tweet->updateContent($content);
     }
 
-    static function invalidContentProvider(): iterable
+    public static function invalidContentProvider(): iterable
     {
         yield 'empty content' => [''];
         yield 'whitespace only' => ['  '];
