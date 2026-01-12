@@ -20,6 +20,10 @@ services:
     Twitter\IAM\UI\REST\Controller\:
         resource: '../src/IAM/UI/REST/Controller/*Controller.php'
         tags: [ 'controller.service_arguments' ]
+        
+    Twitter\IAM\UI\Web\:
+        resource: '../src/IAM/UI/Web/*/*Controller.php'
+        tags: [ 'controller.service_arguments' ]
 
     Twitter\IAM\Application\CreateUser\CreateUserCommandHandler:
         arguments:

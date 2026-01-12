@@ -1,0 +1,115 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Twitter | Registration
+{% endblock %}
+
+{% block body %}
+    <form id="registration-form" method="post">
+        <label for="name">Your name</label>
+        <input type="text" name="name" id="name" value="Test Name" required maxlength="50">
+
+        <label for="bio">About you</label>
+        <input type="text" name="bio" id="bio" value="Test bio" maxlength="300">
+
+        <label for="email">Email</label>
+        <input type="email" name="email" id="email" value="test@example.com" required>
+
+        <label for="password">Password</label>
+        <input type="password" name="password" id="password" value="Qwerty_123" required>
+
+        <input type="submit" id="submit" value="Register">
+    </form>
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        const submit = document.getElementById('submit');
+        const form = document.getElementById('registration-form');
+
+         submit.addEventListener('click', async (e) => {
+            e.preventDefault();
+
+            const formData = new FormData(form);
+
+            try {
+                const userId = await createUser(formData.get('email'), formData.get('password'));
+
+                if (userId) {
+                    const accessToken = await generateAccessToken(formData.get('email'), formData.get('password'));
+
+                    localStorage.setItem('access_token', accessToken);
+
+                    await createProfile(userId, formData.get('name'), formData.get('bio'));
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        })
+
+        async function createUser(email, password) {
+            try {
+                const response = await fetch('{{ path('api_create_user') }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        email: email,
+                        password: password
+                    })
+                })
+
+                if (response.ok) {
+                    const data = await response.json();
+                    return String(data.id);
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+        async function generateAccessToken(email, password) {
+            try {
+                const response = await fetch('{{ path('api_login_check') }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        email: email,
+                        password: password
+                    })
+                })
+
+                if (response.ok) {
+                    const data = await response.json();
+                    return String(data.token);
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+        async function createProfile(userId, name, bio) {
+            try {
+                const token = localStorage.getItem('access_token');
+
+                await fetch('{{ path('api_create_profile') }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        userId: userId,
+                        name: name,
+                        bio: bio
+                    })
+                })
+            } catch (error) {
+                console.error(error);
+            }
+        }
+    </script>
+{% endblock %}

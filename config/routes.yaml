@@ -8,8 +8,12 @@ iam_module:
     resource: ../src/IAM/UI/REST/Controller/
     type: attribute
 
+iam_module_web:
+    resource: ../src/IAM/UI/Web/*/*Controller.php
+    type: attribute
+
 profile_module:
-    resource: ../src/Profile/UI/REST/Controller/
+    resource: ../src/Profile/UI/REST/Controller/*/*Controller.php
     type: attribute
     
 tweet_module:
@@ -19,5 +23,3 @@ tweet_module:
 api_login_check:
     path: /api/token
     methods: [POST]
-    
-
