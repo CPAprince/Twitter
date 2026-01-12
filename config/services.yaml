@@ -40,9 +40,17 @@ services:
         resource: '../src/Profile/UI/REST/Controller/*/*Controller.php'
         tags: [ 'controller.service_arguments' ]
 
+    Twitter\Like\UI\REST\Controller\:
+        resource: '../src/Like/UI/REST/Controller/*Controller.php'
+        tags: [ 'controller.service_arguments' ]
+
     Twitter\Profile\Application\UseCase\CreateProfile\CreateProfileCommandHandler:
         arguments:
             $profileRepository: '@Twitter\Profile\Domain\Profile\Model\ProfileRepository'
+    
+    Twitter\Like\Application\UseCase\ToggleLike\ToggleLikeCommandHandler:
+        arguments:
+            $profileRepository: '@Twitter\Like\Domain\Like\Model\LikeRepository'
 
     Twitter\Profile\Domain\Profile\Model\ProfileRepository:
         class: Twitter\Profile\Infrastructure\Persistence\MySQL\Repository\MySQLProfileRepository
