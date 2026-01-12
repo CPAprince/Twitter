@@ -50,7 +50,7 @@ services:
     
     Twitter\Like\Application\UseCase\ToggleLike\ToggleLikeCommandHandler:
         arguments:
-            $profileRepository: '@Twitter\Like\Domain\Like\Model\LikeRepository'
+            $likeRepository: '@Twitter\Like\Domain\Like\Model\LikeRepository'
 
     Twitter\Profile\Domain\Profile\Model\ProfileRepository:
         class: Twitter\Profile\Infrastructure\Persistence\MySQL\Repository\MySQLProfileRepository
