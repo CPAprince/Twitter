@@ -15,7 +15,7 @@ use Twitter\Like\Application\UseCase\ToggleLike\ToggleLikeCommand;
 use Twitter\Like\Application\UseCase\ToggleLike\ToggleLikeCommandHandler;
 use Twitter\Like\Domain\Like\Exception\LikeAlreadyExistsException;
 
-#[Route('/tweets/{tweetId}/likes/toggle', name: 'api_tweets_like_toggle', methods: [Request::METHOD_POST])]
+#[Route('api/tweets/{tweetId}/likes/toggle', name: 'api_tweets_like_toggle', methods: [Request::METHOD_POST])]
 final class ToggleLikeController extends AbstractController
 {
     public function __construct(
