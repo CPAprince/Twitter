@@ -7,6 +7,7 @@ namespace Twitter\Tests\Tweet\Domain\Tweet\Model;
 use Assert\LazyAssertionException;
 use DateTimeImmutable;
 use PHPUnit\Framework\Attributes\CoversMethod;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -36,7 +37,8 @@ final class TweetUpdateContentTest extends TestCase
     }
 
     #[Test]
-    public function throwsExceptionWhenContentIsBlank(): void
+    #[DataProvider('invalidContentProvider')]
+    public function throwsExceptionWhenContentIsNotValid(string $content): void
     {
         $tweet = Tweet::create(
             '123e4567-e89b-12d3-a456-426614174000',
@@ -45,19 +47,13 @@ final class TweetUpdateContentTest extends TestCase
 
         $this->expectException(LazyAssertionException::class);
 
-        $tweet->updateContent('');
+        $tweet->updateContent($content);
     }
 
-    #[Test]
-    public function throwsExceptionWhenContentExceedsLengthLimit(): void
+    static function invalidContentProvider(): iterable
     {
-        $tweet = Tweet::create(
-            '123e4567-e89b-12d3-a456-426614174000',
-            'Initial valid content',
-        );
-
-        $this->expectException(LazyAssertionException::class);
-
-        $tweet->updateContent(str_repeat('a', 281));
+        yield 'empty content' => [''];
+        yield 'whitespace only' => ['  '];
+        yield 'too long content' => [str_repeat('a', 281)];
     }
 }
