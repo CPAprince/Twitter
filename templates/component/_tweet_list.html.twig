@@ -1,0 +1,13 @@
+{% if tweets is empty %}
+    <div class="p-3">
+        <div class="alert alert-secondary mb-0">No tweets yet.</div>
+    </div>
+{% else %}
+    <div class="p-3">
+        <h3 class="m-0">{{ title|default('Feeds:') }}</h3>
+    </div>
+
+    {% for tweet in tweets %}
+        {% include 'component/_tweet.html.twig' with { tweet: tweet } only %}
+    {% endfor %}
+{% endif %}
