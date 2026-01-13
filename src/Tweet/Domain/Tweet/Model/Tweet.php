@@ -10,6 +10,8 @@ use Symfony\Component\Uid\Uuid;
 
 final class Tweet
 {
+    private int $likesCount = 0;
+
     private function __construct(
         private readonly string $id,
         private readonly string $userId,
@@ -55,5 +57,20 @@ final class Tweet
     public function updatedAt(): DateTimeImmutable
     {
         return $this->updatedAt;
+    }
+
+    public function likesCount(): int
+    {
+        return $this->likesCount;
+    }
+
+    public function increaseLikesCount(): void
+    {
+        $this->likesCount++;
+    }
+
+    public function decreaseLikesCount(): void
+    {
+        $this->likesCount--;
     }
 }
