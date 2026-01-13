@@ -23,5 +23,5 @@ api_login_check:
     path: /api/token
 
 web:
-    resource: ../src/*/UI/Web/*/*Controller.php
+    resource: ../src/*/UI/Web/**/*Controller.php
     type: attribute
