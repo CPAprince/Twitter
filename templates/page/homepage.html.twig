@@ -1,0 +1,35 @@
+{% extends 'layout/base.html.twig' %}
+
+{% block title %}All tweets{% endblock %}
+
+{% block body %}
+    <div class="container-fluid">
+        <div class="row">
+
+            {% include 'component/_nav.html.twig' %}
+
+            <div class="col-12 col-md-10 offset-md-3">
+
+{#                                <div class="border-bottom p-3">#}
+{#                                    <h5 class="mb-0 fw-bold">#}
+{#                                        El Presidente <i class="fa-solid fa-circle-check text-primary"></i>#}
+{#                                    </h5>#}
+{#                                    <p class="mb-2"><em>There some bio text about the greatest El Presidente</em></p>#}
+{#                                </div>#}
+
+{#                                <div class="p-3 border-bottom">#}
+{#                                    <textarea class="form-control tweet-input mb-3" placeholder="What's happening?" rows="3"></textarea>#}
+{#                                    <div class="d-flex justify-content-end">#}
+{#                                        <button class="btn btn-primary rounded-pill px-4" type="button" disabled>Tweet</button>#}
+{#                                    </div>#}
+{#                                </div>#}
+
+                {% include 'component/_tweet_list.html.twig' with {
+                    tweets: tweets,
+                    title: 'Feeds:'
+                } only %}
+            </div>
+
+        </div>
+    </div>
+{% endblock %}
