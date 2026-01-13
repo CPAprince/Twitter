@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Twitter\Tweet\UI\Web;
+namespace Twitter\Tweet\UI\Web\Homepage;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -36,9 +36,8 @@ final class HomepageController extends AbstractController
             ],
         ];
 
-        return $this->render('feeds.html.twig', [
+        return $this->render('page/homepage.html.twig', [
             'tweets' => $tweets,
         ]);
     }
-
 }
