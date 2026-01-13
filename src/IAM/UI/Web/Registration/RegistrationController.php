@@ -24,6 +24,6 @@ final readonly class RegistrationController
      */
     public function __invoke(): Response
     {
-        return new Response($this->twig->render('registration.html.twig'), Response::HTTP_OK);
+        return new Response($this->twig->render('page/registration.html.twig'), Response::HTTP_OK);
     }
 }

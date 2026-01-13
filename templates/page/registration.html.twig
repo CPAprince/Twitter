@@ -1,29 +1,29 @@
-{% extends 'base.html.twig' %}
+{% extends 'layout/base.html.twig' %}
 
-{% block title %}
-    Twitter | Registration
-{% endblock %}
+{% block title %}Twitter | Registration{% endblock %}
 
-{% block body %}
-    <form id="registration-form" method="post">
-        <label for="name">Your name</label>
-        <input type="text" name="name" id="name" value="Test Name" required maxlength="50">
+{% block content %}
+    <h1 class="mb-3">Registration</h1>
 
-        <label for="bio">About you</label>
-        <input type="text" name="bio" id="bio" value="Test bio" maxlength="300">
-
-        <label for="email">Email</label>
-        <input type="email" name="email" id="email" value="test@example.com" required>
-
-        <label for="password">Password</label>
-        <input type="password" name="password" id="password" value="Qwerty_123" required>
-
-        <input type="submit" id="submit" value="Register">
-    </form>
+    {% include 'component/registration_form.html.twig' %}
+    {% include 'component/alert_placeholder.html.twig' %}
 {% endblock %}
 
 {% block javascripts %}
     <script>
+        const alertPlaceholder = document.getElementById('alert-placeholder')
+        const appendAlert = (message, type) => {
+            const wrapper = document.createElement('div')
+            wrapper.innerHTML = [
+                `<div class="alert alert-${type} alert-dismissible" role="alert">`,
+                `   <div>${message}</div>`,
+                '   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>',
+                '</div>'
+            ].join('')
+
+            alertPlaceholder.append(wrapper)
+        }
+
         /** @type {HTMLDivElement} */
         const errorBox = document.createElement('div');
         errorBox.style.color = 'red';
@@ -44,8 +44,10 @@
                     name: formData.get('name'),
                     bio: formData.get('bio'),
                 });
+
+                appendAlert('Registration successful', 'success')
             } catch (error) {
-                errorBox.textContent = error.message;
+                appendAlert('Registration failed, please try again', 'danger')
             }
         });
 
