@@ -71,6 +71,8 @@ final class Tweet
 
     public function decreaseLikesCount(): void
     {
-        $this->likesCount--;
+        if ($this->likesCount > 0) {
+            $this->likesCount--;
+        }
     }
 }
