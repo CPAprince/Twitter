@@ -11,122 +11,15 @@
 
 {% block javascripts %}
     <script>
-        const alertPlaceholder = document.getElementById('alert-placeholder')
-        const appendAlert = (message, type) => {
-            const wrapper = document.createElement('div')
-            wrapper.innerHTML = [
-                `<div class="alert alert-${type} alert-dismissible" role="alert">`,
-                `   <div>${message}</div>`,
-                '   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>',
-                '</div>'
-            ].join('')
-
-            alertPlaceholder.append(wrapper)
-        }
-
-        /** @type {HTMLDivElement} */
-        const errorBox = document.createElement('div');
-        errorBox.style.color = 'red';
-
-        const form = document.getElementById('registration-form');
-        form.prepend(errorBox);
-
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            errorBox.textContent = '';
-
-            const formData = new FormData(form);
-
-            try {
-                await register({
-                    email: formData.get('email'),
-                    password: formData.get('password'),
-                    name: formData.get('name'),
-                    bio: formData.get('bio'),
-                });
-
-                appendAlert('Registration successful', 'success')
-            } catch (error) {
-                appendAlert('Registration failed, please try again', 'danger')
-            }
-        });
-
-        async function register(data) {
-            const userId = await createUser(data.email, data.password);
-            const token  = await login(data.email, data.password);
-
-            storeToken(token);
-
-            try {
-                await createProfile(userId, data.name, data.bio);
-            } catch (error) {
-                console.warn('Profile creation failed, user is incomplete', error);
-                throw new Error('Registration failed while creating profile. Please try again.');
-            }
-
-            window.location.href = '{{ path('api_health_check') }}';
-        }
-
-        function storeToken(token) {
-            localStorage.setItem('access_token', token);
-        }
-
-        async function createUser(email, password) {
-            const response = await fetch('{{ path('api_create_user') }}', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, password })
-            });
-
-            return extractJson(response, 'Failed to create user', (data) => data.id);
-        }
-
-        async function login(email, password) {
-            const response = await fetch('{{ path('api_login_check') }}', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, password })
-            });
-
-            return extractJson(response, 'Login failed', (data) => data.token);
-        }
-
-        async function createProfile(userId, name, bio) {
-            const token = localStorage.getItem('access_token');
-
-            const response = await fetch('{{ path('api_create_profile') }}', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify({ userId, name, bio })
-            });
-
-            if (!response.ok) {
-                throw new Error('Profile creation failed');
-            }
-        }
-
-        async function extractJson(response, fallbackMessage, mapper) {
-            let payload;
-
-            try {
-                payload = await response.json();
-            } catch {
-                throw new Error(fallbackMessage);
-            }
-
-            if (!response.ok) {
-                throw new Error(payload.message || fallbackMessage);
-            }
-
-            const value = mapper(payload);
-            if (!value) {
-                throw new Error('Unexpected server response');
-            }
-
-            return String(value);
-        }
+        window.routes = {
+            createUser: '{{ path('api_create_user') }}',
+            login: '{{ path('api_login_check') }}',
+            createProfile: '{{ path('api_create_profile') }}',
+            successRedirect: '{{ path('api_health_check') }}',
+        };
     </script>
+
+    <script src="{{ asset('js/alert.js') }}"></script>
+    <script src="{{ asset('js/api.js') }}"></script>
+    <script src="{{ asset('js/registration.js') }}"></script>
 {% endblock %}
