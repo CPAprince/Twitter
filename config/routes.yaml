@@ -21,3 +21,7 @@ tweet_module:
 
 api_login_check:
     path: /api/token
+
+web:
+    resource: ../src/*/UI/Web/*Controller.php
+    type: attribute
