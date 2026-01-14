@@ -8,10 +8,10 @@ use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Twitter\IAM\Application\Logout\LogoutCommand;
 use Twitter\IAM\Application\Logout\LogoutHandler;
 use Twitter\IAM\Domain\Auth\Exception\UnauthorizedException;
-use Twitter\IAM\Infrastructure\Security\UserIdAwareInterface;
 use Twitter\IAM\UI\REST\Request\LogoutRequest;
 
 final readonly class RevokeRefreshTokenController
@@ -26,12 +26,13 @@ final readonly class RevokeRefreshTokenController
         #[MapRequestPayload] LogoutRequest $logoutRequest,
     ): Response {
         $user = $this->security->getUser();
-        if (!$user instanceof UserIdAwareInterface) {
+
+        if (!$user instanceof UserInterface) {
             throw new UnauthorizedException();
         }
 
         ($this->logoutHandler)(new LogoutCommand(
-            userId: $user->getId(),
+            username: $user->getUserIdentifier(), // email/username for bundle
             refreshToken: $logoutRequest->refreshToken(),
         ));
 
