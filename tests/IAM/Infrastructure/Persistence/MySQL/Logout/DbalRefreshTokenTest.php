@@ -11,7 +11,6 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Twitter\IAM\Domain\Auth\Exception\TokenInvalidException;
-use Twitter\IAM\Infrastructure\Auth\RefreshTokenHasher;
 use Twitter\IAM\Infrastructure\Persistence\MySQL\Repository\MySQLRefreshTokenRepository;
 
 #[Group('unit')]
@@ -21,16 +20,13 @@ final class DbalRefreshTokenTest extends TestCase
     private Connection&MockObject $connection;
     private MySQLRefreshTokenRepository $store;
 
-    private const string USER_ID = '019b2bd9-f57c-7088-824e-b6f96f27a1ba';
+    private const string USERNAME = 'fresh@gmail.com';
     private const string REFRESH_TOKEN = 'rt_example_123';
-    private const string SECRET = 'test_secret';
 
     protected function setUp(): void
     {
         $this->connection = $this->createMock(Connection::class);
-
-        $hasher = new RefreshTokenHasher(self::SECRET);
-        $this->store = new MySQLRefreshTokenRepository($this->connection, $hasher);
+        $this->store = new MySQLRefreshTokenRepository($this->connection);
     }
 
     #[Test]
@@ -41,7 +37,7 @@ final class DbalRefreshTokenTest extends TestCase
             ->method('executeStatement')
             ->willReturn(1);
 
-        $this->store->revoke(self::REFRESH_TOKEN, self::USER_ID);
+        $this->store->revoke(self::REFRESH_TOKEN, self::USERNAME);
     }
 
     #[Test]
@@ -54,6 +50,6 @@ final class DbalRefreshTokenTest extends TestCase
 
         $this->expectException(TokenInvalidException::class);
 
-        $this->store->revoke(self::REFRESH_TOKEN, self::USER_ID);
+        $this->store->revoke(self::REFRESH_TOKEN, self::USERNAME);
     }
 }

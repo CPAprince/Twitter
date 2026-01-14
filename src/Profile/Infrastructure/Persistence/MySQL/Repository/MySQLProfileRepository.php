@@ -32,4 +32,15 @@ final readonly class MySQLProfileRepository implements ProfileRepository
             throw new UserNotFoundException($profile->userId());
         }
     }
+
+    public function getByUserId(string $userId): Profile
+    {
+        $profile = $this->entityManager->find(Profile::class, $userId);
+
+        if (null === $profile) {
+            throw new UserNotFoundException($userId);
+        }
+
+        return $profile;
+    }
 }

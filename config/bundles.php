@@ -5,6 +5,7 @@ declare(strict_types=1);
 use Doctrine\Bundle\DoctrineBundle\DoctrineBundle;
 use Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle;
 use Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle;
+use Gesdinet\JWTRefreshTokenBundle\GesdinetJWTRefreshTokenBundle;
 use Lexik\Bundle\JWTAuthenticationBundle\LexikJWTAuthenticationBundle;
 use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
 use Symfony\Bundle\MonologBundle\MonologBundle;
@@ -20,4 +21,5 @@ return [
     SecurityBundle::class => ['all' => true],
     LexikJWTAuthenticationBundle::class => ['all' => true],
     TwigBundle::class => ['all' => true],
+    GesdinetJWTRefreshTokenBundle::class => ['all' => true],
 ];
