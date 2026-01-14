@@ -21,3 +21,6 @@ tweet_module:
 
 api_login_check:
     path: /api/token
+    methods: [POST]
+    
+
