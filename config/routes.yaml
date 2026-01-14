@@ -29,6 +29,5 @@ api_login_check:
 web:
     resource: ../src/*/UI/Web/**/*Controller.php
     type: attribute
-    methods: [POST]
     
 
