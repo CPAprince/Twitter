@@ -66,13 +66,13 @@ final class Tweet
 
     public function increaseLikesCount(): void
     {
-        $this->likesCount++;
+        ++$this->likesCount;
     }
 
     public function decreaseLikesCount(): void
     {
         if ($this->likesCount > 0) {
-            $this->likesCount--;
+            --$this->likesCount;
         }
     }
 }

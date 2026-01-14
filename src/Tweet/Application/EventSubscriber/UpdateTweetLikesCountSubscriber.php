@@ -8,7 +8,7 @@ use Override;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Twitter\Like\Domain\Like\Event\TweetWasLiked;
 use Twitter\Like\Domain\Like\Event\TweetWasUnliked;
-use Twitter\Tweet\Domain\Tweet\Exception\TweetNotFoundException
+use Twitter\Tweet\Domain\Tweet\Exception\TweetNotFoundException;
 use Twitter\Tweet\Domain\Tweet\Model\TweetRepository;
 
 final readonly class UpdateTweetLikesCountSubscriber implements EventSubscriberInterface
