@@ -8,7 +8,7 @@ use DateTimeImmutable;
 
 interface RefreshTokenRepository
 {
-    public function revoke(string $refreshToken, string $userId): void;
+    public function revoke(string $refreshToken, string $username): void;
 
     public function deleteRevokedExpired(DateTimeImmutable $now): int;
 }
