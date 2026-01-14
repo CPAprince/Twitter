@@ -58,5 +58,9 @@ services:
         arguments:
             $tweetRepository: '@Twitter\Tweet\Domain\Tweet\Model\TweetRepository'
 
+    Twitter\Tweet\Application\UseCase\UpdateTweet\UpdateTweetCommandHandler:
+        arguments:
+            $tweetRepository: '@Twitter\Tweet\Domain\Tweet\Model\TweetRepository'
+
     Twitter\Tweet\Domain\Tweet\Model\TweetRepository:
         class: Twitter\Tweet\Infrastructure\Persistence\MySQL\Repository\MySQLTweetRepository
