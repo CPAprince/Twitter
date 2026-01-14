@@ -25,10 +25,6 @@ services:
         arguments:
             $repository: '@Twitter\IAM\Application\Logout\RefreshTokenRepository'
             
-    Twitter\IAM\Infrastructure\Auth\RefreshTokenHasher:
-        arguments:
-            $secret: '%env(APP_SECRET)%'
-
     Twitter\IAM\Domain\User\Model\UserRepository:
         class: Twitter\IAM\Infrastructure\Persistence\MySQL\Repository\MySQLUserRepository
         tags: [ 'doctrine.repository_service' ]

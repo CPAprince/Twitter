@@ -12,7 +12,7 @@ final class LogoutHandler
     {
         $this->repository->revoke(
             $command->refreshToken(),
-            $command->getUserId(),
+            $command->username(),
         );
     }
 }
