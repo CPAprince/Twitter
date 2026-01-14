@@ -23,8 +23,6 @@ document.addEventListener('DOMContentLoaded', () => {
         throw new Error('Access token is missing.');
       }
 
-      localStorage.setItem('access_token', accessToken);
-
       await Api.post(
         window.routes.createProfile,
         {userId: user.id, name: data.name, bio: data.bio},
