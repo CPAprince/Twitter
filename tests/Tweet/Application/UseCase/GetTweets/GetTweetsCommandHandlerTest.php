@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Twitter\Tests\Tweet\Application\UseCase\GetTweets;
 
-use DateTimeImmutable;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
@@ -57,8 +56,8 @@ final class GetTweetsCommandHandlerTest extends TestCase
     #[Test]
     public function itReturnsTweetsWithAuthorDataInSameOrder(): void
     {
-        $authorIdOne = '22222222-2222-2222-2222-222222222222';
-        $authorIdTwo = '33333333-3333-3333-3333-333333333333';
+        $authorIdOne = '019b5f3f-d110-7908-9177-5df439942a8b';
+        $authorIdTwo = '019b5f41-0e5b-7f65-8b7a-0f9c0b3b3c11';
 
         $tweetNewest = Tweet::create($authorIdOne, 'Newest tweet');
         $tweetOldest = Tweet::create($authorIdTwo, 'Oldest tweet');
@@ -88,21 +87,22 @@ final class GetTweetsCommandHandlerTest extends TestCase
         self::assertSame('Newest tweet', $result->tweets[0]->content);
         self::assertSame($authorIdOne, $result->tweets[0]->authorId);
         self::assertSame('User One', $result->tweets[0]->authorName);
+        self::assertSame($tweetNewest->createdAt()->format(DATE_RFC3339), $result->tweets[0]->createdAt->format(DATE_RFC3339));
+        self::assertSame($tweetNewest->updatedAt()->format(DATE_RFC3339), $result->tweets[0]->updatedAt->format(DATE_RFC3339));
 
         self::assertInstanceOf(TweetResponse::class, $result->tweets[1]);
         self::assertSame($tweetOldest->id(), $result->tweets[1]->id);
         self::assertSame('Oldest tweet', $result->tweets[1]->content);
         self::assertSame($authorIdTwo, $result->tweets[1]->authorId);
         self::assertSame('User Two', $result->tweets[1]->authorName);
-
-        self::assertInstanceOf(DateTimeImmutable::class, $result->tweets[0]->createdAt);
-        self::assertInstanceOf(DateTimeImmutable::class, $result->tweets[0]->updatedAt);
+        self::assertSame($tweetOldest->createdAt()->format(DATE_RFC3339), $result->tweets[1]->createdAt->format(DATE_RFC3339));
+        self::assertSame($tweetOldest->updatedAt()->format(DATE_RFC3339), $result->tweets[1]->updatedAt->format(DATE_RFC3339));
     }
 
     #[Test]
     public function itFetchesAuthorNameOnlyOncePerAuthorId(): void
     {
-        $authorId = '22222222-2222-2222-2222-222222222222';
+        $authorId = '019b5f3f-d110-7908-9177-5df439942a8b';
 
         $tweetFirst = Tweet::create($authorId, 'First tweet');
         $tweetSecond = Tweet::create($authorId, 'Second tweet');
