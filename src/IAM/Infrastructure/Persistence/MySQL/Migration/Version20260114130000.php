@@ -16,7 +16,7 @@ final class Version20260114130000 extends AbstractMigration
 
     public function up(Schema $schema): void
     {
-//        $this->addSql('DROP TABLE IF EXISTS refresh_tokens');
+        //        $this->addSql('DROP TABLE IF EXISTS refresh_tokens');
 
         $this->addSql(
             <<<SQL
