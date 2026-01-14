@@ -1,6 +1,6 @@
 window.Alert = {
   append(container, message, type) {
-    const wrapper = document.createElement('div');
+    const wrapper = document.createElement("div");
     wrapper.innerHTML = `
       <div class="alert alert-${type} alert-dismissible" role="alert">
         <div>${message}</div>
@@ -11,5 +11,5 @@ window.Alert = {
       </div>
     `;
     container.append(wrapper);
-  }
-}
+  },
+};
