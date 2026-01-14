@@ -1,5 +1,7 @@
 window.Alert = {
   append(container, message, type) {
+    container.innerHTML = "";
+
     const wrapper = document.createElement("div");
     wrapper.innerHTML = `
       <div class="alert alert-${type} alert-dismissible" role="alert">
