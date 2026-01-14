@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Twitter\Tweet\UI\REST\GetTweets;
 
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Twitter\Tweet\Application\UseCase\GetTweets\GetTweetsCommand;
 use Twitter\Tweet\Application\UseCase\GetTweets\GetTweetsCommandHandler;
@@ -27,7 +26,7 @@ final readonly class GetTweetsController
 
         return new JsonResponse([
             'tweets' => $tweets,
-        ], Response::HTTP_OK);
+        ], JsonResponse::HTTP_OK);
     }
 
     private static function mapTweetResponse(TweetResponse $tweetResponse): array
