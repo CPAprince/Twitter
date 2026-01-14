@@ -7,4 +7,6 @@ namespace Twitter\Profile\Domain\Profile\Model;
 interface ProfileRepository
 {
     public function add(Profile $profile);
+
+    public function getByUserId(string $userId): Profile;
 }
