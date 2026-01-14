@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Twitter\Tests\Tweet\Application\UseCase\GetTweet;
 
-use DateTimeImmutable;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
@@ -38,9 +37,9 @@ final class GetTweetCommandHandlerTest extends TestCase
     }
 
     #[Test]
-    public function itReturnsTweetWhenExists(): void
+    public function handleReturnsTweetWithAuthorWhenTweetExists(): void
     {
-        $authorId = '22222222-2222-2222-2222-222222222222';
+        $authorId = '019b5f3f-d110-7908-9177-5df439942a8b';
 
         $tweet = Tweet::create($authorId, 'Hello from unit test!');
         $tweetId = $tweet->id();
@@ -65,17 +64,14 @@ final class GetTweetCommandHandlerTest extends TestCase
         self::assertSame($authorId, $result->authorId);
         self::assertSame('Test User', $result->authorName);
 
-        self::assertInstanceOf(DateTimeImmutable::class, $result->createdAt);
-        self::assertInstanceOf(DateTimeImmutable::class, $result->updatedAt);
-
-        self::assertNotEmpty($result->createdAt->format(DATE_RFC3339));
-        self::assertNotEmpty($result->updatedAt->format(DATE_RFC3339));
+        self::assertSame($tweet->createdAt()->format(DATE_RFC3339), $result->createdAt->format(DATE_RFC3339));
+        self::assertSame($tweet->updatedAt()->format(DATE_RFC3339), $result->updatedAt->format(DATE_RFC3339));
     }
 
     #[Test]
-    public function itThrowsWhenTweetDoesNotExist(): void
+    public function handlePropagatesTweetNotFoundExceptionWhenTweetDoesNotExist(): void
     {
-        $tweetId = '11111111-1111-1111-1111-111111111111';
+        $tweetId = '019b5f41-0e5b-7f65-8b7a-0f9c0b3b3c11';
 
         $this->tweetRepository
             ->expects(self::once())

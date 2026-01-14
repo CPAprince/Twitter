@@ -6,6 +6,8 @@ namespace Twitter\Tweet\UI\REST\GetTweet;
 
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Assert\Assert;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Twitter\Tweet\Application\UseCase\GetTweet\GetTweetCommand;
 use Twitter\Tweet\Application\UseCase\GetTweet\GetTweetCommandHandler;
@@ -18,11 +20,15 @@ final readonly class GetTweetController
 
     public function __invoke(string $tweetId): JsonResponse
     {
+        Assert::lazy()->tryAll()
+            ->that($tweetId, 'tweetId')->notBlank()->uuid()
+            ->verifyNow();
+
         $tweetResponse = $this->handler->handle(new GetTweetCommand($tweetId));
 
         return new JsonResponse(
             self::mapTweetResponse($tweetResponse),
-            Response::HTTP_OK
+            JsonResponse::HTTP_OK
         );
     }
 

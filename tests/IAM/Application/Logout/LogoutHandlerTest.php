@@ -29,16 +29,16 @@ final class LogoutHandlerTest extends TestCase
     #[Test]
     public function itRevokesRefreshTokenForUser(): void
     {
-        $userId = '019b2bd9-f57c-7088-824e-b6f96f27a1ba';
+        $username = 'fresh@gmail.com';
         $refreshToken = 'some-refresh-token';
 
         $this->refreshTokenStore
             ->expects(self::once())
             ->method('revoke')
-            ->with($refreshToken, $userId);
+            ->with($refreshToken, $username);
 
         ($this->handler)(new LogoutCommand(
-            userId: $userId,
+            username: $username,
             refreshToken: $refreshToken,
         ));
     }
