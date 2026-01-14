@@ -12,7 +12,6 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use Twitter\IAM\Infrastructure\Auth\RefreshTokenHasher;
 use Twitter\IAM\Infrastructure\Persistence\MySQL\Repository\MySQLRefreshTokenRepository;
 
 #[Group('unit')]
@@ -22,18 +21,14 @@ final class DeleteRevokedExpiredTest extends TestCase
     private Connection&MockObject $connection;
     private MySQLRefreshTokenRepository $store;
 
-    private const string SECRET = 'test_secret';
-
     protected function setUp(): void
     {
         $this->connection = $this->createMock(Connection::class);
-
-        $hasher = new RefreshTokenHasher(self::SECRET);
-        $this->store = new MySQLRefreshTokenRepository($this->connection, $hasher);
+        $this->store = new MySQLRefreshTokenRepository($this->connection);
     }
 
     #[Test]
-    public function itDeletesOnlyRevokedAndExpiredTokens(): void
+    public function itDeletesExpiredTokens(): void
     {
         $now = new DateTimeImmutable('2025-12-26 12:00:00');
 
