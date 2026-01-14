@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Twitter\Tweet\UI\REST\GetTweet;
 
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Response;
 use Assert\Assert;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
