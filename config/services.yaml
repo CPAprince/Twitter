@@ -71,6 +71,11 @@ services:
             $tweetRepository: '@Twitter\Tweet\Domain\Tweet\Model\TweetRepository'
             $profileRepository: '@Twitter\Profile\Domain\Profile\Model\ProfileRepository'
             
+    Twitter\Tweet\Application\UseCase\GetTweets\GetTweetsCommandHandler:
+        arguments:
+            $tweetRepository: '@Twitter\Tweet\Domain\Tweet\Model\TweetRepository'
+            $profileRepository: '@Twitter\Profile\Domain\Profile\Model\ProfileRepository'
+            
     Twitter\Tweet\Application\UseCase\UpdateTweet\UpdateTweetCommandHandler:
         arguments:
             $tweetRepository: '@Twitter\Tweet\Domain\Tweet\Model\TweetRepository'

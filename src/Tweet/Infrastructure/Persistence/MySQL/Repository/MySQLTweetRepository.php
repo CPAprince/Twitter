@@ -49,4 +49,14 @@ final readonly class MySQLTweetRepository implements TweetRepository
 
         return $tweet;
     }
+
+    public function getAllTweets(): array
+    {
+        /** @var list<Tweet> $tweets */
+        $tweets = $this->entityManager
+            ->getRepository(Tweet::class)
+            ->findBy([], ['createdAt' => 'DESC']);
+
+        return $tweets;
+    }
 }

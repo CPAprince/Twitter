@@ -7,7 +7,6 @@ namespace Twitter\Tweet\UI\REST\UpdateTweet;
 use Assert\Assert;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
@@ -30,7 +29,7 @@ final readonly class UpdateTweetController
         string $tweetId,
         #[MapRequestPayload] UpdateTweetRequest $request,
         #[CurrentUser] User $authUser,
-    ): Response {
+    ): JsonResponse {
         Assert::that($tweetId)->uuid();
 
         $command = new UpdateTweetCommand($authUser->id(), $tweetId, $request->content());
@@ -39,6 +38,6 @@ final readonly class UpdateTweetController
         return new JsonResponse([
             'content' => $result->content,
             'updatedAt' => $result->updatedAt->format(DATE_RFC3339),
-        ], Response::HTTP_OK);
+        ], JsonResponse::HTTP_OK);
     }
 }
