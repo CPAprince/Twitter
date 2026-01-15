@@ -66,7 +66,6 @@ services:
     Twitter\Tweet\UI\REST\:
         resource: '../src/Tweet/UI/REST/*/*Controller.php'
         tags: [ 'controller.service_arguments' ]
-    
 
     Twitter\Tweet\Domain\Tweet\Model\TweetRepository:
         class: Twitter\Tweet\Infrastructure\Persistence\MySQL\Repository\MySQLTweetRepository
@@ -74,9 +73,6 @@ services:
     Twitter\Tweet\Application\UseCase\CreateTweet\CreateTweetCommandHandler:
         arguments:
             $tweetRepository: '@Twitter\Tweet\Domain\Tweet\Model\TweetRepository'
-
-    Twitter\Tweet\Domain\Tweet\Model\TweetRepository:
-        class: Twitter\Tweet\Infrastructure\Persistence\MySQL\Repository\MySQLTweetRepository
     
     Twitter\Like\Domain\Like\Model\LikeRepository:
         class: Twitter\Like\Infrastructure\Persistence\MySQL\Repository\MySQLLikeRepository
