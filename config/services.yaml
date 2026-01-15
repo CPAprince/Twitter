@@ -66,6 +66,10 @@ services:
         arguments:
             $tweetRepository: '@Twitter\Tweet\Domain\Tweet\Model\TweetRepository'
 
+    Twitter\Tweet\UI\Web\:
+        resource: '../src/Tweet/UI/Web/'
+        tags: [ 'controller.service_arguments' ]
+        
     Twitter\Tweet\Application\UseCase\GetTweet\GetTweetCommandHandler:
         arguments:
             $tweetRepository: '@Twitter\Tweet\Domain\Tweet\Model\TweetRepository'
