@@ -7,34 +7,34 @@ namespace Twitter\Tweet\UI\Web\Homepage;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Twitter\Tweet\Application\UseCase\GetTweets\GetTweetsCommand;
+use Twitter\Tweet\Application\UseCase\GetTweets\GetTweetsCommandHandler;
+use Twitter\Tweet\Application\UseCase\Shared\TweetResponse;
 
 final class HomepageController extends AbstractController
 {
+    public function __construct(
+        private readonly GetTweetsCommandHandler $handler,
+    ) {}
+
     #[Route('/', name: 'homepage', methods: ['GET'])]
     public function __invoke(): Response
     {
-        $tweets = [
-            [
-                'id' => '3fa85f64-5717-4562-b3fc-2c963f66afa6',
-                'content' => 'Just built a Twitter clone using Bootstrap! 🚀 #webdev #coding',
-                'createdAt' => '2026-01-06T10:24:26+00:00',
-                'updatedAt' => '2026-01-06T10:24:26+00:00',
+        $dto = $this->handler->handle(new GetTweetsCommand());
+
+        $tweets = array_map(
+            static fn (TweetResponse $tweet): array => [
+                'id' => $tweet->id,
+                'content' => $tweet->content,
+                'createdAt' => $tweet->createdAt,
+                'updatedAt' => $tweet->updatedAt,
                 'author' => [
-                    'id' => '550e8400-e29b-41d4-a716-446655440000',
-                    'name' => 'John Doe',
+                    'id' => $tweet->authorId,
+                    'name' => $tweet->authorName,
                 ],
             ],
-            [
-                'id' => '4fa85f64-5717-4562-b3fc-2c963f66afa6',
-                'content' => '#travel #fun Barsa was AWESOME! IBIZA meet me NEXT WEEKENDS!',
-                'createdAt' => '2026-01-06T08:10:00+00:00',
-                'updatedAt' => '2026-01-06T08:10:00+00:00',
-                'author' => [
-                    'id' => '551e8400-e29b-41d4-a716-446655440000',
-                    'name' => 'Maria Taylor',
-                ],
-            ],
-        ];
+            $dto->tweets
+        );
 
         return $this->render('page/homepage.html.twig', [
             'tweets' => $tweets,
