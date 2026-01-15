@@ -10,8 +10,17 @@ interface TweetRepository
 {
     public function add(Tweet $tweet): void;
 
+    public function flush(): void;
+
     /**
      * @throws TweetNotFoundException
      */
     public function getById(string $tweetId): Tweet;
+
+    /**
+     * Returns all tweets sorted by createdAt DESC (newest first).
+     *
+     * @return list<Tweet>
+     */
+    public function getAllTweets(): array;
 }

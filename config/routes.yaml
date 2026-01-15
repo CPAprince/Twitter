@@ -4,15 +4,12 @@ health_check_module:
     resource: ../src/HealthCheck/Controller/HealthCheckController.php
     type: attribute
     
-api_create_user:
-    resource: ../src/IAM/UI/REST/Controller/CreateUserController.php
-    type: attribute
 iam_module:
     resource: ../src/IAM/UI/REST/Controller/
     type: attribute
-    
-api_create_profile:
-    resource: ../src/Profile/UI/REST/Controller/CreateProfile/CreateProfileController.php
+
+profile_module:
+    resource: ../src/Profile/UI/REST/Controller/
     type: attribute
     
 tweet_module:
@@ -21,3 +18,6 @@ tweet_module:
 
 api_login_check:
     path: /api/token
+    methods: [POST]
+    
+

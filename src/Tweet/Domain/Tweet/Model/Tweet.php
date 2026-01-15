@@ -49,6 +49,16 @@ final class Tweet
         return $this->content;
     }
 
+    public function updateContent(string $content): void
+    {
+        Assert::lazy()
+            ->that($content, 'content')->notBlank()->maxLength(280)
+            ->verifyNow();
+
+        $this->content = $content;
+        $this->updatedAt = new DateTimeImmutable();
+    }
+
     public function createdAt(): DateTimeImmutable
     {
         return $this->createdAt;

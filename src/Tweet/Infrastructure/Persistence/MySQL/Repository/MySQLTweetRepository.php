@@ -6,6 +6,8 @@ namespace Twitter\Tweet\Infrastructure\Persistence\MySQL\Repository;
 
 use Doctrine\DBAL\Exception\ForeignKeyConstraintViolationException;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Exception\ORMException;
+use Doctrine\ORM\OptimisticLockException;
 use Twitter\Tweet\Domain\Tweet\Exception\TweetNotFoundException;
 use Twitter\Tweet\Domain\Tweet\Exception\UserNotFoundException;
 use Twitter\Tweet\Domain\Tweet\Model\Tweet;
@@ -28,15 +30,33 @@ final readonly class MySQLTweetRepository implements TweetRepository
         }
     }
 
+    public function flush(): void
+    {
+        $this->entityManager->flush();
+    }
+
+    /**
+     * @throws OptimisticLockException
+     * @throws TweetNotFoundException
+     * @throws ORMException
+     */
     public function getById(string $tweetId): Tweet
     {
-        /** @var Tweet|null $tweet */
         $tweet = $this->entityManager->find(Tweet::class, $tweetId);
-
         if (null === $tweet) {
             throw new TweetNotFoundException($tweetId);
         }
 
         return $tweet;
+    }
+
+    public function getAllTweets(): array
+    {
+        /** @var list<Tweet> $tweets */
+        $tweets = $this->entityManager
+            ->getRepository(Tweet::class)
+            ->findBy([], ['createdAt' => 'DESC']);
+
+        return $tweets;
     }
 }

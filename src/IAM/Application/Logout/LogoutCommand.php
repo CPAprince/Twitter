@@ -7,13 +7,13 @@ namespace Twitter\IAM\Application\Logout;
 final readonly class LogoutCommand
 {
     public function __construct(
-        private string $userId,
+        private string $username,
         private string $refreshToken,
     ) {}
 
-    public function getUserId(): string
+    public function username(): string
     {
-        return $this->userId;
+        return $this->username;
     }
 
     public function refreshToken(): string

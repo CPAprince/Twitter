@@ -13,15 +13,19 @@ security:
             pattern: ^/(_profiler|_wdt|assets|build)/
             security: false
         login:
-            pattern: ^/api/token
+            pattern: ^/api/token$
             stateless: true
             json_login:
                 check_path: /api/token
                 username_path: email
                 password_path: password
                 success_handler: lexik_jwt_authentication.handler.authentication_success
-                failure_handler: lexik_jwt_authentication.handler.authentication_failure
-
+                failure_handler: lexik_jwt_authentication.handler.authentication_failure    
+        refresh:
+            pattern: ^/api/token/refresh$
+            stateless: true
+            refresh_jwt:
+                check_path: /api/token/refresh
         api:
             pattern: ^/api
             stateless: true
@@ -31,6 +35,10 @@ security:
         - { path: ^/api/health, roles: PUBLIC_ACCESS }
         - { path: ^/api/users, roles: PUBLIC_ACCESS }
         - { path: ^/api/token, roles: PUBLIC_ACCESS }
+        - { path: ^/api/profiles, methods: [GET], roles: PUBLIC_ACCESS }
+        - { path: ^/api/tweets, methods: [GET], roles: PUBLIC_ACCESS }
+        - { path: ^/api/tokens, roles: PUBLIC_ACCESS }
+        - { path: ^/api/token/refresh$, roles: PUBLIC_ACCESS }
         - { path: ^/api,       roles: IS_AUTHENTICATED_FULLY }
 
 when@test:
