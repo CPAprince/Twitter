@@ -8,7 +8,10 @@ use Doctrine\DBAL\Exception\ForeignKeyConstraintViolationException;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Exception\EntityIdentityCollisionException;
+use Doctrine\ORM\Exception\ORMException;
+use Doctrine\ORM\OptimisticLockException;
 use Twitter\Profile\Domain\Profile\Exception\ProfileAlreadyExistsException;
+use Twitter\Profile\Domain\Profile\Exception\ProfileNotFoundException;
 use Twitter\Profile\Domain\Profile\Exception\UserNotFoundException;
 use Twitter\Profile\Domain\Profile\Model\Profile;
 use Twitter\Profile\Domain\Profile\Model\ProfileRepository;
@@ -33,12 +36,16 @@ final readonly class MySQLProfileRepository implements ProfileRepository
         }
     }
 
+    /**
+     * @throws ORMException
+     * @throws OptimisticLockException
+     * @throws ProfileNotFoundException
+     */
     public function getByUserId(string $userId): Profile
     {
         $profile = $this->entityManager->find(Profile::class, $userId);
-
         if (null === $profile) {
-            throw new UserNotFoundException($userId);
+            throw new ProfileNotFoundException($userId);
         }
 
         return $profile;
