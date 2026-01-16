@@ -49,7 +49,7 @@ final class UpdateTweetLikesCountSubscriberTest extends TestCase
             ->method('add')
             ->with(
                 self::callback(function (Tweet $savedTweet): bool {
-                    return 1 === $savedTweet->likesCount();
+                    return 1 === $savedTweet->likes();
                 }),
             );
 
@@ -64,7 +64,7 @@ final class UpdateTweetLikesCountSubscriberTest extends TestCase
         $event = new TweetWasUnliked($tweetId, $userId);
 
         $tweet = Tweet::create($userId, 'Content');
-        $tweet->increaseLikesCount();
+        $tweet->like();
 
         $this->tweetRepository
             ->expects(self::once())
@@ -77,7 +77,7 @@ final class UpdateTweetLikesCountSubscriberTest extends TestCase
             ->method('add')
             ->with(
                 self::callback(function (Tweet $savedTweet): bool {
-                    return 0 === $savedTweet->likesCount();
+                    return 0 === $savedTweet->likes();
                 }),
             );
 
@@ -126,21 +126,21 @@ final class UpdateTweetLikesCountSubscriberTest extends TestCase
         $user3 = '019bbcb3-2785-76b4-9e91-fa36b07b407c';
 
         $this->subscriber->onTweetLiked(new TweetWasLiked($tweetId, $user1));
-        self::assertSame(1, $tweet->likesCount());
+        self::assertSame(1, $tweet->likes());
 
         $this->subscriber->onTweetLiked(new TweetWasLiked($tweetId, $user2));
-        self::assertSame(2, $tweet->likesCount());
+        self::assertSame(2, $tweet->likes());
 
         $this->subscriber->onTweetLiked(new TweetWasLiked($tweetId, $user3));
-        self::assertSame(3, $tweet->likesCount());
+        self::assertSame(3, $tweet->likes());
 
         $this->subscriber->onTweetUnliked(new TweetWasUnliked($tweetId, $user1));
-        self::assertSame(2, $tweet->likesCount());
+        self::assertSame(2, $tweet->likes());
 
         $this->subscriber->onTweetUnliked(new TweetWasUnliked($tweetId, $user2));
-        self::assertSame(1, $tweet->likesCount());
+        self::assertSame(1, $tweet->likes());
 
         $this->subscriber->onTweetUnliked(new TweetWasUnliked($tweetId, $user3));
-        self::assertSame(0, $tweet->likesCount());
+        self::assertSame(0, $tweet->likes());
     }
 }

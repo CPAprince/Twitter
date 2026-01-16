@@ -69,17 +69,17 @@ final class Tweet
         return $this->updatedAt;
     }
 
-    public function likesCount(): int
+    public function likes(): int
     {
         return $this->likesCount;
     }
 
-    public function increaseLikesCount(): void
+    public function like(): void
     {
         ++$this->likesCount;
     }
 
-    public function decreaseLikesCount(): void
+    public function dislike(): void
     {
         if ($this->likesCount > 0) {
             --$this->likesCount;

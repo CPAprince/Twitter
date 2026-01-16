@@ -31,7 +31,7 @@ final readonly class UpdateTweetLikesCountSubscriber implements EventSubscriberI
         try {
             $tweet = $this->tweetRepository->getById($event->tweetId);
 
-            $tweet->increaseLikesCount();
+            $tweet->like();
             $this->tweetRepository->add($tweet);
         } catch (TweetNotFoundException) {
             return;
@@ -43,7 +43,7 @@ final readonly class UpdateTweetLikesCountSubscriber implements EventSubscriberI
         try {
             $tweet = $this->tweetRepository->getById($event->tweetId);
 
-            $tweet->decreaseLikesCount();
+            $tweet->dislike();
             $this->tweetRepository->add($tweet);
         } catch (TweetNotFoundException) {
             return;

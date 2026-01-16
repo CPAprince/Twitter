@@ -28,7 +28,7 @@ final readonly class ToggleLikeCommandHandler
             $command->userId,
         );
 
-        if (!is_null($existingLike)) {
+        if (null !== $existingLike) {
             $this->likeRepository->remove($existingLike);
             $this->eventDispatcher->dispatch(new TweetWasUnliked($command->tweetId, $command->userId));
 
