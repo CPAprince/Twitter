@@ -20,6 +20,6 @@ return [
     MonologBundle::class => ['all' => true],
     SecurityBundle::class => ['all' => true],
     LexikJWTAuthenticationBundle::class => ['all' => true],
-    GesdinetJWTRefreshTokenBundle::class => ['all' => true],
     TwigBundle::class => ['all' => true],
+    GesdinetJWTRefreshTokenBundle::class => ['all' => true],
 ];

@@ -1,0 +1,10 @@
+{% extends 'layout/base.html.twig' %}
+
+{% block title %}All tweets{% endblock %}
+
+{% block content %}
+    {% include 'component/_tweet_list.html.twig' with {
+        tweets: tweets,
+        title: 'Feeds:'
+    } only %}
+{% endblock %}

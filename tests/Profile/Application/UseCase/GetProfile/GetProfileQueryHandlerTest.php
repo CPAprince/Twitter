@@ -16,7 +16,7 @@ use Twitter\Profile\Domain\Profile\Exception\ProfileNotFoundException;
 use Twitter\Profile\Domain\Profile\Model\Profile;
 use Twitter\Profile\Domain\Profile\Model\ProfileRepository;
 
-#[Group('unit')]
+#[Group('integration')]
 #[CoversMethod(GetProfileQueryHandler::class, 'handle')]
 final class GetProfileQueryHandlerTest extends TestCase
 {
