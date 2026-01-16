@@ -22,4 +22,5 @@ return [
     LexikJWTAuthenticationBundle::class => ['all' => true],
     TwigBundle::class => ['all' => true],
     GesdinetJWTRefreshTokenBundle::class => ['all' => true],
+    TwigBundle::class => ['all' => true],
 ];

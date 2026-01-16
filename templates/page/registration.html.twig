@@ -1,0 +1,25 @@
+{% extends 'layout/base.html.twig' %}
+
+{% block title %}Twitter | Registration{% endblock %}
+
+{% block content %}
+    <h1 class="mb-3">Registration</h1>
+
+    {% include 'component/_registration_form.html.twig' %}
+    {% include 'component/_alert_placeholder.html.twig' %}
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        window.routes = {
+            createUser: '{{ path('api_create_user') }}',
+            login: '{{ path('api_login_check') }}',
+            createProfile: '{{ path('api_create_profile') }}',
+            successRedirect: '{{ path('api_health_check') }}',
+        };
+    </script>
+
+    <script src="{{ asset('js/alert.js') }}"></script>
+    <script src="{{ asset('js/api.js') }}"></script>
+    <script src="{{ asset('js/registration.js') }}"></script>
+{% endblock %}
