@@ -16,7 +16,11 @@ final class Version20260113083414 extends AbstractMigration
 
     public function up(Schema $schema): void
     {
-        $this->addSql('ALTER TABLE tweets ADD likes_count INT UNSIGNED DEFAULT 0 NOT NULL');
+        $this->addSql(
+            <<<SQL
+            ALTER TABLE tweets ADD likes_count INT UNSIGNED DEFAULT 0 NOT NULL
+            SQL
+        );
     }
 
     public function down(Schema $schema): void
