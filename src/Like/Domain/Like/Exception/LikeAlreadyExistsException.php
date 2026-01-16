@@ -8,6 +8,8 @@ use Exception;
 
 final class LikeAlreadyExistsException extends Exception
 {
+    public const string ERROR_CODE = 'LIKE_ALREADY_EXISTS';
+
     public function __construct(
         string $tweetId,
         string $userId,

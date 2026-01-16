@@ -98,6 +98,11 @@ final readonly class ExceptionSubscriber implements EventSubscriberInterface
             'message' => 'The tweet with this ID was not found',
             'status' => Response::HTTP_NOT_FOUND,
         ],
+        LikeAlreadyExistsException::class => [
+            'code' => 'LIKE_ALREADY_EXISTS',
+            'message' => 'The tweet has already been liked by this user',
+            'status' => Response::HTTP_CONFLICT,
+        ],
     ];
 
     public function __construct(
