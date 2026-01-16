@@ -10,6 +10,7 @@ use Lexik\Bundle\JWTAuthenticationBundle\LexikJWTAuthenticationBundle;
 use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
 use Symfony\Bundle\MonologBundle\MonologBundle;
 use Symfony\Bundle\SecurityBundle\SecurityBundle;
+use Symfony\Bundle\TwigBundle\TwigBundle;
 
 return [
     FrameworkBundle::class => ['all' => true],
@@ -19,5 +20,6 @@ return [
     MonologBundle::class => ['all' => true],
     SecurityBundle::class => ['all' => true],
     LexikJWTAuthenticationBundle::class => ['all' => true],
+    TwigBundle::class => ['all' => true],
     GesdinetJWTRefreshTokenBundle::class => ['all' => true],
 ];

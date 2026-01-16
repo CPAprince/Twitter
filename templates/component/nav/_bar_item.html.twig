@@ -1,0 +1,5 @@
+{% set current = app.request.pathInfo == href %}
+<a class="sidebar-item mb-2 text-decoration-none text-dark d-block {% if current %} fw-bold {% endif %}" href={{ href }}>
+    <i class="fas fa-{{ icon }} me-2"></i>
+    <span>{{ text }}</span>
+</a>
