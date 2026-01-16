@@ -10,7 +10,7 @@ use Twitter\Tweet\Application\UseCase\GetTweets\GetTweetsCommand;
 use Twitter\Tweet\Application\UseCase\GetTweets\GetTweetsCommandHandler;
 use Twitter\Tweet\Application\UseCase\Shared\TweetResponse;
 
-#[Route('/api/tweets', name: 'tweets_get_all', methods: ['GET'])]
+#[Route('/api/tweets', name: 'tweets_get_all', methods: [Request::METHOD_GET])]
 final readonly class GetTweetsController
 {
     public function __construct(private GetTweetsCommandHandler $handler) {}
