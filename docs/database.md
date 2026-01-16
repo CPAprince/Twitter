@@ -49,13 +49,14 @@ erDiagram
         CHAR(60) password_hash
         JSON roles
         DATETIME created_at
-        DATETIME email_verified_at "Nullable"
+        DATETIME updated_at
     }
 
     PROFILES {
         BINARY(16) user_id PK, FK
         VARCHAR(50) name
-        VARCHAR(300) bio
+        VARCHAR(300) bio "Nullable"
+        DATETIME created_at
         DATETIME updated_at
     }
 
@@ -65,9 +66,10 @@ erDiagram
         VARCHAR(280) content
         DATETIME created_at "Indexed"
         DATETIME updated_at
+        INT likes_count "Unsigned"
     }
 
-    TWEET_LIKES {
+    LIKES {
         BINARY(16) tweet_id PK, FK "Composite PK"
         BINARY(16) user_id PK, FK "Composite PK, indexed"
         DATETIME created_at
@@ -75,8 +77,8 @@ erDiagram
 
     USERS ||--|| PROFILES: has
     USERS ||..o{ TWEETS: posts
-    USERS ||--o{ TWEET_LIKES: performs
-    TWEETS ||--o{ TWEET_LIKES: receives
+    USERS ||--o{ LIKES: performs
+    TWEETS ||--o{ LIKES: receives
 ```
 
 ## Data Dictionary and Entities
@@ -85,14 +87,14 @@ erDiagram
 
 Stores only data required for authentication and authorization.
 
-| Field               | Type           | Attributes       | Description                                                                            |
-|:--------------------|:---------------|:-----------------|:---------------------------------------------------------------------------------------|
-| `id`                | `BINARY(16)`   | **PK**           | Unique identifier (UUID v7).                                                           |
-| `email`             | `VARCHAR(320)` | **UK**, Not Null | User login.                                                                            |
-| `password_hash`     | `CHAR(60)`     | Not Null         | Bcrypt hash. Fixed length of 60 characters ensures optimal storage for Bcrypt strings. |
-| `roles`             | `JSON`         | Not Null         | Array of roles.                                                                        |
-| `created_at`        | `DATETIME`     | Not Null         | Registration date and time.                                                            |
-| `email_verified_at` | `DATETIME`     | Nullable         | Email verification date and time.                                                      |
+| Field           | Type           | Attributes       | Description                                                                            |
+|:----------------|:---------------|:-----------------|:---------------------------------------------------------------------------------------|
+| `id`            | `BINARY(16)`   | **PK**           | Unique identifier (UUID v7).                                                           |
+| `email`         | `VARCHAR(320)` | **UK**, Not Null | User login.                                                                            |
+| `password_hash` | `CHAR(60)`     | Not Null         | Bcrypt hash. Fixed length of 60 characters ensures optimal storage for Bcrypt strings. |
+| `roles`         | `JSON`         | Not Null         | Array of roles.                                                                        |
+| `created_at`    | `DATETIME`     | Not Null         | Registration date and time.                                                            |
+| `updated_at`    | `DATETIME`     | Not Null         | Last update date and time.                                                             |
 
 * Email must be unique across the system.
 * Users are assigned the `ROLE_USER` role by default upon creation.
@@ -106,21 +108,23 @@ Public user information. Separated from `users`.
 | `user_id`    | `BINARY(16)`   | **PK, FK** | Foreign key to `users.id`.         |
 | `name`       | `VARCHAR(50)`  | Not Null   | Displayed name.                    |
 | `bio`        | `VARCHAR(300)` | Nullable   | User biography.                    |
-| `updated_at` | `DATETIME`     | Nullable   | Last profile update date and time. |
+| `created_at` | `DATETIME`     | Not Null   | Profile creation date and time.    |
+| `updated_at` | `DATETIME`     | Not Null   | Last profile update date and time. |
 
 ### Table: `tweets`
 
 The main content unit.
 
-| Field        | Type           | Attributes | Description                           |
-|:-------------|:---------------|:-----------|:--------------------------------------|
-| `id`         | `BINARY(16)`   | **PK**     | Tweet identifier.                     |
-| `user_id`    | `BINARY(16)`   | **FK**     | Reference to the author (`users.id`). |
-| `content`    | `VARCHAR(280)` | Not Null   | Tweet text body.                      |
-| `created_at` | `DATETIME`     | **Index**  | Publication date and time.            |
-| `updated_at` | `DATETIME`     | Nullable   | Edit date and time.                   |
+| Field         | Type           | Attributes     | Description                           |
+|:--------------|:---------------|:---------------|:--------------------------------------|
+| `id`          | `BINARY(16)`   | **PK**         | Tweet identifier.                     |
+| `user_id`     | `BINARY(16)`   | **FK**         | Reference to the author (`users.id`). |
+| `content`     | `VARCHAR(280)` | Not Null       | Tweet text body.                      |
+| `created_at`  | `DATETIME`     | **Index**      | Publication date and time.            |
+| `updated_at`  | `DATETIME`     | Not Null       | Edit date and time.                   |
+| `likes_count` | `UNSIGNED INT` | `0` by default | Number of tweet likes.                |
 
-### Table: `tweet_likes`
+### Table: `likes`
 
 Junction table (Many-to-Many) for likes.
 
@@ -135,13 +139,13 @@ user from liking the same tweet twice.
 
 ## Indexes
 
-| Table         | Index / Key             | Use Case                                     |
-|:--------------|:------------------------|:---------------------------------------------|
-| `users`       | `UNIQUE(email)`         | Fast user lookup during login.               |
-| `tweets`      | `IDX(created_at DESC)`  | Chronological Feed generation.               |
-| `tweets`      | `IDX(user_id)`          | Fetching all tweets by a specific user.      |
-| `tweet_likes` | `PK(tweet_id, user_id)` | Checking whether a user liked a tweet.       |
-| `tweet_likes` | `IDX(user_id)`          | Fetching a list of tweets liked by the user. |
+| Table    | Index / Key             | Use Case                                     |
+|:---------|:------------------------|:---------------------------------------------|
+| `users`  | `UNIQUE(email)`         | Fast user lookup during login.               |
+| `tweets` | `IDX(created_at DESC)`  | Chronological Feed generation.               |
+| `tweets` | `IDX(user_id)`          | Fetching all tweets by a specific user.      |
+| `likes`  | `PK(tweet_id, user_id)` | Checking whether a user liked a tweet.       |
+| `likes`  | `IDX(user_id)`          | Fetching a list of tweets liked by the user. |
 
 ## Normalization
 

@@ -22,6 +22,7 @@ use Twitter\IAM\Domain\Auth\Exception\ValidationErrorException;
 use Twitter\IAM\Domain\User\Exception\InvalidEmailException;
 use Twitter\IAM\Domain\User\Exception\InvalidPasswordException;
 use Twitter\IAM\Domain\User\Exception\UserAlreadyExistsException;
+use Twitter\Like\Domain\Like\Exception\LikeAlreadyExistsException;
 use Twitter\Profile\Domain\Profile\Exception\ProfileAlreadyExistsException;
 use Twitter\Profile\Domain\Profile\Exception\ProfileNotFoundException;
 use Twitter\Profile\Domain\Profile\Exception\UserNotFoundException as ProfileUserNotFoundExceptionAlias;
@@ -97,6 +98,11 @@ final readonly class ExceptionSubscriber implements EventSubscriberInterface
             'code' => 'TWEET_NOT_FOUND',
             'message' => 'The tweet with this ID was not found',
             'status' => Response::HTTP_NOT_FOUND,
+        ],
+        LikeAlreadyExistsException::class => [
+            'code' => 'LIKE_ALREADY_EXISTS',
+            'message' => 'The tweet has already been liked by this user',
+            'status' => Response::HTTP_CONFLICT,
         ],
     ];
 

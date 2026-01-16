@@ -32,7 +32,11 @@ doctrine:
                 dir: '%kernel.project_dir%/src/Tweet/Infrastructure/Persistence/Doctrine/Mapping'
                 prefix: Twitter\Tweet\Domain
                 is_bundle: false
-            
+            Like:
+                type: xml
+                dir: '%kernel.project_dir%/src/Like/Infrastructure/Persistence/Doctrine/Mapping'
+                prefix: Twitter\Like\Domain
+                is_bundle: false
 when@test:
     doctrine:
         dbal:
