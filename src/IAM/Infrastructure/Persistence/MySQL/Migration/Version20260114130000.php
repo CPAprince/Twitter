@@ -19,7 +19,7 @@ final class Version20260114130000 extends AbstractMigration
         $this->addSql(
             <<<SQL
             CREATE TABLE refresh_tokens (
-                id INT AUTO_INCREMENT NOT NULL,
+                id BIGINT AUTO_INCREMENT NOT NULL,
                 refresh_token VARCHAR(128) NOT NULL,
                 username VARCHAR(255) NOT NULL,
                 valid DATETIME NOT NULL,
