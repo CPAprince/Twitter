@@ -2,19 +2,9 @@
 
 {% block title %}All tweets{% endblock %}
 
-{% block body %}
-    <div class="container-fluid">
-        <div class="row">
-
-            {% include 'component/_nav.html.twig' %}
-
-            <div class="col-12 col-md-9 offset-md-3">
-                {% include 'component/_tweet_list.html.twig' with {
-                    tweets: tweets,
-                    title: 'Feeds:'
-                } only %}
-            </div>
-
-        </div>
-    </div>
+{% block content %}
+    {% include 'component/_tweet_list.html.twig' with {
+        tweets: tweets,
+        title: 'Feeds:'
+    } only %}
 {% endblock %}

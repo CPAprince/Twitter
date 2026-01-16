@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Twitter\Tweet\UI\REST\GetTweets;
 
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Twitter\Tweet\Application\UseCase\GetTweets\GetTweetsCommand;
 use Twitter\Tweet\Application\UseCase\GetTweets\GetTweetsCommandHandler;
