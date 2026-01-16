@@ -2,8 +2,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("registration-form");
   const alerts = document.getElementById("alert-placeholder");
 
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
 
     const data = Object.fromEntries(new FormData(form));
 
