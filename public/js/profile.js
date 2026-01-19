@@ -13,12 +13,18 @@ document.addEventListener("DOMContentLoaded", async () => {
   if (isOwnProfile) {
     const editBtn = document.getElementById("edit-profile-btn");
     const editSection = document.getElementById("profile-edit-section");
+    const tweetCreateSection = document.getElementById("tweet-create-section");
 
     if (editBtn) {
       editBtn.style.display = "block";
       editBtn.addEventListener("click", () => {
         editSection.style.display = editSection.style.display === "none" ? "block" : "none";
       });
+    }
+
+    // Show tweet creation form
+    if (tweetCreateSection) {
+      tweetCreateSection.style.display = "block";
     }
 
     // Show edit buttons on tweets
@@ -108,33 +114,76 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   }
 
-  // Tweet edit handling
+  // Tweet creation form handling
+  const tweetCreateForm = document.getElementById("tweet-create-form");
+  if (tweetCreateForm && isOwnProfile) {
+    const form = tweetCreateForm.querySelector(".tweet-form");
+    const alerts = document.getElementById("tweet-create-alerts");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      alerts.replaceChildren();
+
+      const formData = new FormData(form);
+      const content = formData.get("content").trim();
+
+      if (!content) {
+        Alert.append(alerts, "Tweet content cannot be empty", "danger");
+        return;
+      }
+
+      try {
+        Loading.clearAndShow(alerts, "Posting tweet...");
+        Loading.disableForm(form);
+
+        const createTweetUrl = window.routes?.createTweet || "/api/tweets";
+        const result = await Api.post(createTweetUrl, { content });
+
+        // Clear form
+        form.querySelector("textarea").value = "";
+        Loading.hide(alerts);
+        Alert.append(alerts, "Tweet posted successfully!", "success");
+
+        // Reload page to show new tweet (or you could use AJAX to add it to the list)
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000);
+      } catch (error) {
+        Loading.hide(alerts);
+        Alert.append(alerts, error.message || "Failed to post tweet", "danger");
+      } finally {
+        Loading.enableForm(form);
+      }
+    });
+  }
+
+  // Tweet edit handling - using the reusable form component
   document.querySelectorAll(".tweet-edit-btn").forEach(btn => {
     btn.addEventListener("click", (e) => {
       const tweetId = e.currentTarget.dataset.tweetId;
       const tweetElement = e.currentTarget.closest(".tweet");
       const contentDisplay = tweetElement.querySelector(".tweet-content-display");
-      const editForm = tweetElement.querySelector(".tweet-edit-form");
-      const editFormInner = tweetElement.querySelector(".tweet-edit-form-inner");
+      const editFormContainer = tweetElement.querySelector(".tweet-edit-form");
+      const form = editFormContainer.querySelector(".tweet-form");
+      const alerts = editFormContainer.querySelector(".tweet-form-alerts");
       const originalContent = contentDisplay.querySelector("p").textContent;
 
       // Toggle visibility
       contentDisplay.style.display = contentDisplay.style.display === "none" ? "block" : "none";
-      editForm.style.display = editForm.style.display === "none" ? "block" : "none";
+      editFormContainer.style.display = editFormContainer.style.display === "none" ? "block" : "none";
 
       // Set form value
-      const textarea = editFormInner.querySelector("textarea");
+      const textarea = form.querySelector("textarea");
       if (textarea) {
         textarea.value = originalContent;
       }
 
       // Handle form submission
-      editFormInner.addEventListener("submit", async (submitEvent) => {
+      form.addEventListener("submit", async (submitEvent) => {
         submitEvent.preventDefault();
-        const alerts = editForm.querySelector(".tweet-edit-alerts");
         alerts.replaceChildren();
 
-        const formData = new FormData(editFormInner);
+        const formData = new FormData(form);
         const content = formData.get("content").trim();
 
         if (!content) {
@@ -149,7 +198,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         try {
           Loading.clearAndShow(alerts, "Saving tweet...");
-          Loading.disableForm(editFormInner);
+          Loading.disableForm(form);
 
           const updateTweetUrl = window.routes?.updateTweet && window.buildRoute
             ? window.buildRoute(window.routes.updateTweet, { tweetId: tweetId })
@@ -159,7 +208,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           // Update tweet display
           contentDisplay.querySelector("p").textContent = result.content;
           contentDisplay.style.display = "block";
-          editForm.style.display = "none";
+          editFormContainer.style.display = "none";
 
           Loading.hide(alerts);
           Alert.append(alerts, "Tweet updated successfully!", "success");
@@ -167,16 +216,18 @@ document.addEventListener("DOMContentLoaded", async () => {
           Loading.hide(alerts);
           Alert.append(alerts, error.message || "Failed to update tweet", "danger");
         } finally {
-          Loading.enableForm(editFormInner);
+          Loading.enableForm(form);
         }
       }, { once: true });
 
       // Handle cancel
-      const cancelBtn = editForm.querySelector(".tweet-edit-cancel");
+      const cancelBtn = editFormContainer.querySelector(".tweet-form-cancel");
       if (cancelBtn) {
         cancelBtn.addEventListener("click", () => {
           contentDisplay.style.display = "block";
-          editForm.style.display = "none";
+          editFormContainer.style.display = "none";
+          // Reset form value
+          form.querySelector("textarea").value = originalContent;
         }, { once: true });
       }
     });

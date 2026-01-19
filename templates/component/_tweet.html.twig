@@ -12,20 +12,12 @@
     </div>
 
     <div class="tweet-edit-form" style="display: none;">
-        <form class="tweet-edit-form-inner">
-            <textarea
-                class="form-control mb-2"
-                name="content"
-                rows="3"
-                maxlength="280"
-                required
-            >{{ tweet.content }}</textarea>
-            <div class="d-flex gap-2">
-                <button type="submit" class="btn btn-primary btn-sm">Save</button>
-                <button type="button" class="btn btn-secondary btn-sm tweet-edit-cancel">Cancel</button>
-            </div>
-            <div class="tweet-edit-alerts mt-2"></div>
-        </form>
+        {% include 'component/_tweet_form.html.twig' with {
+            tweetId: tweet.id,
+            initialContent: tweet.content,
+            formId: 'tweet-edit-form-' ~ tweet.id,
+            alertsContainerId: 'tweet-edit-alerts-' ~ tweet.id
+        } only %}
     </div>
 
     <div class="tweet-actions d-flex justify-content-between w-75">
