@@ -124,6 +124,14 @@ final readonly class ExceptionSubscriber implements EventSubscriberInterface
             return;
         }
 
+        // Only handle API routes - let Symfony handle web routes normally
+        $request = $event->getRequest();
+        $path = $request->getPathInfo();
+
+        if (!str_starts_with($path, '/api')) {
+            return; // Let Symfony handle web route exceptions normally
+        }
+
         $throwable = $event->getThrowable();
 
         $this->logException($throwable);
