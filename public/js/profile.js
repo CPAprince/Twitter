@@ -1,3 +1,32 @@
+// Initialize character counter for tweet forms
+function initializeTweetCharCounter(container) {
+  const textarea = container.querySelector('textarea[name="content"]');
+  const counter = container.querySelector('.tweet-char-count');
+  if (!textarea || !counter) return;
+
+  const updateCounter = () => {
+    const length = textarea.value.length;
+    const remaining = 280 - length;
+    counter.textContent = length;
+
+    // Update styling based on remaining characters
+    const counterContainer = counter.closest('.tweet-char-counter');
+    if (remaining < 0) {
+      counterContainer.className = 'tweet-char-counter text-danger small';
+    } else if (remaining <= 20) {
+      counterContainer.className = 'tweet-char-counter text-warning small';
+    } else {
+      counterContainer.className = 'tweet-char-counter text-muted small';
+    }
+  };
+
+  // Update on input
+  textarea.addEventListener('input', updateCounter);
+
+  // Initial update
+  updateCounter();
+}
+
 document.addEventListener("DOMContentLoaded", async () => {
   const profileData = window.profileData;
   if (!profileData) {
@@ -117,6 +146,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Tweet creation form handling
   const tweetCreateForm = document.getElementById("tweet-create-form");
   if (tweetCreateForm && isOwnProfile) {
+    // Initialize character counter
+    initializeTweetCharCounter(tweetCreateForm);
+
     const form = tweetCreateForm.querySelector(".tweet-form");
     const alerts = document.getElementById("tweet-create-alerts");
 
@@ -176,6 +208,12 @@ document.addEventListener("DOMContentLoaded", async () => {
       const textarea = form.querySelector("textarea");
       if (textarea) {
         textarea.value = originalContent;
+      }
+
+      // Initialize character counter for edit form
+      const formContainer = editFormContainer.querySelector(".tweet-form-container");
+      if (formContainer) {
+        initializeTweetCharCounter(formContainer);
       }
 
       // Handle form submission
