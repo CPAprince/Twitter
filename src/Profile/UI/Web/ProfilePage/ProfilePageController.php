@@ -38,19 +38,20 @@ final class ProfilePageController extends AbstractController
         $tweetsResult = $this->tweetsQueryHandler->handle($tweetsQuery);
 
         // Map tweets to array format for template
-        $tweets = array_map(
-            static fn ($tweet): array => [
+        $tweets = [];
+        foreach ($tweetsResult->tweets as $tweet) {
+            $tweets[] = [
                 'id' => $tweet->id(),
                 'content' => $tweet->content(),
                 'createdAt' => $tweet->createdAt(),
                 'updatedAt' => $tweet->updatedAt(),
                 'author' => [
                     'id' => $tweet->userId(),
-                    'name' => '', // Will be populated by frontend or we can fetch it
+                    'name' => $profileResult->name, // Use profile name for author
                 ],
-            ],
-            $tweetsResult->tweets
-        );
+                'likes' => $tweet->likes(),
+            ];
+        }
 
         return $this->render('page/profile.html.twig', [
             'profile' => [
