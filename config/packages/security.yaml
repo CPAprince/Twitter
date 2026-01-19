@@ -39,6 +39,7 @@ security:
         - { path: ^/api/tweets, methods: [GET], roles: PUBLIC_ACCESS }
         - { path: ^/api/tokens, roles: PUBLIC_ACCESS }
         - { path: ^/api/token/refresh$, roles: PUBLIC_ACCESS }
+        - { path: ^/api/tweets/.+/likes/toggle, roles: IS_AUTHENTICATED_FULLY }
         - { path: ^/api,       roles: IS_AUTHENTICATED_FULLY }
 
 when@test:

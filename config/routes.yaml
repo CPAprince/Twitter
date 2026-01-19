@@ -12,6 +12,10 @@ iam_module_web:
     resource: ../src/IAM/UI/Web/*/*Controller.php
     type: attribute
 
+like_module:
+    resource: ../src/Like/UI/REST/Controller/
+    type: attribute
+
 profile_module:
     resource: ../src/Profile/UI/REST/Controller/*/*Controller.php
     type: attribute

@@ -98,3 +98,8 @@ services:
     Twitter\Tweet\Application\UseCase\UpdateTweet\UpdateTweetCommandHandler:
         arguments:
             $tweetRepository: '@Twitter\Tweet\Domain\Tweet\Model\TweetRepository'
+
+    Twitter\Tweet\Application\EventSubscriber\UpdateTweetLikesCountSubscriber:
+        tags: [ 'kernel.event_subscriber' ]
+        arguments:
+            $tweetRepository: '@Twitter\Tweet\Domain\Tweet\Model\TweetRepository'
