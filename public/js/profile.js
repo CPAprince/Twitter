@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
   const profileData = window.profileData;
   if (!profileData) {
     console.error("Profile data not found");
@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   const urlUserId = profileData.userId;
-  const currentUserId = Auth.getCurrentUserId();
+  const currentUserId = await Auth.getCurrentUserId();
   const isOwnProfile = currentUserId && urlUserId === currentUserId;
 
   // Show edit UI if viewing own profile

@@ -52,17 +52,22 @@ window.Auth = {
 
   /**
    * Get current userId from stored token
-   * @returns {string|null} - User ID or null if not found
+   * Automatically refreshes token if expired
+   * @returns {Promise<string|null>} - User ID or null if not found
    */
-  getCurrentUserId() {
+  async getCurrentUserId() {
     const token = Api.getToken();
     if (!token) {
       return null;
     }
 
     if (this.isTokenExpired(token)) {
-      Api.clearToken();
-      return null;
+      // Try to refresh the token
+      const newToken = await Api.refreshAccessToken();
+      if (!newToken) {
+        return null;
+      }
+      return this.getUserId(newToken);
     }
 
     return this.getUserId(token);
