@@ -8,6 +8,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const data = Object.fromEntries(new FormData(form));
 
     try {
+      Loading.clearAndShow(alerts, "Registering...");
+      Loading.disableForm(form);
+
       const user = await Api.post(window.routes.createUser, {
         email: data.email,
         password: data.password,
@@ -39,10 +42,14 @@ document.addEventListener("DOMContentLoaded", () => {
         { userId: user.id, name: data.name, bio: data.bio }
       );
 
+      Loading.hide(alerts);
       Alert.append(alerts, "You have been successfully registered!", "success");
       window.location.href = window.routes.successRedirect;
     } catch (e) {
+      Loading.hide(alerts);
       Alert.append(alerts, "Registration failed", "danger");
+    } finally {
+      Loading.enableForm(form);
     }
   });
 });
