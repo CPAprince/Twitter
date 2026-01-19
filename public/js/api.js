@@ -153,16 +153,41 @@ window.Api = {
 
       const data = await response.json().catch(() => null);
 
+      // Debug logging - remove in production
+      if (response.ok) {
+        console.log('Token refresh response:', data);
+      }
+
       if (response.ok && data) {
         const newAccessToken = data.token || data.accessToken;
         const newRefreshToken = data.refresh_token || data.refreshToken;
 
         if (newAccessToken) {
           this.setToken(newAccessToken);
-          if (newRefreshToken) {
-            this.setRefreshToken(newRefreshToken);
+          
+          // CRITICAL FIX: Properly handle refresh token response
+          // If newRefreshToken is undefined, server didn't include it - keep existing token (normal for non-rotating tokens)
+          // If newRefreshToken is null or empty, server explicitly returned empty - clear tokens (indicates error)
+          // If newRefreshToken has a value, save the new token (normal rotation)
+          if (newRefreshToken !== undefined) {
+            if (newRefreshToken) {
+              // New refresh token provided - save it
+              this.setRefreshToken(newRefreshToken);
+            } else {
+              // Server returned null/empty refresh token - this shouldn't happen
+              // but if it does, clear tokens to force re-login
+              console.warn('Server returned empty refresh token, clearing tokens');
+              this.clearToken();
+              return null;
+            }
           }
+          // If newRefreshToken is undefined, server didn't include it - keep existing token
+          
           return newAccessToken;
+        } else {
+          // Access token missing in successful response - this shouldn't happen
+          console.error('Token refresh succeeded but no access token in response:', data);
+          return null;
         }
       } else {
         // Check if error indicates invalid refresh token
