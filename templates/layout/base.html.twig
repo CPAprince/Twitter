@@ -59,31 +59,45 @@
                 // Check if Auth is available
                 if (!window.Auth || !window.Api) {
                     console.warn('Auth or Api not available');
+                    // Retry after a short delay if scripts aren't loaded yet
+                    setTimeout(updateProfileLinks, 100);
                     return;
                 }
 
-                const userId = await Auth.getCurrentUserId();
-                console.log('Current userId:', userId); // Debug log
+                try {
+                    const userId = await Auth.getCurrentUserId();
+                    console.log('Current userId:', userId); // Debug log
 
-                profileLinks.forEach(profileLink => {
-                    if (userId) {
-                        profileLink.href = `/profiles/${userId}`;
-                        profileLink.style.opacity = "1";
-                        profileLink.style.cursor = "pointer";
-                    } else {
-                        profileLink.href = "#";
-                        profileLink.style.opacity = "0.5";
-                        profileLink.style.cursor = "not-allowed";
-                    }
-                });
+                    profileLinks.forEach(profileLink => {
+                        if (userId) {
+                            profileLink.href = `/profiles/${userId}`;
+                            profileLink.style.opacity = "1";
+                            profileLink.style.cursor = "pointer";
+                            profileLink.style.pointerEvents = "auto";
+                        } else {
+                            profileLink.href = "#";
+                            profileLink.style.opacity = "0.5";
+                            profileLink.style.cursor = "not-allowed";
+                            profileLink.style.pointerEvents = "none";
+                        }
+                    });
+                } catch (error) {
+                    console.error('Error updating profile links:', error);
+                }
             }
+
+            // Make updateProfileLinks available globally so it can be called after registration
+            window.updateProfileLinks = updateProfileLinks;
 
             // Try to update immediately if DOM is already loaded
             if (document.readyState === 'loading') {
-                document.addEventListener("DOMContentLoaded", updateProfileLinks);
+                document.addEventListener("DOMContentLoaded", () => {
+                    // Small delay to ensure all scripts are loaded
+                    setTimeout(updateProfileLinks, 50);
+                });
             } else {
                 // DOM is already loaded
-                updateProfileLinks();
+                setTimeout(updateProfileLinks, 50);
             }
         </script>
 
