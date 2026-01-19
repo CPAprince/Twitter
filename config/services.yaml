@@ -48,6 +48,10 @@ services:
         resource: '../src/Profile/UI/REST/Controller/*/*Controller.php'
         tags: [ 'controller.service_arguments' ]
 
+    Twitter\Profile\UI\Web\:
+        resource: '../src/Profile/UI/Web/*/*Controller.php'
+        tags: [ 'controller.service_arguments' ]
+
     Twitter\Like\UI\REST\Controller\:
         resource: '../src/Like/UI/REST/Controller/*Controller.php'
         tags: [ 'controller.service_arguments' ]
