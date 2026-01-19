@@ -44,6 +44,36 @@
                 integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
                 crossorigin="anonymous"></script>
 
+        <script>
+            // Centralized route management
+            // Helper function to build routes with parameters
+            window.buildRoute = function(routePattern, params) {
+                let route = routePattern;
+                for (const [key, value] of Object.entries(params)) {
+                    route = route.replace(`{${key}}`, encodeURIComponent(value));
+                }
+                return route;
+            };
+
+            // All API routes - available on all pages
+            window.routes = {
+                // Existing routes (from registration.html.twig)
+                createUser: '{{ path('api_create_user') }}',
+                login: '{{ path('api_login_check') }}',
+                createProfile: '{{ path('api_create_profile') }}',
+                successRedirect: '{{ path('homepage') }}',
+
+                // New routes
+                tokenRefresh: '/api/token/refresh', // Bundle route, no named route available
+                updateProfile: '{{ path('api_update_profile', {userId: 'PLACEHOLDER'}) }}'.replace('PLACEHOLDER', '{userId}'),
+                updateTweet: '{{ path('api_update_tweet', {tweetId: 'PLACEHOLDER'}) }}'.replace('PLACEHOLDER', '{tweetId}'),
+                getProfile: '{{ path('api_get_profile', {userId: 'PLACEHOLDER'}) }}'.replace('PLACEHOLDER', '{userId}'),
+                getTweets: '{{ path('tweets_get_all') }}',
+                registration: '{{ path('registration') }}',
+                profilePage: '{{ path('profile_page', {userId: 'PLACEHOLDER'}) }}'.replace('PLACEHOLDER', '{userId}'),
+            };
+        </script>
+
         <script src="{{ asset('js/api.js') }}"></script>
         <script src="{{ asset('js/auth.js') }}"></script>
         <script>
