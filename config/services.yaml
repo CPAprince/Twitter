@@ -64,6 +64,10 @@ services:
         arguments:
             $profileRepository: '@Twitter\Profile\Domain\Profile\Model\ProfileRepository'
 
+    Twitter\Profile\Application\UseCase\UpdateProfile\UpdateProfileCommandHandler:
+        arguments:
+            $profileRepository: '@Twitter\Profile\Domain\Profile\Model\ProfileRepository'
+
     Twitter\Profile\Domain\Profile\Model\ProfileRepository:
         class: Twitter\Profile\Infrastructure\Persistence\MySQL\Repository\MySQLProfileRepository
 

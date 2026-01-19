@@ -43,6 +43,25 @@
                 integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
                 crossorigin="anonymous"></script>
 
+        <script src="{{ asset('js/api.js') }}"></script>
+        <script src="{{ asset('js/auth.js') }}"></script>
+        <script>
+            // Set profile link dynamically
+            document.addEventListener("DOMContentLoaded", () => {
+                const profileLink = document.getElementById("nav-profile-link");
+                if (profileLink && window.Auth) {
+                    const userId = Auth.getCurrentUserId();
+                    if (userId) {
+                        profileLink.href = `/profiles/${userId}`;
+                    } else {
+                        profileLink.href = "#";
+                        profileLink.style.opacity = "0.5";
+                        profileLink.style.cursor = "not-allowed";
+                    }
+                }
+            });
+        </script>
+
         {% block javascripts %}{% endblock %}
     </body>
 </html>

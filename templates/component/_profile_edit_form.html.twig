@@ -1,0 +1,34 @@
+<form id="profile-edit-form" class="border p-3 rounded bg-light">
+    <div class="mb-3">
+        <label for="profile-name" class="form-label">Name</label>
+        <input
+            type="text"
+            class="form-control"
+            id="profile-name"
+            name="name"
+            minlength="3"
+            maxlength="50"
+            required
+        >
+        <div class="form-text">3-50 characters</div>
+    </div>
+
+    <div class="mb-3">
+        <label for="profile-bio" class="form-label">Bio</label>
+        <textarea
+            class="form-control"
+            id="profile-bio"
+            name="bio"
+            rows="3"
+            maxlength="300"
+        ></textarea>
+        <div class="form-text">Max 300 characters</div>
+    </div>
+
+    <div class="d-flex gap-2">
+        <button type="submit" class="btn btn-primary">Save</button>
+        <button type="button" class="btn btn-secondary" id="cancel-profile-edit">Cancel</button>
+    </div>
+
+    <div id="profile-edit-alerts" class="mt-2"></div>
+</form>
