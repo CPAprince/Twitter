@@ -58,4 +58,24 @@ final class Profile
     {
         return $this->updatedAt;
     }
+
+    public function updateName(string $name): void
+    {
+        Assert::lazy()->tryAll()
+            ->that($name, 'name')->notBlank()->minLength(3)->maxLength(50)
+            ->verifyNow();
+
+        $this->name = $name;
+        $this->updatedAt = new DateTimeImmutable();
+    }
+
+    public function updateBio(?string $bio): void
+    {
+        Assert::lazy()->tryAll()
+            ->that($bio, 'bio')->nullOr()->maxLength(300)
+            ->verifyNow();
+
+        $this->bio = $bio ?? '';
+        $this->updatedAt = new DateTimeImmutable();
+    }
 }
