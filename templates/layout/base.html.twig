@@ -48,19 +48,44 @@
         <script src="{{ asset('js/auth.js') }}"></script>
         <script>
             // Set profile link dynamically
-            document.addEventListener("DOMContentLoaded", () => {
-                const profileLink = document.getElementById("nav-profile-link");
-                if (profileLink && window.Auth) {
-                    const userId = Auth.getCurrentUserId();
+            function updateProfileLinks() {
+                // Find all profile links (there are two - mobile and desktop)
+                const profileLinks = document.querySelectorAll('a[id="nav-profile-link"]');
+
+                if (profileLinks.length === 0) {
+                    console.warn('Profile link not found');
+                    return;
+                }
+
+                // Check if Auth is available
+                if (!window.Auth || !window.Api) {
+                    console.warn('Auth or Api not available');
+                    return;
+                }
+
+                const userId = Auth.getCurrentUserId();
+                console.log('Current userId:', userId); // Debug log
+
+                profileLinks.forEach(profileLink => {
                     if (userId) {
                         profileLink.href = `/profiles/${userId}`;
+                        profileLink.style.opacity = "1";
+                        profileLink.style.cursor = "pointer";
                     } else {
                         profileLink.href = "#";
                         profileLink.style.opacity = "0.5";
                         profileLink.style.cursor = "not-allowed";
                     }
-                }
-            });
+                });
+            }
+
+            // Try to update immediately if DOM is already loaded
+            if (document.readyState === 'loading') {
+                document.addEventListener("DOMContentLoaded", updateProfileLinks);
+            } else {
+                // DOM is already loaded
+                updateProfileLinks();
+            }
         </script>
 
         {% block javascripts %}{% endblock %}
