@@ -48,7 +48,7 @@
         <script src="{{ asset('js/auth.js') }}"></script>
         <script>
             // Set profile link dynamically
-            function updateProfileLinks() {
+            async function updateProfileLinks() {
                 // Find all profile links (there are two - mobile and desktop)
                 const profileLinks = document.querySelectorAll('a[id="nav-profile-link"]');
 
@@ -63,7 +63,7 @@
                     return;
                 }
 
-                const userId = Auth.getCurrentUserId();
+                const userId = await Auth.getCurrentUserId();
                 console.log('Current userId:', userId); // Debug log
 
                 profileLinks.forEach(profileLink => {
