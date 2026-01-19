@@ -18,9 +18,15 @@ document.addEventListener("DOMContentLoaded", () => {
         password: data.password,
       });
 
-      const accessToken = auth.token;
+      // Handle both token and accessToken response formats
+      const accessToken = auth.token || auth.accessToken;
       if (!accessToken) {
         throw new Error("Access token is missing.");
+      }
+
+      // Store token in localStorage for persistence
+      if (window.Api && window.Api.setToken) {
+        Api.setToken(accessToken);
       }
 
       await Api.post(

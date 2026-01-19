@@ -1,5 +1,5 @@
 {# templates/component/_tweet.html.twig #}
-<div class="tweet p-3 border-bottom">
+<div class="tweet p-3 border-bottom" data-tweet-id="{{ tweet.id }}">
     <div class="d-flex align-items-center mb-1">
         <span class="fw-bold me-2">{{ tweet.author.name }}</span>
         <span class="text-muted">
@@ -7,7 +7,26 @@
         </span>
     </div>
 
-    <p class="mb-2">{{ tweet.content }}</p>
+    <div class="tweet-content-display">
+        <p class="mb-2">{{ tweet.content }}</p>
+    </div>
+
+    <div class="tweet-edit-form" style="display: none;">
+        <form class="tweet-edit-form-inner">
+            <textarea
+                class="form-control mb-2"
+                name="content"
+                rows="3"
+                maxlength="280"
+                required
+            >{{ tweet.content }}</textarea>
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-primary btn-sm">Save</button>
+                <button type="button" class="btn btn-secondary btn-sm tweet-edit-cancel">Cancel</button>
+            </div>
+            <div class="tweet-edit-alerts mt-2"></div>
+        </form>
+    </div>
 
     <div class="tweet-actions d-flex justify-content-between w-75">
         <div class="d-flex gap-3 align-items-center">
@@ -19,6 +38,12 @@
             <a href="{{ tweetUrl|default('#') }}">
                 <i class="fa fa-external-link" aria-hidden="true"></i>
             </a>
+
+            {% if showEdit|default(false) %}
+                <button class="btn btn-link btn-sm p-0 tweet-edit-btn" data-tweet-id="{{ tweet.id }}">
+                    <i class="fas fa-edit"></i>
+                </button>
+            {% endif %}
         </div>
     </div>
 </div>
