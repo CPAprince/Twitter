@@ -1,12 +1,12 @@
 {# templates/component/_tweet_form.html.twig #}
-{# 
+{#
   Parameters:
   - tweetId (optional): ID of tweet being edited, null/undefined for new tweets
   - initialContent (optional): Initial content for editing, empty for new tweets
   - formId (optional): Unique ID for the form container
   - alertsContainerId (optional): Unique ID for alerts container
 #}
-<div class="tweet-form-container" 
+<div class="tweet-form-container"
      {% if formId is defined and formId %}id="{{ formId }}"{% endif %}
      {% if tweetId is defined and tweetId %}data-tweet-id="{{ tweetId }}"{% endif %}
      data-form-mode="{{ (tweetId is defined and tweetId) ? 'edit' : 'create' }}">
@@ -19,6 +19,11 @@
             placeholder="What's happening?"
             required
         >{{ initialContent|default('') }}</textarea>
+        <div class="d-flex justify-content-end mb-2">
+            <div class="tweet-char-counter text-muted small">
+                <span class="tweet-char-count">0</span>/280
+            </div>
+        </div>
         <div class="d-flex gap-2">
             <button type="submit" class="btn btn-primary btn-sm">
                 {{ (tweetId is defined and tweetId) ? 'Save' : 'Post' }}
@@ -27,7 +32,7 @@
                 <button type="button" class="btn btn-secondary btn-sm tweet-form-cancel">Cancel</button>
             {% endif %}
         </div>
-        <div class="tweet-form-alerts mt-2" 
+        <div class="tweet-form-alerts mt-2"
              {% if alertsContainerId is defined and alertsContainerId %}id="{{ alertsContainerId }}"{% endif %}></div>
     </form>
 </div>
