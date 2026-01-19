@@ -20,13 +20,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // Handle both token and accessToken response formats
       const accessToken = auth.token || auth.accessToken;
+      const refreshToken = auth.refresh_token || auth.refreshToken;
+
       if (!accessToken) {
         throw new Error("Access token is missing.");
       }
 
-      // Store token in localStorage for persistence
-      if (window.Api && window.Api.setToken) {
-        Api.setToken(accessToken);
+      // Store access token
+      Api.setToken(accessToken);
+
+      // Store refresh token if present
+      if (refreshToken) {
+        Api.setRefreshToken(refreshToken);
       }
 
       await Api.post(
