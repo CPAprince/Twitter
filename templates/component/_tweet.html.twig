@@ -4,6 +4,9 @@
         <span class="fw-bold me-2">{{ tweet.author.name }}</span>
         <span class="text-muted">
             · {{ tweet.createdAt|date('H:i') }}
+            {% if tweet.updatedAt is defined and tweet.updatedAt|date('U') != tweet.createdAt|date('U') %}
+                <span class="text-muted">(edited)</span>
+            {% endif %}
         </span>
     </div>
 
@@ -31,11 +34,13 @@
                 <i class="fa fa-external-link" aria-hidden="true"></i>
             </a>
 
-            {% if showEdit|default(false) %}
-                <button class="btn btn-link btn-sm p-0 tweet-edit-btn" data-tweet-id="{{ tweet.id }}">
-                    <i class="fas fa-edit"></i>
-                </button>
-            {% endif %}
+            {# Always render edit button, JavaScript will show/hide based on ownership #}
+            <button class="btn btn-link btn-sm p-0 tweet-edit-btn"
+                    data-tweet-id="{{ tweet.id }}"
+                    data-author-id="{{ tweet.author.id }}"
+                    style="display: none;">
+                <i class="fas fa-edit"></i>
+            </button>
         </div>
     </div>
 </div>
