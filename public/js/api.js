@@ -140,7 +140,8 @@ window.Api = {
     try {
       // Use _request directly to inspect response before it's converted to error
       // Note: gesdinet_jwt_refresh_token expects 'refresh_token' parameter name
-      const response = await this._request('/api/token/refresh', {
+      const refreshUrl = window.routes?.tokenRefresh || '/api/token/refresh';
+      const response = await this._request(refreshUrl, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',

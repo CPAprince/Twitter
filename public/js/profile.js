@@ -41,13 +41,16 @@ document.addEventListener("DOMContentLoaded", async () => {
     profileEditForm.addEventListener("submit", async (e) => {
       e.preventDefault();
       const alerts = document.getElementById("profile-edit-alerts");
-      alerts.innerHTML = "";
+      alerts.replaceChildren();
 
       const formData = new FormData(profileEditForm);
       const name = formData.get("name");
       const bio = formData.get("bio");
 
       try {
+        Loading.clearAndShow(alerts, "Saving profile...");
+        Loading.disableForm(profileEditForm);
+
         const payload = {};
         if (name && name.trim() !== profileData.name) {
           payload.name = name.trim();
@@ -57,11 +60,15 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
 
         if (Object.keys(payload).length === 0) {
+          Loading.hide(alerts);
           Alert.append(alerts, "No changes to save", "info");
           return;
         }
 
-        const result = await Api.patch(`/api/profiles/${urlUserId}`, payload);
+        const updateProfileUrl = window.routes?.updateProfile && window.buildRoute
+          ? window.buildRoute(window.routes.updateProfile, { userId: urlUserId })
+          : `/api/profiles/${urlUserId}`;
+        const result = await Api.patch(updateProfileUrl, payload);
 
         // Update profile display
         document.querySelector(".profile-header h1").textContent = result.name;
@@ -69,7 +76,9 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (result.bio) {
           bioElement.textContent = result.bio;
         } else {
-          bioElement.innerHTML = "<em>No bio yet.</em>";
+          const em = document.createElement('em');
+          em.textContent = "No bio yet.";
+          bioElement.replaceChildren(em);
         }
 
         // Update profileData
@@ -78,9 +87,13 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         // Hide edit form
         document.getElementById("profile-edit-section").style.display = "none";
+        Loading.hide(alerts);
         Alert.append(alerts, "Profile updated successfully!", "success");
       } catch (error) {
+        Loading.hide(alerts);
         Alert.append(alerts, error.message || "Failed to update profile", "danger");
+      } finally {
+        Loading.enableForm(profileEditForm);
       }
     });
 
@@ -119,7 +132,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       editFormInner.addEventListener("submit", async (submitEvent) => {
         submitEvent.preventDefault();
         const alerts = editForm.querySelector(".tweet-edit-alerts");
-        alerts.innerHTML = "";
+        alerts.replaceChildren();
 
         const formData = new FormData(editFormInner);
         const content = formData.get("content").trim();
@@ -135,16 +148,26 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
 
         try {
-          const result = await Api.patch(`/api/tweets/${tweetId}`, { content });
+          Loading.clearAndShow(alerts, "Saving tweet...");
+          Loading.disableForm(editFormInner);
+
+          const updateTweetUrl = window.routes?.updateTweet && window.buildRoute
+            ? window.buildRoute(window.routes.updateTweet, { tweetId: tweetId })
+            : `/api/tweets/${tweetId}`;
+          const result = await Api.patch(updateTweetUrl, { content });
 
           // Update tweet display
           contentDisplay.querySelector("p").textContent = result.content;
           contentDisplay.style.display = "block";
           editForm.style.display = "none";
 
+          Loading.hide(alerts);
           Alert.append(alerts, "Tweet updated successfully!", "success");
         } catch (error) {
+          Loading.hide(alerts);
           Alert.append(alerts, error.message || "Failed to update tweet", "danger");
+        } finally {
+          Loading.enableForm(editFormInner);
         }
       }, { once: true });
 

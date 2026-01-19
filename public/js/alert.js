@@ -1,6 +1,6 @@
 window.Alert = {
   append(container, message, type) {
-    container.innerHTML = "";
+    container.replaceChildren();
 
     const wrapper = document.createElement("div");
     wrapper.innerHTML = `
