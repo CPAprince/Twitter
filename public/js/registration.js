@@ -36,8 +36,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       await Api.post(
         window.routes.createProfile,
-        { userId: user.id, name: data.name, bio: data.bio },
-        accessToken
+        { userId: user.id, name: data.name, bio: data.bio }
       );
 
       Alert.append(alerts, "You have been successfully registered!", "success");
