@@ -19,6 +19,11 @@
 
         <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" rel="stylesheet">
 
+        <style>
+            .tweet-edit-btn.is-hidden { display: none; }
+            body.is-own-profile .tweet-edit-btn.is-hidden { display: inline-block; }
+        </style>
+
         {% block stylesheets %}{% endblock %}
     </head>
 

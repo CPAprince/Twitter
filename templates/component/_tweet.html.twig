@@ -1,10 +1,7 @@
-{# templates/component/_tweet.html.twig #}
 <div class="tweet p-3 border-bottom" data-tweet-id="{{ tweet.id }}">
     <div class="d-flex align-items-center mb-1">
         <span class="fw-bold me-2">{{ tweet.author.name }}</span>
-        <span class="text-muted">
-            · {{ tweet.createdAt|date('H:i') }}
-        </span>
+        <span class="text-muted">· {{ tweet.createdAt|date('H:i') }}</span>
     </div>
 
     <div class="tweet-content-display">
@@ -13,13 +10,7 @@
 
     <div class="tweet-edit-form" style="display: none;">
         <form class="tweet-edit-form-inner">
-            <textarea
-                class="form-control mb-2"
-                name="content"
-                rows="3"
-                maxlength="280"
-                required
-            >{{ tweet.content }}</textarea>
+            <textarea class="form-control mb-2" name="content" rows="3" maxlength="280" required>{{ tweet.content }}</textarea>
             <div class="d-flex gap-2">
                 <button type="submit" class="btn btn-primary btn-sm">Save</button>
                 <button type="button" class="btn btn-secondary btn-sm tweet-edit-cancel">Cancel</button>
@@ -40,7 +31,7 @@
             </a>
 
             {% if showEdit|default(false) %}
-                <button class="btn btn-link btn-sm p-0 tweet-edit-btn" data-tweet-id="{{ tweet.id }}">
+                <button class="btn btn-link btn-sm p-0 tweet-edit-btn is-hidden" data-tweet-id="{{ tweet.id }}">
                     <i class="fas fa-edit"></i>
                 </button>
             {% endif %}

@@ -8,6 +8,10 @@
     </div>
 
     {% for tweet in tweets %}
-        {% include 'component/_tweet.html.twig' with { tweet: tweet } only %}
+        {% include 'component/_tweet.html.twig' with {
+            tweet: tweet,
+            showEdit: showEdit|default(false),
+            tweetUrl: tweetUrl|default('#')
+        } only %}
     {% endfor %}
 {% endif %}
