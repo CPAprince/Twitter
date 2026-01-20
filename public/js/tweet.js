@@ -59,7 +59,7 @@ function formatPublishDate(isoString) {
 function showTweet(tweet) {
 
   console.log('Tweet JSON data in show:', tweet);
-  document.querySelector('[tweet_author]').innerHTML = '<a href=\"\/p\/' + tweet.author.id + '\">' + tweet.author.name + '</a>';
+  document.querySelector('[tweet_author]').innerHTML = '<a href=\"\/p\/' + tweet.author.id + '\"  style=\"color: var(--bs-body-color);\">' + tweet.author.name + '</a>';
   document.querySelector('[tweet_createdAt]').textContent = ' · ' + formatPublishDate(tweet.createdAt);
   document.querySelector('[tweet_content]').textContent = tweet.content;
   document.querySelector('[tweet_likes]').textContent = tweet.likes;
