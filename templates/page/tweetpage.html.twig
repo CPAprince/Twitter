@@ -1,0 +1,49 @@
+{% extends 'layout/base.html.twig' %}
+
+{% block title %}Tweet{% endblock %}
+
+{% block content %}
+    <h1 class="mb-3">Tweet</h1>
+
+
+
+    <div class="tweet p-3 border-bottom" style="visibility: hidden;">
+        <div class="d-flex align-items-center mb-1">
+            <span class="fw-bold me-2" style="" tweet_author>{ tweet.author.name }</span>
+            <span class="text-muted" tweet_createdAt>
+                · { tweet.createdAt|date('H:i') }
+        </span>
+        </div>
+
+        <p class="mb-2" tweet_content>{ tweet.content }</p>
+
+        <div class="tweet-actions d-flex justify-content-between w-75">
+            <div class="d-flex gap-3 align-items-center">
+                <div>
+                    <i class="far fa-thumbs-up"></i>
+                    <span tweet_likes>{ tweet.likes ?? 0 }</span>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}
+
+{% block javascripts %}
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const tweetId = window.location.pathname.replace('/t/', '');
+            console.log('tweetId: ', tweetId);
+            const tweetData = await getTweet(tweetId);
+            showTweet(tweetData);
+        });
+    </script>
+
+    <script src="{{ asset('js/tweet.js') }}"></script>
+
+
+{% endblock %}
