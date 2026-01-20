@@ -44,6 +44,47 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   }
 
+  // Helper functions for managing like state in localStorage
+  const getLikesStorageKey = () => {
+    const userId = localStorage.getItem('userId');
+    return userId ? `tweet_likes_${userId}` : 'tweet_likes';
+  };
+
+  const getLikedTweets = () => {
+    try {
+      const stored = localStorage.getItem(getLikesStorageKey());
+      return stored ? JSON.parse(stored) : {};
+    } catch {
+      return {};
+    }
+  };
+
+  const setLikedTweet = (tweetId, liked) => {
+    const likes = getLikedTweets();
+    if (liked) {
+      likes[tweetId] = true;
+    } else {
+      delete likes[tweetId];
+    }
+    localStorage.setItem(getLikesStorageKey(), JSON.stringify(likes));
+  };
+
+  // Restore like states from localStorage on page load
+  if (currentUserId) {
+    const likedTweets = getLikedTweets();
+    document.querySelectorAll(".tweet-like-btn").forEach(btn => {
+      const tweetId = btn.dataset.tweetId;
+      if (tweetId && likedTweets[tweetId]) {
+        const icon = btn.querySelector(".tweet-like-icon");
+        if (icon) {
+          btn.dataset.liked = "true";
+          icon.classList.remove("far");
+          icon.classList.add("fas", "text-primary");
+        }
+      }
+    });
+  }
+
   // Tweet like/unlike functionality
   document.addEventListener("click", async (e) => {
     const likeBtn = e.target.closest(".tweet-like-btn");
@@ -90,6 +131,9 @@ document.addEventListener("DOMContentLoaded", async () => {
       // Update UI based on actual API response
       const actualLiked = result.liked;
       likeBtn.dataset.liked = actualLiked.toString();
+      
+      // Save to localStorage
+      setLikedTweet(tweetId, actualLiked);
       
       // If the optimistic update was wrong, correct it
       if (actualLiked !== newLikedState) {
