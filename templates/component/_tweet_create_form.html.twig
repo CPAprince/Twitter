@@ -1,0 +1,23 @@
+<form id="tweet-create-form">
+    <div class="my-2">
+        <textarea
+            id="tweet-content"
+            name="content"
+            class="form-control"
+            rows="3"
+            maxlength="280"
+            placeholder="What's happening?"
+            required
+        ></textarea>
+
+        <div class="d-flex justify-content-end mt-1">
+            <small class="text-muted">
+                <span id="tweet-content-counter">0</span>/280
+            </small>
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Tweet</button>
+
+    <div class="tweet-create-alerts mt-2"></div>
+</form>
