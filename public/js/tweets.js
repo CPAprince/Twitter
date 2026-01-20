@@ -44,6 +44,85 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   }
 
+  // Tweet like/unlike functionality
+  document.addEventListener("click", async (e) => {
+    const likeBtn = e.target.closest(".tweet-like-btn");
+    if (!likeBtn) return;
+
+    e.preventDefault();
+    e.stopPropagation();
+
+    const tweetId = likeBtn.dataset.tweetId;
+    if (!tweetId) return;
+
+    const icon = likeBtn.querySelector(".tweet-like-icon");
+    const countSpan = likeBtn.querySelector(".tweet-like-count");
+    const isCurrentlyLiked = likeBtn.dataset.liked === "true";
+    const currentCount = parseInt(countSpan.textContent) || 0;
+
+    // Optimistic UI update
+    const newLikedState = !isCurrentlyLiked;
+    const newCount = newLikedState ? currentCount + 1 : Math.max(0, currentCount - 1);
+
+    // Update UI immediately
+    likeBtn.dataset.liked = newLikedState.toString();
+    countSpan.textContent = newCount;
+    
+    // Update icon (far = outline, fas = filled)
+    if (newLikedState) {
+      icon.classList.remove("far");
+      icon.classList.add("fas", "text-primary");
+    } else {
+      icon.classList.remove("fas", "text-primary");
+      icon.classList.add("far");
+    }
+
+    // Disable button during request
+    likeBtn.disabled = true;
+
+    try {
+      const toggleUrl = window.routes?.toggleLike && window.buildRoute
+        ? window.buildRoute(window.routes.toggleLike, { tweetId: tweetId })
+        : `/api/tweets/${tweetId}/likes/toggle`;
+      
+      const result = await Api.post(toggleUrl, {});
+
+      // Update UI based on actual API response
+      const actualLiked = result.liked;
+      likeBtn.dataset.liked = actualLiked.toString();
+      
+      // If the optimistic update was wrong, correct it
+      if (actualLiked !== newLikedState) {
+        const correctedCount = actualLiked ? currentCount + 1 : Math.max(0, currentCount - 1);
+        countSpan.textContent = correctedCount;
+        
+        if (actualLiked) {
+          icon.classList.remove("far");
+          icon.classList.add("fas", "text-primary");
+        } else {
+          icon.classList.remove("fas", "text-primary");
+          icon.classList.add("far");
+        }
+      }
+    } catch (error) {
+      // Revert optimistic update on error
+      likeBtn.dataset.liked = isCurrentlyLiked.toString();
+      countSpan.textContent = currentCount;
+      
+      if (isCurrentlyLiked) {
+        icon.classList.remove("far");
+        icon.classList.add("fas", "text-primary");
+      } else {
+        icon.classList.remove("fas", "text-primary");
+        icon.classList.add("far");
+      }
+
+      console.error("Failed to toggle like:", error);
+    } finally {
+      likeBtn.disabled = false;
+    }
+  });
+
   // Tweet edit handling - using the reusable form component
   // Edit button click handler - only handles visibility toggle and form initialization
   document.querySelectorAll(".tweet-edit-btn").forEach(btn => {
