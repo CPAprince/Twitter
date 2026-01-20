@@ -32,6 +32,7 @@ final class HomepageController extends AbstractController
                     'id' => $tweet->authorId,
                     'name' => $tweet->authorName,
                 ],
+                'likes' => $tweet->likesCount,
             ],
             $dto->tweets
         );
