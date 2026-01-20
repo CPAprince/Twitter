@@ -31,69 +31,72 @@ function initializeTweetCharCounter(container) {
   updateCounter();
 }
 
-document.addEventListener("DOMContentLoaded", async () => {
-  // Show edit buttons only for tweets owned by current user
-  const currentUserId = await Auth.getCurrentUserId();
+const getLikesStorageKey = () => {
+  const userId = localStorage.getItem('userId');
+  return userId ? `tweet_likes_${userId}` : 'tweet_likes';
+};
 
-  if (currentUserId) {
-    document.querySelectorAll(".tweet-edit-btn").forEach(btn => {
-      const authorId = btn.dataset.authorId;
-      if (authorId === currentUserId) {
-        btn.style.display = "inline-block";
-      }
-    });
+const getLikedTweets = () => {
+  try {
+    const stored = localStorage.getItem(getLikesStorageKey());
+    return stored ? JSON.parse(stored) : {};
+  } catch {
+    return {};
   }
+};
 
-  // Helper functions for managing like state in localStorage
-  const getLikesStorageKey = () => {
-    const userId = localStorage.getItem('userId');
-    return userId ? `tweet_likes_${userId}` : 'tweet_likes';
-  };
+const setLikedTweet = (tweetId, liked) => {
+  const likes = getLikedTweets();
+  if (liked) {
+    likes[tweetId] = true;
+  } else {
+    delete likes[tweetId];
+  }
+  localStorage.setItem(getLikesStorageKey(), JSON.stringify(likes));
+};
 
-  const getLikedTweets = () => {
-    try {
-      const stored = localStorage.getItem(getLikesStorageKey());
-      return stored ? JSON.parse(stored) : {};
-    } catch {
-      return {};
+window.Tweets = window.Tweets || {};
+window.Tweets.applyEditVisibility = async (container = document) => {
+  const currentUserId = await Auth.getCurrentUserId();
+  if (!currentUserId) return;
+
+  container.querySelectorAll(".tweet-edit-btn").forEach(btn => {
+    const authorId = btn.dataset.authorId;
+    if (authorId === currentUserId) {
+      btn.style.display = "inline-block";
     }
-  };
+  });
+};
 
-  const setLikedTweet = (tweetId, liked) => {
-    const likes = getLikedTweets();
-    if (liked) {
-      likes[tweetId] = true;
-    } else {
-      delete likes[tweetId];
-    }
-    localStorage.setItem(getLikesStorageKey(), JSON.stringify(likes));
-  };
+window.Tweets.applyLikedState = async (container = document) => {
+  const currentUserId = await Auth.getCurrentUserId();
+  if (!currentUserId) return;
 
-  // Restore like states from localStorage on page load
-  if (currentUserId) {
-    const likedTweets = getLikedTweets();
-    document.querySelectorAll(".tweet-like-btn").forEach(btn => {
-      const tweetId = btn.dataset.tweetId;
-      if (tweetId && likedTweets[tweetId]) {
-        const icon = btn.querySelector(".tweet-like-icon");
-        const countSpan = btn.querySelector(".tweet-like-count");
-        if (icon) {
-          btn.dataset.liked = "true";
-          icon.classList.remove("far");
-          icon.classList.add("fas", "text-primary");
-          
-          // If count is 0 but tweet is liked, increment to at least 1
-          // This handles cases where server count is stale
-          if (countSpan) {
-            const currentCount = parseInt(countSpan.textContent) || 0;
-            if (currentCount === 0) {
-              countSpan.textContent = "1";
-            }
+  const likedTweets = getLikedTweets();
+  container.querySelectorAll(".tweet-like-btn").forEach(btn => {
+    const tweetId = btn.dataset.tweetId;
+    if (tweetId && likedTweets[tweetId]) {
+      const icon = btn.querySelector(".tweet-like-icon");
+      const countSpan = btn.querySelector(".tweet-like-count");
+      if (icon) {
+        btn.dataset.liked = "true";
+        icon.classList.remove("far");
+        icon.classList.add("fas", "text-primary");
+
+        if (countSpan) {
+          const currentCount = parseInt(countSpan.textContent) || 0;
+          if (currentCount === 0) {
+            countSpan.textContent = "1";
           }
         }
       }
-    });
-  }
+    }
+  });
+};
+
+document.addEventListener("DOMContentLoaded", async () => {
+  await window.Tweets.applyEditVisibility();
+  await window.Tweets.applyLikedState();
 
   // Tweet like/unlike functionality
   document.addEventListener("click", async (e) => {
@@ -177,43 +180,41 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   });
 
-  // Tweet edit handling - using the reusable form component
-  // Edit button click handler - only handles visibility toggle and form initialization
-  document.querySelectorAll(".tweet-edit-btn").forEach(btn => {
-    btn.addEventListener("click", (e) => {
-      const tweetElement = e.currentTarget.closest(".tweet");
-      const contentDisplay = tweetElement.querySelector(".tweet-content-display");
-      const editFormContainer = tweetElement.querySelector(".tweet-edit-form");
-      const form = editFormContainer.querySelector(".tweet-form");
+  document.addEventListener("click", (e) => {
+    const editBtn = e.target.closest(".tweet-edit-btn");
+    if (!editBtn) return;
 
-      // Get current displayed content (in case it was already edited)
-      const currentContent = contentDisplay.querySelector("p").textContent.trim();
+    const tweetElement = editBtn.closest(".tweet");
+    if (!tweetElement) return;
 
-      // Toggle visibility
-      const isEditing = editFormContainer.style.display !== "none";
-      contentDisplay.style.display = isEditing ? "block" : "none";
-      editFormContainer.style.display = isEditing ? "none" : "block";
+    const contentDisplay = tweetElement.querySelector(".tweet-content-display");
+    const editFormContainer = tweetElement.querySelector(".tweet-edit-form");
+    const form = editFormContainer?.querySelector(".tweet-form");
 
-      if (!isEditing) {
-        // Entering edit mode
-        const textarea = form.querySelector("textarea");
-        if (textarea) {
-          textarea.value = currentContent;
-        }
+    if (!contentDisplay || !editFormContainer || !form) return;
 
-        // Initialize character counter for edit form
-        const formContainer = editFormContainer.querySelector(".tweet-form-container");
-        if (formContainer) {
-          initializeTweetCharCounter(formContainer);
-        }
+    const currentContent = contentDisplay.querySelector("p")?.textContent.trim() || "";
 
-        // Clear any previous alerts
-        const alerts = editFormContainer.querySelector(".tweet-form-alerts");
-        if (alerts) {
-          alerts.replaceChildren();
-        }
+    const isEditing = editFormContainer.style.display !== "none";
+    contentDisplay.style.display = isEditing ? "block" : "none";
+    editFormContainer.style.display = isEditing ? "none" : "block";
+
+    if (!isEditing) {
+      const textarea = form.querySelector("textarea");
+      if (textarea) {
+        textarea.value = currentContent;
       }
-    });
+
+      const formContainer = editFormContainer.querySelector(".tweet-form-container");
+      if (formContainer) {
+        initializeTweetCharCounter(formContainer);
+      }
+
+      const alerts = editFormContainer.querySelector(".tweet-form-alerts");
+      if (alerts) {
+        alerts.replaceChildren();
+      }
+    }
   });
 
   // Delegated event listener for tweet form submission (edit mode)
