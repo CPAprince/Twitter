@@ -25,7 +25,10 @@
 
     <div id="tweet-create-section" class="p-3 border-bottom" style="display: none;">
         <h5 class="mb-3">Create New Tweet</h5>
-        {% include 'component/_tweet_create_form.html.twig' %}
+        {% include 'component/_tweet_form.html.twig' with {
+            formId: 'tweet-create-form',
+            alertsContainerId: 'tweet-create-alerts'
+        } only %}
     </div>
 
     <div class="tweets-section">
@@ -54,5 +57,4 @@
     <script src="{{ asset('js/auth.js') }}"></script>
     <script src="{{ asset('js/tweets.js') }}"></script>
     <script src="{{ asset('js/profile.js') }}"></script>
-    <script src="{{ asset('js/tweet_create.js') }}"></script>
 {% endblock %}
