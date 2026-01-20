@@ -15,5 +15,6 @@ final readonly class TweetResponse
         public DateTimeImmutable $updatedAt,
         public string $authorId,
         public string $authorName,
+        public int $likesCount,
     ) {}
 }

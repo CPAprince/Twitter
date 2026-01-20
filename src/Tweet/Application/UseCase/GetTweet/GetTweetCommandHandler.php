@@ -29,6 +29,7 @@ final readonly class GetTweetCommandHandler
             updatedAt: $tweet->updatedAt(),
             authorId: $authorId,
             authorName: $profile->name(),
+            likesCount: $tweet->likes(),
         );
     }
 }

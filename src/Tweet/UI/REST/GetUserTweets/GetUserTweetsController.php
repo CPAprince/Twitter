@@ -39,6 +39,7 @@ final readonly class GetUserTweetsController
                 $tweet->updatedAt(),
                 $tweet->userId(),
                 '', // It is frontend responsibility to get the profile name
+                $tweet->likes(),
             ));
         }
 
@@ -56,6 +57,7 @@ final readonly class GetUserTweetsController
                 'id' => $tweetResponse->authorId,
                 'name' => $tweetResponse->authorName,
             ],
+            'likesCount' => $tweetResponse->likesCount,
         ];
     }
 }
