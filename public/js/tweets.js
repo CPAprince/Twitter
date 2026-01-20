@@ -31,6 +31,29 @@ function initializeTweetCharCounter(container) {
   updateCounter();
 }
 
+function normalizeError(error) {
+  const message = String(error?.message || "");
+  return message || "Failed to post tweet";
+}
+
+async function refreshTweetsFragment(tweetsSectionEl, url) {
+  try {
+    const response = await fetch(url, {
+      method: "GET",
+      headers: { "X-Requested-With": "XMLHttpRequest" },
+    });
+
+    if (!response.ok) return;
+
+    tweetsSectionEl.innerHTML = await response.text();
+
+    if (window.Tweets) {
+      window.Tweets.applyLikedState(tweetsSectionEl);
+      window.Tweets.applyEditVisibility(tweetsSectionEl);
+    }
+  } catch (_) {}
+}
+
 const getLikesStorageKey = () => {
   const userId = localStorage.getItem('userId');
   return userId ? `tweet_likes_${userId}` : 'tweet_likes';
@@ -97,6 +120,12 @@ window.Tweets.applyLikedState = async (container = document) => {
 document.addEventListener("DOMContentLoaded", async () => {
   await window.Tweets.applyEditVisibility();
   await window.Tweets.applyLikedState();
+
+  document
+    .querySelectorAll('.tweet-form-container[data-form-mode="create"]')
+    .forEach((container) => {
+      initializeTweetCharCounter(container);
+    });
 
   // Tweet like/unlike functionality
   document.addEventListener("click", async (e) => {
@@ -226,6 +255,70 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (!formContainer) return;
 
     const formMode = formContainer.dataset.formMode;
+    if (formMode === "create") {
+      e.preventDefault();
+
+      const alerts = formContainer.querySelector(".tweet-form-alerts");
+      const tweetsSection = document.querySelector(".tweets-section");
+
+      if (alerts) {
+        alerts.replaceChildren();
+      }
+
+      const formData = new FormData(form);
+      const content = (formData.get("content") || "").trim();
+
+      if (!content) {
+        if (alerts) {
+          Alert.append(alerts, "Tweet content cannot be empty", "danger");
+        }
+        return;
+      }
+
+      const createUrl = window.routes?.createTweet;
+      const fragmentUrl = window.routes?.profileTweetsFragment;
+
+      if (!createUrl || !fragmentUrl) {
+        if (alerts) {
+          Alert.append(alerts, "Missing routes.", "danger");
+        }
+        return;
+      }
+
+      try {
+        if (alerts) {
+          Loading.clearAndShow(alerts, "Posting tweet...");
+        }
+        Loading.disableForm(form);
+
+        await Api.post(createUrl, { content });
+
+        const textarea = form.querySelector("textarea");
+        if (textarea) {
+          textarea.value = "";
+        }
+        initializeTweetCharCounter(formContainer);
+
+        if (tweetsSection) {
+          await refreshTweetsFragment(tweetsSection, fragmentUrl);
+        }
+
+        if (alerts) {
+          alerts.replaceChildren();
+          Alert.append(alerts, "Tweet posted successfully!", "success");
+        }
+      } catch (error) {
+        if (alerts) {
+          alerts.replaceChildren();
+          Alert.append(alerts, normalizeError(error), "danger");
+        }
+      } finally {
+        Loading.enableForm(form);
+      }
+
+      return;
+    }
+
     if (formMode !== "edit") return; // Only handle edit forms here
 
     e.preventDefault();
