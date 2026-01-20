@@ -76,10 +76,20 @@ document.addEventListener("DOMContentLoaded", async () => {
       const tweetId = btn.dataset.tweetId;
       if (tweetId && likedTweets[tweetId]) {
         const icon = btn.querySelector(".tweet-like-icon");
+        const countSpan = btn.querySelector(".tweet-like-count");
         if (icon) {
           btn.dataset.liked = "true";
           icon.classList.remove("far");
           icon.classList.add("fas", "text-primary");
+          
+          // If count is 0 but tweet is liked, increment to at least 1
+          // This handles cases where server count is stale
+          if (countSpan) {
+            const currentCount = parseInt(countSpan.textContent) || 0;
+            if (currentCount === 0) {
+              countSpan.textContent = "1";
+            }
+          }
         }
       }
     });
