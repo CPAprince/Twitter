@@ -1,0 +1,27 @@
+document.addEventListener('DOMContentLoaded', () => {
+  const form = document.getElementById('login-form');
+  const alerts = document.getElementById('alert-placeholder');
+
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault();
+
+    const data = Object.fromEntries(new FormData(form));
+
+    try {
+      const auth = await Api.post(window.routes.login, {
+        email: data.email,
+        password: data.password,
+      });
+
+      const accessToken = auth.token;
+      if (!accessToken) {
+        throw new Error('Access token is missing.');
+      }
+
+      Alert.append(alerts, 'You have been successfully logged in!', 'success');
+      window.location.href = window.routes.successRedirect;
+    } catch (e) {
+      Alert.append(alerts, 'Login failed', 'danger');
+    }
+  });
+});
