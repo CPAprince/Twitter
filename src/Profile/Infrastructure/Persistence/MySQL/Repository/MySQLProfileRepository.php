@@ -58,13 +58,13 @@ final readonly class MySQLProfileRepository implements ProfileRepository
         }
 
         $qb = $this->entityManager->createQueryBuilder();
-        $results = $qb->select('p.userId, p.userName')
+        $results = $qb->select('p.userId, p.name')
             ->from(Profile::class, 'p')
             ->where('p.userId IN (:userIds)')
             ->setParameter('userIds', $userIds)
             ->getQuery()
             ->getArrayResult();
 
-        return array_column($results, 'userName', 'userId');
+        return array_column($results, 'name', 'userId');
     }
 }
