@@ -22,5 +22,7 @@ interface TweetRepository
      *
      * @return list<Tweet>
      */
-    public function getAllTweets(): array;
+    public function getAllTweets(int $limit, int $offset): array;
+
+    public function countTweets(): int;
 }
