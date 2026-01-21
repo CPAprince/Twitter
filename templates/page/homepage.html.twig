@@ -3,14 +3,18 @@
 {% block title %}All tweets{% endblock %}
 
 {% block content %}
-    {% include 'component/_tweet_list.html.twig' with {
-        tweets: tweets,
-        title: 'Feeds:'
-    } only %}
+    <div
+        class="tweets-section"
+        data-tweets-url="{{ path('tweets_get_all') }}"
+        data-tweets-show-edit="1"
+    ></div>
+
+    {% include 'component/_tweet_templates.html.twig' %}
 {% endblock %}
 
 {% block javascripts %}
     <script src="{{ asset('js/alert.js') }}"></script>
     <script src="{{ asset('js/loading.js') }}"></script>
+    <script src="{{ asset('js/tweets_list.js') }}"></script>
     <script src="{{ asset('js/tweets.js') }}"></script>
 {% endblock %}

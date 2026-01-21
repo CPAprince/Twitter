@@ -31,13 +31,13 @@
         } only %}
     </div>
 
-    <div class="tweets-section">
-        {% include 'component/_tweet_list.html.twig' with {
-            tweets: tweets,
-            title: 'Tweets:',
-            showEdit: true
-        } only %}
-    </div>
+    <div
+        class="tweets-section"
+        data-tweets-url="{{ path('tweets_get_by_user', { userId: profile.userId }) }}"
+    ></div>
+
+    {% include 'component/_tweet_templates.html.twig' %}
+
 {% endblock %}
 
 {% block javascripts %}
@@ -49,12 +49,12 @@
         };
         window.routes = window.routes || {};
         window.routes.createTweet = '{{ path('api_create_tweet') }}';
-        window.routes.profileTweetsFragment = '{{ path('profile_tweets_fragment', { userId: profile.userId }) }}';
     </script>
     <script src="{{ asset('js/alert.js') }}"></script>
     <script src="{{ asset('js/loading.js') }}"></script>
     <script src="{{ asset('js/api.js') }}"></script>
     <script src="{{ asset('js/auth.js') }}"></script>
+    <script src="{{ asset('js/tweets_list.js') }}"></script>
     <script src="{{ asset('js/tweets.js') }}"></script>
     <script src="{{ asset('js/profile.js') }}"></script>
 {% endblock %}
