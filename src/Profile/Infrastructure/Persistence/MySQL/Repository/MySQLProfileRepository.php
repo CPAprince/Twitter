@@ -50,4 +50,21 @@ final readonly class MySQLProfileRepository implements ProfileRepository
 
         return $profile;
     }
+
+    public function getNamesByUserIds(array $userIds): array
+    {
+        if (empty($userIds)) {
+            return [];
+        }
+
+        $qb = $this->entityManager->createQueryBuilder();
+        $results = $qb->select('p.userId, p.userName')
+            ->from(Profile::class, 'p')
+            ->where('p.userId IN (:userIds)')
+            ->setParameter('userIds', $userIds)
+            ->getQuery()
+            ->getArrayResult();
+
+        return array_column($results, 'userName', 'userId');
+    }
 }

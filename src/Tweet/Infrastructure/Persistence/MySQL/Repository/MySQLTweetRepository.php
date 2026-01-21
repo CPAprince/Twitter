@@ -8,6 +8,7 @@ use Doctrine\DBAL\Exception\ForeignKeyConstraintViolationException;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Exception\ORMException;
 use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use Twitter\Tweet\Domain\Tweet\Exception\TweetNotFoundException;
 use Twitter\Tweet\Domain\Tweet\Exception\UserNotFoundException;
 use Twitter\Tweet\Domain\Tweet\Model\Tweet;
@@ -50,13 +51,25 @@ final readonly class MySQLTweetRepository implements TweetRepository
         return $tweet;
     }
 
-    public function getAllTweets(): array
+    public function getAllTweets(int $limit, int $offset): array
     {
-        /** @var list<Tweet> $tweets */
-        $tweets = $this->entityManager
-            ->getRepository(Tweet::class)
-            ->findBy([], ['createdAt' => 'DESC']);
+        $query = $this->entityManager->createQueryBuilder()
+            ->select('t')
+            ->from(Tweet::class, 't')
+            ->orderBy('t.createdAt', 'DESC')
+            ->addOrderBy('t.id', 'DESC')
+            ->setFirstResult($offset)
+            ->setMaxResults($limit);
 
-        return $tweets;
+        return iterator_to_array(new Paginator($query));
+    }
+
+    public function countTweets(): int
+    {
+        return (int) $this->entityManager->createQueryBuilder()
+            ->select('COUNT(t.id)')
+            ->from(Tweet::class, 't')
+            ->getQuery()
+            ->getSingleScalarResult();
     }
 }
