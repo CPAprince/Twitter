@@ -21,6 +21,20 @@
         <link href="{{ asset('css/style.css') }}" rel="stylesheet">
 
         {% block stylesheets %}{% endblock %}
+        <style>
+            .auth-guest-only,
+            .auth-user-only {
+                display: none !important;
+            }
+
+            body.is-authenticated .auth-user-only {
+                display: block !important;
+            }
+
+            body.is-guest .auth-guest-only {
+                display: block !important;
+            }
+        </style>
     </head>
 
     <body>

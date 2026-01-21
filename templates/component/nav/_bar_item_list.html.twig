@@ -6,6 +6,7 @@
                 icon: item.icon,
                 text: item.text,
                 id: item.id|default(null),
+                class: item.class|default(null),
             } only %}
         {% endfor %}
     {% endif %}

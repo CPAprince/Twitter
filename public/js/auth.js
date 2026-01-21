@@ -64,4 +64,39 @@ window.Auth = {
 
     return this.getUserId(token);
   },
+
+  /**
+   * Update navigation visibility based on auth state
+   */
+  updateNavVisibility() {
+    if (!window.Api || !document?.body) {
+      return;
+    }
+
+    const token = Api.getToken();
+    const isAuthenticated = !!token && !this.isTokenExpired(token);
+    document.body.classList.toggle('is-authenticated', isAuthenticated);
+    document.body.classList.toggle('is-guest', !isAuthenticated);
+  },
 };
+
+// Initialize nav visibility and keep it updated on auth changes
+document.addEventListener('DOMContentLoaded', () => {
+  if (window.Auth) {
+    window.Auth.updateNavVisibility();
+  }
+});
+
+if (window.Api && window.Auth) {
+  const originalSetToken = Api.setToken.bind(Api);
+  Api.setToken = (token) => {
+    originalSetToken(token);
+    window.Auth.updateNavVisibility();
+  };
+
+  const originalClearToken = Api.clearToken.bind(Api);
+  Api.clearToken = () => {
+    originalClearToken();
+    window.Auth.updateNavVisibility();
+  };
+}
