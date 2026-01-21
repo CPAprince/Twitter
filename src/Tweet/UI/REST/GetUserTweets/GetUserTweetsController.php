@@ -21,8 +21,8 @@ final readonly class GetUserTweetsController
     {
         $query = new GetUserTweetsQuery(
             $userId,
-            (int) $request->query->get('page', 0),
             (int) $request->query->get('limit', 0),
+            (int) $request->query->get('page', 0),
         );
 
         $result = $this->queryHandler->handle($query);

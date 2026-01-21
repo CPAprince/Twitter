@@ -174,7 +174,7 @@ window.Api = {
       console.debug('[refreshAccessToken] Sending refresh request to:', refreshUrl);
 
       const response = await this._request(refreshUrl, {
-        method: 'PATCH',
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
