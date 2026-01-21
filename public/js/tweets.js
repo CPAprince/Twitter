@@ -36,24 +36,6 @@ function normalizeError(error) {
   return message || "Failed to post tweet";
 }
 
-async function refreshTweetsFragment(tweetsSectionEl, url) {
-  try {
-    const response = await fetch(url, {
-      method: "GET",
-      headers: { "X-Requested-With": "XMLHttpRequest" },
-    });
-
-    if (!response.ok) return;
-
-    tweetsSectionEl.innerHTML = await response.text();
-
-    if (window.Tweets) {
-      window.Tweets.applyLikedState(tweetsSectionEl);
-      window.Tweets.applyEditVisibility(tweetsSectionEl);
-    }
-  } catch (_) {}
-}
-
 const getLikesStorageKey = () => {
   const userId = localStorage.getItem('userId');
   return userId ? `tweet_likes_${userId}` : 'tweet_likes';
@@ -150,7 +132,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     // Update UI immediately
     likeBtn.dataset.liked = newLikedState.toString();
     countSpan.textContent = newCount;
-    
+
     // Update icon (far = outline, fas = filled)
     if (newLikedState) {
       icon.classList.remove("far");
@@ -167,21 +149,21 @@ document.addEventListener("DOMContentLoaded", async () => {
       const toggleUrl = window.routes?.toggleLike && window.buildRoute
         ? window.buildRoute(window.routes.toggleLike, { tweetId: tweetId })
         : `/api/tweets/${tweetId}/likes/toggle`;
-      
+
       const result = await Api.post(toggleUrl, {});
 
       // Update UI based on actual API response
       const actualLiked = result.liked;
       likeBtn.dataset.liked = actualLiked.toString();
-      
+
       // Save to localStorage
       setLikedTweet(tweetId, actualLiked);
-      
+
       // If the optimistic update was wrong, correct it
       if (actualLiked !== newLikedState) {
         const correctedCount = actualLiked ? currentCount + 1 : Math.max(0, currentCount - 1);
         countSpan.textContent = correctedCount;
-        
+
         if (actualLiked) {
           icon.classList.remove("far");
           icon.classList.add("fas", "text-primary");
@@ -194,7 +176,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       // Revert optimistic update on error
       likeBtn.dataset.liked = isCurrentlyLiked.toString();
       countSpan.textContent = currentCount;
-      
+
       if (isCurrentlyLiked) {
         icon.classList.remove("far");
         icon.classList.add("fas", "text-primary");
@@ -276,12 +258,9 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
 
       const createUrl = window.routes?.createTweet;
-      const fragmentUrl = window.routes?.profileTweetsFragment;
 
-      if (!createUrl || !fragmentUrl) {
-        if (alerts) {
-          Alert.append(alerts, "Missing routes.", "danger");
-        }
+      if (!createUrl) {
+        if (alerts) Alert.append(alerts, "Missing routes.", "danger");
         return;
       }
 
@@ -299,8 +278,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
         initializeTweetCharCounter(formContainer);
 
-        if (tweetsSection) {
-          await refreshTweetsFragment(tweetsSection, fragmentUrl);
+        if (tweetsSection && window.TweetsList?.reload) {
+          await window.TweetsList.reload(tweetsSection);
         }
 
         if (alerts) {

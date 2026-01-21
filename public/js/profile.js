@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const editSection = document.getElementById("profile-edit-section");
     const tweetCreateSection = document.getElementById("tweet-create-section");
 
-    if (editBtn) {
+    if (editBtn && editSection) {
       editBtn.style.display = "block";
       editBtn.addEventListener("click", () => {
         editSection.style.display = editSection.style.display === "none" ? "block" : "none";
@@ -26,7 +26,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (tweetCreateSection) {
       tweetCreateSection.style.display = "block";
     }
-
   }
 
   // Initialize profile edit form with current values
@@ -42,7 +41,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   if (profileEditForm && isOwnProfile) {
     profileEditForm.addEventListener("submit", async (e) => {
       e.preventDefault();
+
       const alerts = document.getElementById("profile-edit-alerts");
+      if (!alerts) return;
       alerts.replaceChildren();
 
       const formData = new FormData(profileEditForm);
@@ -54,11 +55,16 @@ document.addEventListener("DOMContentLoaded", async () => {
         Loading.disableForm(profileEditForm);
 
         const payload = {};
-        if (name && name.trim() !== profileData.name) {
-          payload.name = name.trim();
+        if (name && String(name).trim() !== (profileData.name || "")) {
+          payload.name = String(name).trim();
         }
-        if (bio !== profileData.bio) {
-          payload.bio = bio ? bio.trim() : null;
+
+        // bio може бути null/"" — нормалізуємо
+        const nextBio = bio !== null ? String(bio).trim() : "";
+        const prevBio = profileData.bio !== null && profileData.bio !== undefined ? String(profileData.bio) : "";
+
+        if (nextBio !== prevBio) {
+          payload.bio = nextBio.length > 0 ? nextBio : null;
         }
 
         if (Object.keys(payload).length === 0) {
@@ -67,28 +73,42 @@ document.addEventListener("DOMContentLoaded", async () => {
           return;
         }
 
-        const updateProfileUrl = window.routes?.updateProfile && window.buildRoute
-          ? window.buildRoute(window.routes.updateProfile, { userId: urlUserId })
-          : `/api/profiles/${urlUserId}`;
+        const updateProfileUrl =
+          window.routes?.updateProfile && window.buildRoute
+            ? window.buildRoute(window.routes.updateProfile, { userId: urlUserId })
+            : `/api/profiles/${urlUserId}`;
+
         const result = await Api.patch(updateProfileUrl, payload);
 
         // Update profile display
-        document.querySelector(".profile-header h1").textContent = result.name;
+        const headerName = document.querySelector(".profile-header h1");
+        if (headerName) headerName.textContent = result.name;
+
         const bioElement = document.querySelector(".profile-header p.text-muted");
-        if (result.bio) {
-          bioElement.textContent = result.bio;
-        } else {
-          const em = document.createElement('em');
-          em.textContent = "No bio yet.";
-          bioElement.replaceChildren(em);
+        if (bioElement) {
+          if (result.bio) {
+            bioElement.textContent = result.bio;
+          } else {
+            const em = document.createElement("em");
+            em.textContent = "No bio yet.";
+            bioElement.replaceChildren(em);
+          }
         }
 
-        // Update profileData
+        // Update profileData (important for tweets_list.js fallback)
         profileData.name = result.name;
         profileData.bio = result.bio;
 
+        // ✅ FIX: Refresh tweets section to reflect updated author name immediately
+        const tweetsSection = document.querySelector(".tweets-section[data-tweets-url]");
+        if (tweetsSection && window.TweetsList?.reload) {
+          await window.TweetsList.reload(tweetsSection);
+        }
+
         // Hide edit form
-        document.getElementById("profile-edit-section").style.display = "none";
+        const editSection = document.getElementById("profile-edit-section");
+        if (editSection) editSection.style.display = "none";
+
         Loading.hide(alerts);
         Alert.append(alerts, "Profile updated successfully!", "success");
       } catch (error) {
@@ -102,12 +122,15 @@ document.addEventListener("DOMContentLoaded", async () => {
     const cancelBtn = document.getElementById("cancel-profile-edit");
     if (cancelBtn) {
       cancelBtn.addEventListener("click", () => {
-        document.getElementById("profile-edit-section").style.display = "none";
+        const editSection = document.getElementById("profile-edit-section");
+        if (editSection) editSection.style.display = "none";
+
         // Reset form values
-        document.getElementById("profile-name").value = profileData.name;
-        document.getElementById("profile-bio").value = profileData.bio || "";
+        const nameInput = document.getElementById("profile-name");
+        const bioInput = document.getElementById("profile-bio");
+        if (nameInput) nameInput.value = profileData.name || "";
+        if (bioInput) bioInput.value = profileData.bio || "";
       });
     }
   }
-
 });
