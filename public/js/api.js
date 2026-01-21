@@ -87,13 +87,13 @@ window.Api = {
     const bufferTime = 60; // Refresh if expiring within 60 seconds
     const timeUntilExpiry = payload.exp - currentTime;
     const isExpiringSoon = payload.exp < (currentTime + bufferTime);
-    
+
     if (isExpiringSoon) {
       console.debug(`[Token Check] Token expiring soon. Expires in ${timeUntilExpiry}s (exp: ${new Date(payload.exp * 1000).toISOString()}, now: ${new Date(currentTime * 1000).toISOString()})`);
     } else {
       console.debug(`[Token Check] Token valid. Expires in ${timeUntilExpiry}s`);
     }
-    
+
     return isExpiringSoon;
   },
 
@@ -172,7 +172,7 @@ window.Api = {
       // Note: gesdinet_jwt_refresh_token expects 'refresh_token' parameter name
       const refreshUrl = window.routes?.tokenRefresh || '/api/token/refresh';
       console.debug('[refreshAccessToken] Sending refresh request to:', refreshUrl);
-      
+
       const response = await this._request(refreshUrl, {
         method: 'PATCH',
         headers: {
@@ -206,7 +206,7 @@ window.Api = {
         if (newAccessToken) {
           console.log('[refreshAccessToken] New access token received, storing it');
           this.setToken(newAccessToken);
-          
+
           // CRITICAL FIX: Properly handle refresh token response
           // If newRefreshToken is undefined, server didn't include it - keep existing token (normal for non-rotating tokens)
           // If newRefreshToken is null or empty, server explicitly returned empty - clear tokens (indicates error)
@@ -227,7 +227,7 @@ window.Api = {
             console.debug('[refreshAccessToken] No new refresh token in response, keeping existing one');
           }
           // If newRefreshToken is undefined, server didn't include it - keep existing token
-          
+
           console.log('[refreshAccessToken] Token refresh completed successfully');
           return newAccessToken;
         } else {
@@ -300,7 +300,7 @@ window.Api = {
 
     // Make the request
     let response = await fetch(url, options);
-    
+
     console.debug('[API Request] Response received', {
       url: url,
       status: response.status,
@@ -350,7 +350,7 @@ window.Api = {
           // Clear all tokens and redirect to registration page
           console.error('[API Request] Refresh token exists but refresh failed - token expired. Clearing tokens and redirecting.');
           this.clearToken();
-          
+
           // Redirect to registration page if not already there
           const currentPath = window.location.pathname;
           console.log('[API Request] Redirecting to registration page', {
