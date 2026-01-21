@@ -16,9 +16,14 @@ final readonly class GetTweetsController
 {
     public function __construct(private GetTweetsCommandHandler $handler) {}
 
-    public function __invoke(): JsonResponse
+    public function __invoke(Request $request): JsonResponse
     {
-        $dto = $this->handler->handle(new GetTweetsCommand());
+        $page = $request->query->getInt('page', 1);
+        $limit = $request->query->getInt('limit', 20);
+
+        $limit = min($limit, 100);
+
+        $dto = $this->handler->handle(new GetTweetsCommand($page, $limit));
 
         $tweets = array_map(
             static fn (TweetResponse $tweetResponse): array => self::mapTweetResponse($tweetResponse),
@@ -26,7 +31,13 @@ final readonly class GetTweetsController
         );
 
         return new JsonResponse([
-            'tweets' => $tweets,
+            'data' => $tweets,
+            'meta' => [
+                'total' => $dto->meta->totalItems,
+                'page' => $dto->meta->page,
+                'limit' => $dto->meta->limit,
+                'pages' => $dto->meta->totalPages,
+            ],
         ], JsonResponse::HTTP_OK);
     }
 
