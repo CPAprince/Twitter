@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace Twitter\Tweet\Application\UseCase\GetTweets;
 
 use Twitter\Profile\Domain\Profile\Model\ProfileRepository;
+use Twitter\Tweet\Application\UseCase\Shared\PaginationMeta;
 use Twitter\Tweet\Application\UseCase\Shared\TweetResponse;
+use Twitter\Tweet\Domain\Tweet\Model\Tweet;
 use Twitter\Tweet\Domain\Tweet\Model\TweetRepository;
 
 final readonly class GetTweetsCommandHandler
@@ -17,28 +19,28 @@ final readonly class GetTweetsCommandHandler
 
     public function handle(GetTweetsCommand $command): GetTweetsResponse
     {
-        $tweets = $this->tweetRepository->getAllTweets();
+        $offset = ($command->page - 1) * $command->limit;
+        $tweets = $this->tweetRepository->getAllTweets($command->limit, $offset);
+        $totalTweets = $this->tweetRepository->countTweets();
 
-        $authorNameById = [];
-        $tweetResponses = [];
+        $userIds = array_map(static fn (Tweet $tweet): string => $tweet->userId(), $tweets);
+        $authorNames = $this->profileRepository->getNamesByUserIds(array_unique($userIds));
 
-        foreach ($tweets as $tweet) {
-            $authorId = $tweet->userId();
-
-            if (!isset($authorNameById[$authorId])) {
-                $authorNameById[$authorId] = $this->profileRepository->getByUserId($authorId)->name();
-            }
-
-            $tweetResponses[] = new TweetResponse(
+        $tweetResponses = array_map(
+            static fn (Tweet $tweet): TweetResponse => new TweetResponse(
                 id: $tweet->id(),
                 content: $tweet->content(),
                 createdAt: $tweet->createdAt(),
                 updatedAt: $tweet->updatedAt(),
-                authorId: $authorId,
-                authorName: $authorNameById[$authorId],
-            );
-        }
+                authorId: $tweet->userId(),
+                authorName: $authorNames[$tweet->userId()] ?? 'Unknown',
+            ),
+            $tweets,
+        );
 
-        return new GetTweetsResponse($tweetResponses);
+        return new GetTweetsResponse(
+            $tweetResponses,
+            new PaginationMeta($command->page, $command->limit, $totalTweets),
+        );
     }
 }
