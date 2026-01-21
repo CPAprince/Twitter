@@ -12,7 +12,7 @@ use Twitter\Profile\Application\UseCase\GetProfile\GetProfileQuery;
 use Twitter\Profile\Application\UseCase\GetProfile\GetProfileQueryHandler;
 use Twitter\Profile\Domain\Profile\Exception\ProfileNotFoundException;
 
-#[Route('/profiles/{userId}', name: 'profile_page', methods: ['GET'])]
+#[Route('/p/{userId}', name: 'profile_page', methods: ['GET'])]
 final class ProfilePageController extends AbstractController
 {
     public function __construct(

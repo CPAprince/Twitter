@@ -62,7 +62,7 @@
 
       const authorLink = node.querySelector("[data-tweet-author-link]");
       const authorNameEl = node.querySelector("[data-tweet-author-name]");
-      if (authorLink) authorLink.href = `/profiles/${authorId}`;
+      if (authorLink) authorLink.href = `/p/${authorId}`;
       if (authorNameEl) authorNameEl.textContent = authorName;
 
       const createdAtEl = node.querySelector("[data-tweet-created-at]");
