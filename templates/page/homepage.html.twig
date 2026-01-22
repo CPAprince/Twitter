@@ -3,12 +3,12 @@
 {% block title %}All tweets{% endblock %}
 
 {% block content %}
+    <h1 class="mb-2 p-3">All tweets</h1>
     <div
         class="tweets-section"
         data-tweets-url="{{ path('tweets_get_all') }}"
         data-tweets-show-edit="1"
     ></div>
-
     {% include 'component/_tweet_templates.html.twig' %}
 {% endblock %}
 
