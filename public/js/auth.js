@@ -78,6 +78,45 @@ window.Auth = {
     document.body.classList.toggle('is-authenticated', isAuthenticated);
     document.body.classList.toggle('is-guest', !isAuthenticated);
   },
+
+  /**
+   * Logout current user (revoke refresh token + clear local tokens)
+   */
+  async logout() {
+    if (!window.Api) {
+      console.warn('[Auth.logout] Api helper not available. Redirecting to homepage.');
+      window.location.href = window.routes?.successRedirect || '/';
+      return;
+    }
+
+    const refreshToken = Api.getRefreshToken();
+    const logoutUrl = window.routes?.logout || '/api/tokens';
+
+    try {
+      // Best-effort revoke. Even if it fails, we still clear tokens locally.
+      if (refreshToken) {
+        // IMPORTANT: do NOT run auto-refresh/redirect logic while user explicitly logs out.
+        // We send the current access token as-is (if present) and skip auth middleware.
+        const accessToken = Api.getToken();
+        const headers = {
+          'Content-Type': 'application/json',
+          ...(accessToken ? { 'Authorization': `Bearer ${accessToken}` } : {}),
+        };
+
+        await Api._request(logoutUrl, {
+          method: 'DELETE',
+          headers,
+          body: JSON.stringify({ refreshToken }),
+        }, true); // skipAuth=true
+      }
+    } catch (error) {
+      console.error('[Auth.logout] Logout request failed (will still clear tokens):', error);
+    } finally {
+      Api.clearToken();
+      this.updateNavVisibility();
+      window.location.href = window.routes?.successRedirect || '/';
+    }
+  },
 };
 
 // Initialize nav visibility and keep it updated on auth changes
@@ -100,3 +139,16 @@ if (window.Api && window.Auth) {
     window.Auth.updateNavVisibility();
   };
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+  const logoutLinks = document.querySelectorAll('#nav-logout-link');
+  if (!logoutLinks.length) return;
+
+  logoutLinks.forEach((el) => {
+    el.addEventListener('click', async (e) => {
+      e.preventDefault();
+      await window.Auth.logout();
+    });
+  });
+});
+

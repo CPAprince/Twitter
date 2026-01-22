@@ -85,6 +85,7 @@
                 getTweets: '{{ path('tweets_get_all') }}',
                 registration: '{{ path('registration') }}',
                 profilePage: '{{ path('profile_page', {userId: 'PLACEHOLDER'}) }}'.replace('PLACEHOLDER', '{userId}'),
+                logout: '{{ path('api_tokens_logout') }}',
             };
         </script>
 
