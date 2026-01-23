@@ -32,6 +32,11 @@ function formatPublishDate(isoString) {
   const hour = 60 * minute;
   const day = 24 * hour;
 
+  if (diff < minute) {
+    const seconds = Math.max(1, Math.floor(diff / 1000));
+    return `${seconds}s ago`;
+  }
+
   if (diff < hour) {
     const minutes = Math.max(1, Math.floor(diff / minute));
     return `${minutes}m ago`;
