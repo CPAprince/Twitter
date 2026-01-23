@@ -62,7 +62,9 @@ function showTweet(tweet) {
   document.querySelector('[tweet_author]').innerHTML = '<a href=\"\/p\/' + tweet.author.id + '\"  style=\"color: var(--bs-body-color);\">' + tweet.author.name + '</a>';
   document.querySelector('[tweet_createdAt]').textContent = ' · ' + formatPublishDate(tweet.createdAt);
   document.querySelector('[tweet_content]').textContent = tweet.content;
-  document.querySelector('[tweet_likes]').textContent = tweet.likes;
-
+  document.querySelector('[tweet_likes]').textContent = tweet.likesCount;
+  document.querySelector(" div.tweet-actions > div > button.tweet-like-btn").setAttribute('data-tweet-id', tweet.id);
+  // document.querySelector(" div.tweet-actions > div > button.tweet-like-btn").setAttribute('data-tweet-id', tweet.id);
+  // document.querySelector(" div.tweet-actions > div > button.tweet-like-btn").setAttribute('data-author-id', tweet.author.id);
   document.querySelector('.tweet').style.visibility = 'visible';
 }

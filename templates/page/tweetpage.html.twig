@@ -16,11 +16,25 @@
 
         <div class="tweet-actions d-flex justify-content-between w-75">
             <div class="d-flex gap-3 align-items-center">
-                <div>
+              <!--  <div>
                     <i class="far fa-thumbs-up"></i>
                     <span tweet_likes>{ tweet.likes ?? 0 }</span>
-                </div>
+                </div>-->
+                <button class="btn btn-link btn-sm p-0 tweet-like-btn"
+                        data-tweet-id=""
+                        data-liked=""
+                        type="button"
+                        style="text-decoration: none; color: inherit;">
+                    <i class="far fa-thumbs-up tweet-like-icon"></i>
+                    <span class="tweet-like-count" tweet_likes>0</span>
+                </button>
 
+                <button class="btn btn-link btn-sm p-0 tweet-edit-btn"
+                        data-tweet-id=""
+                        data-author-id=""
+                        style="display: none;">
+                    <i class="fas fa-edit"></i>
+                </button>
 
             </div>
         </div>
@@ -41,6 +55,7 @@
     </script>
 
     <script src="{{ asset('js/tweet.js') }}"></script>
+    <script src="{{ asset('js/tweets.js') }}"></script>
 
 
 {% endblock %}
