@@ -56,7 +56,7 @@
       const authorName = resolveAuthorName(t, authorId);
       const createdAt = t?.createdAt ?? "";
       const content = t?.content ?? "";
-      const likes = t?.likes ?? 0;
+      const likes = t?.likesCount ?? 0;
 
       if (root) root.dataset.tweetId = tweetId;
 
