@@ -57,13 +57,26 @@ final readonly class MySQLProfileRepository implements ProfileRepository
             return [];
         }
 
-        $qb = $this->entityManager->createQueryBuilder();
-        $results = $qb->select('p.userId, p.name')
-            ->from(Profile::class, 'p')
-            ->where('p.userId IN (:userIds)')
-            ->setParameter('userIds', $userIds)
-            ->getQuery()
-            ->getArrayResult();
+        $userIds = array_values($userIds);
+
+        $connection = $this->entityManager->getConnection();
+
+        $placeholders = implode(
+            ', ',
+            array_fill(0, count($userIds),
+                'UUID_TO_BIN(?)'),
+        );
+
+        $sql = sprintf(
+            <<<SQL
+            SELECT BIN_TO_UUID(user_id) as userId, name
+            FROM profiles
+            WHERE user_id IN (%s)
+            SQL,
+            $placeholders,
+        );
+
+        $results = $connection->fetchAllAssociative($sql, $userIds);
 
         return array_column($results, 'name', 'userId');
     }
