@@ -17,6 +17,7 @@ interface ProfileRepository
 
     /**
      * @param string[] $userIds
+     *
      * @return array<string, string>
      */
     public function getNamesByUserIds(array $userIds): array;
