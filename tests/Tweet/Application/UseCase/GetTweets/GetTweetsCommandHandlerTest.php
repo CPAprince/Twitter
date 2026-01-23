@@ -9,7 +9,6 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use Twitter\Profile\Domain\Profile\Model\Profile;
 use Twitter\Profile\Domain\Profile\Model\ProfileRepository;
 use Twitter\Tweet\Application\UseCase\GetTweets\GetTweetsCommand;
 use Twitter\Tweet\Application\UseCase\GetTweets\GetTweetsCommandHandler;
@@ -39,18 +38,30 @@ final class GetTweetsCommandHandlerTest extends TestCase
     #[Test]
     public function itReturnsEmptyListWhenNoTweetsExist(): void
     {
+        $command = new GetTweetsCommand(page: 1, limit: 20);
+
         $this->tweetRepository
             ->expects(self::once())
             ->method('getAllTweets')
+            ->with(20, 0)
             ->willReturn([]);
 
-        $this->profileRepository
-            ->expects(self::never())
-            ->method('getByUserId');
+        $this->tweetRepository
+            ->expects(self::once())
+            ->method('countTweets')
+            ->willReturn(0);
 
-        $result = $this->handler->handle(new GetTweetsCommand());
+        $this->profileRepository
+            ->expects(self::once())
+            ->method('getNamesByUserIds')
+            ->with([])
+            ->willReturn([]);
+
+        $result = $this->handler->handle($command);
 
         self::assertSame([], $result->tweets);
+        self::assertSame(0, $result->meta->totalItems);
+        self::assertSame(0, $result->meta->totalPages);
     }
 
     #[Test]
@@ -62,23 +73,29 @@ final class GetTweetsCommandHandlerTest extends TestCase
         $tweetNewest = Tweet::create($authorIdOne, 'Newest tweet');
         $tweetOldest = Tweet::create($authorIdTwo, 'Oldest tweet');
 
-        $profileOne = Profile::create($authorIdOne, 'User One', 'Bio');
-        $profileTwo = Profile::create($authorIdTwo, 'User Two', 'Bio');
+        $command = new GetTweetsCommand(page: 1, limit: 10);
 
         $this->tweetRepository
             ->expects(self::once())
             ->method('getAllTweets')
+            ->with(10, 0)
             ->willReturn([$tweetNewest, $tweetOldest]);
 
+        $this->tweetRepository
+            ->expects(self::once())
+            ->method('countTweets')
+            ->willReturn(15);
+
         $this->profileRepository
-            ->expects(self::exactly(2))
-            ->method('getByUserId')
-            ->willReturnMap([
-                [$authorIdOne, $profileOne],
-                [$authorIdTwo, $profileTwo],
+            ->expects(self::once())
+            ->method('getNamesByUserIds')
+            ->with([$authorIdOne, $authorIdTwo])
+            ->willReturn([
+                $authorIdOne => 'User One',
+                $authorIdTwo => 'User Two',
             ]);
 
-        $result = $this->handler->handle(new GetTweetsCommand());
+        $result = $this->handler->handle($command);
 
         self::assertCount(2, $result->tweets);
 
@@ -97,6 +114,11 @@ final class GetTweetsCommandHandlerTest extends TestCase
         self::assertSame('User Two', $result->tweets[1]->authorName);
         self::assertSame($tweetOldest->createdAt()->format(DATE_RFC3339), $result->tweets[1]->createdAt->format(DATE_RFC3339));
         self::assertSame($tweetOldest->updatedAt()->format(DATE_RFC3339), $result->tweets[1]->updatedAt->format(DATE_RFC3339));
+
+        self::assertSame(15, $result->meta->totalItems);
+        self::assertSame(2, $result->meta->totalPages);
+        self::assertSame(1, $result->meta->page);
+        self::assertSame(10, $result->meta->limit);
     }
 
     #[Test]
@@ -107,23 +129,47 @@ final class GetTweetsCommandHandlerTest extends TestCase
         $tweetFirst = Tweet::create($authorId, 'First tweet');
         $tweetSecond = Tweet::create($authorId, 'Second tweet');
 
-        $profile = Profile::create($authorId, 'Same Author', 'Bio');
-
         $this->tweetRepository
             ->expects(self::once())
             ->method('getAllTweets')
             ->willReturn([$tweetSecond, $tweetFirst]);
 
+        $this->tweetRepository
+            ->expects(self::once())
+            ->method('countTweets')
+            ->willReturn(2);
+
         $this->profileRepository
             ->expects(self::once())
-            ->method('getByUserId')
-            ->with($authorId)
-            ->willReturn($profile);
+            ->method('getNamesByUserIds')
+            ->with([$authorId])
+            ->willReturn([$authorId => 'Same Author']);
 
         $result = $this->handler->handle(new GetTweetsCommand());
 
         self::assertCount(2, $result->tweets);
         self::assertSame('Same Author', $result->tweets[0]->authorName);
         self::assertSame('Same Author', $result->tweets[1]->authorName);
+    }
+
+    #[Test]
+    public function itCalculatesOffsetCorrectly(): void
+    {
+        $command = new GetTweetsCommand(page: 2, limit: 10);
+
+        $this->tweetRepository
+            ->expects(self::once())
+            ->method('getAllTweets')
+            ->with(10, 10)
+            ->willReturn([]);
+
+        $this->tweetRepository->method('countTweets')->willReturn(0);
+
+        $this->profileRepository
+            ->expects(self::once())
+            ->method('getNamesByUserIds')
+            ->willReturn([]);
+
+        $this->handler->handle($command);
     }
 }

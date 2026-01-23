@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Twitter\Tests\Tweet\Infrastructure\Persistence\MySQL\Repository;
 
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Query;
+use Doctrine\ORM\QueryBuilder;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
@@ -59,5 +61,43 @@ final class MySQLTweetRepositoryTest extends TestCase
         $this->expectException(TweetNotFoundException::class);
 
         $this->repository->getById($tweetId);
+    }
+
+    #[Test]
+    public function countTweetsReturnsTotalNumberOfTweets(): void
+    {
+        $queryBuilder = $this->createMock(QueryBuilder::class);
+        $query = $this->createMock(Query::class);
+
+        $this->entityManager
+            ->expects(self::once())
+            ->method('createQueryBuilder')
+            ->willReturn($queryBuilder);
+
+        $queryBuilder
+            ->expects(self::once())
+            ->method('select')
+            ->with('COUNT(t.id)')
+            ->willReturnSelf();
+
+        $queryBuilder
+            ->expects(self::once())
+            ->method('from')
+            ->with(Tweet::class, 't')
+            ->willReturnSelf();
+
+        $queryBuilder
+            ->expects(self::once())
+            ->method('getQuery')
+            ->willReturn($query);
+
+        $query
+            ->expects(self::once())
+            ->method('getSingleScalarResult')
+            ->willReturn(10);
+
+        $result = $this->repository->countTweets();
+
+        self::assertSame(10, $result);
     }
 }
