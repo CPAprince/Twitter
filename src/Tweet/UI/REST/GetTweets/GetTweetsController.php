@@ -21,7 +21,8 @@ final readonly class GetTweetsController
         $page = $request->query->getInt('page', 1);
         $limit = $request->query->getInt('limit', 20);
 
-        $limit = min($limit, 100);
+        $page = max(1, $page);
+        $limit = max(1, min($limit, 100));
 
         $dto = $this->handler->handle(new GetTweetsCommand($page, $limit));
 
