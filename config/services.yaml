@@ -48,6 +48,10 @@ services:
         resource: '../src/Profile/UI/REST/Controller/*/*Controller.php'
         tags: [ 'controller.service_arguments' ]
 
+    Twitter\Profile\UI\Web\:
+        resource: '../src/Profile/UI/Web/*/*Controller.php'
+        tags: [ 'controller.service_arguments' ]
+
     Twitter\Like\UI\REST\Controller\:
         resource: '../src/Like/UI/REST/Controller/*Controller.php'
         tags: [ 'controller.service_arguments' ]
@@ -61,6 +65,10 @@ services:
             $likeRepository: '@Twitter\Like\Domain\Like\Model\LikeRepository'
             
     Twitter\Profile\Application\UseCase\GetProfile\GetProfileQueryHandler:
+        arguments:
+            $profileRepository: '@Twitter\Profile\Domain\Profile\Model\ProfileRepository'
+
+    Twitter\Profile\Application\UseCase\UpdateProfile\UpdateProfileCommandHandler:
         arguments:
             $profileRepository: '@Twitter\Profile\Domain\Profile\Model\ProfileRepository'
 
@@ -96,6 +104,10 @@ services:
             $profileRepository: '@Twitter\Profile\Domain\Profile\Model\ProfileRepository'
             
     Twitter\Tweet\Application\UseCase\UpdateTweet\UpdateTweetCommandHandler:
+        arguments:
+            $tweetRepository: '@Twitter\Tweet\Domain\Tweet\Model\TweetRepository'
+            
+    Twitter\Tweet\Application\UseCase\GetUserTweets\GetUserTweetsQueryHandler:
         arguments:
             $tweetRepository: '@Twitter\Tweet\Domain\Tweet\Model\TweetRepository'
 

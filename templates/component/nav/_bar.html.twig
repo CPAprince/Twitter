@@ -1,9 +1,9 @@
 {% set items = [
     {'href': path('homepage'), 'icon': 'home', 'text': 'Home'},
-    {'href': '#', 'icon': 'user', 'text': 'Profile'},
-    {'href': path('registration'), 'icon': 'user-plus', 'text': 'Register'},
-    {'href': path('login'), 'icon': 'arrow-right-to-bracket', 'text': 'Login'},
-    {'href': '#', 'icon': 'arrow-right-from-bracket', 'text': 'Logout'},
+    {'href': '#', 'icon': 'user', 'text': 'Profile', 'id': 'nav-profile-link', 'class': 'auth-user-only'},
+    {'href': path('registration'), 'icon': 'user-plus', 'text': 'Register', 'class': 'auth-guest-only'},
+    {'href': path('login'), 'icon': 'arrow-right-to-bracket', 'text': 'Login', 'class': 'auth-guest-only'},
+    {'href': '#', 'icon': 'arrow-right-from-bracket', 'text': 'Logout', 'id': 'nav-logout-link', 'class': 'auth-user-only'},
 ] %}
 
 <nav class="navbar border-bottom d-md-none sticky-top bg-white">

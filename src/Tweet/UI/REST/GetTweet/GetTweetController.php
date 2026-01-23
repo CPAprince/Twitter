@@ -41,6 +41,7 @@ final readonly class GetTweetController
                 'id' => $tweetResponse->authorId,
                 'name' => $tweetResponse->authorName,
             ],
+            'likesCount' => $tweetResponse->likesCount,
         ];
     }
 }

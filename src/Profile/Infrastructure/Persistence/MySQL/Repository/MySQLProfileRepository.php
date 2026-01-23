@@ -36,6 +36,11 @@ final readonly class MySQLProfileRepository implements ProfileRepository
         }
     }
 
+    public function flush(): void
+    {
+        $this->entityManager->flush();
+    }
+
     /**
      * @throws ORMException
      * @throws OptimisticLockException
