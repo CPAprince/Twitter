@@ -22,5 +22,5 @@ interface TweetRepository
      *
      * @return list<Tweet>
      */
-    public function getAllTweets(): array;
+    public function getAllTweets(int $limit = 100, int $page = 1, string $userId = ''): array;
 }

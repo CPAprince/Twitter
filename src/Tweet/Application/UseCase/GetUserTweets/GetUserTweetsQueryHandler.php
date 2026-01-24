@@ -14,7 +14,7 @@ final readonly class GetUserTweetsQueryHandler
     public function handle(GetUserTweetsQuery $query): GetUserTweetsQueryResult
     {
         $tweets = $this->tweetRepository->getAllTweets($query->limit, $query->page, $query->userId);
-        /*print_r($tweets);*/
+
         $tweets = array_filter($tweets, fn (Tweet $tweet) => $tweet->userId() === $query->userId);
 
         $chunkLength = $query->page * $query->limit;
