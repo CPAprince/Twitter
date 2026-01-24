@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Twitter\Tweet\Infrastructure\Persistence\MySQL\Repository;
 
+use Doctrine\DBAL\Exception;
 use Doctrine\DBAL\Exception\ForeignKeyConstraintViolationException;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Exception\ORMException;
@@ -50,12 +51,27 @@ final readonly class MySQLTweetRepository implements TweetRepository
         return $tweet;
     }
 
-    public function getAllTweets(): array
+    public function getAllTweets( int $limit=100, int $page=1, string $UserId = ""): array
     {
+
+        $limit = $limit<=0 ? 100 : min(100,$limit);
+        $offset = ($page-1)*$limit;
+        $offset = $offset < 0 ? 0 : $offset;
+
         /** @var list<Tweet> $tweets */
-        $tweets = $this->entityManager
-            ->getRepository(Tweet::class)
-            ->findBy([], ['createdAt' => 'DESC']);
+
+        if ($UserId === "") {
+            $tweets = $this->entityManager
+                ->getRepository(Tweet::class)
+                ->findBy([], ['createdAt' => 'DESC'], $limit, $offset);
+        } else {
+
+            $binaryUserId = pack("H*", str_replace('-', '', $UserId));
+            $tweets = $this->entityManager
+                ->getRepository(Tweet::class)->findBy(['userId' => $binaryUserId], ['createdAt' => 'DESC'], $limit, $offset);
+
+        }
+
 
         return $tweets;
     }
