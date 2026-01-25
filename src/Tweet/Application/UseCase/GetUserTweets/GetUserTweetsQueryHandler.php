@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Twitter\Tweet\Application\UseCase\GetUserTweets;
 
 use Twitter\Tweet\Application\UseCase\Shared\PaginationMeta;
-use Twitter\Tweet\Domain\Tweet\Model\Tweet;
 use Twitter\Tweet\Domain\Tweet\Model\TweetRepository;
 
 final readonly class GetUserTweetsQueryHandler
