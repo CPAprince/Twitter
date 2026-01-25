@@ -8,7 +8,7 @@ final readonly class GetUserTweetsQuery
 {
     public function __construct(
         public string $userId,
-        public int $limit,
-        public int $page,
+        public int $limit = 20,
+        public int $page = 1,
     ) {}
 }

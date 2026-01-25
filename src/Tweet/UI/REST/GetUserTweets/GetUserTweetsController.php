@@ -15,20 +15,25 @@ use Twitter\Tweet\Application\UseCase\Shared\TweetResponse;
 #[Route('/api/profiles/{userId}/tweets', name: 'tweets_get_by_user', methods: [Request::METHOD_GET])]
 final readonly class GetUserTweetsController
 {
-    public function __construct(private GetUserTweetsQueryHandler $queryHandler) {}
+    public function __construct(private GetUserTweetsQueryHandler $queryHandler)
+    {
+    }
 
     public function __invoke(string $userId, Request $request): JsonResponse
     {
+        $page = $request->query->getInt('page', 1);
+        $limit = $request->query->getInt('limit', 20);
+
+        $page = max(1, $page);
+        $limit = max(1, min($limit, 100));
+
         $query = new GetUserTweetsQuery(
             $userId,
-            (int) $request->query->get('limit', 0),
-            (int) $request->query->get('page', 0),
+            $limit,
+            $page,
         );
 
         $result = $this->queryHandler->handle($query);
-        if (empty($result->tweets)) {
-            return new JsonResponse([], Response::HTTP_NO_CONTENT);
-        }
 
         $response = [];
         foreach ($result->tweets as $tweet) {
@@ -43,7 +48,15 @@ final readonly class GetUserTweetsController
             ));
         }
 
-        return new JsonResponse($response, Response::HTTP_OK);
+        return new JsonResponse([
+            'data' => $response,
+            'meta' => [
+                'total' => $result->meta->totalItems,
+                'page' => $result->meta->page,
+                'limit' => $result->meta->limit,
+                'pages' => $result->meta->totalPages,
+            ],
+        ], Response::HTTP_OK);
     }
 
     private static function mapTweetResponse(TweetResponse $tweetResponse): array

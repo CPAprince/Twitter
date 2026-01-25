@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Twitter\Tweet\Application\UseCase\GetUserTweets;
 
+use Twitter\Tweet\Application\UseCase\Shared\PaginationMeta;
 use Twitter\Tweet\Domain\Tweet\Model\Tweet;
 use Twitter\Tweet\Domain\Tweet\Model\TweetRepository;
 
@@ -13,14 +14,13 @@ final readonly class GetUserTweetsQueryHandler
 
     public function handle(GetUserTweetsQuery $query): GetUserTweetsQueryResult
     {
-        $tweets = $this->tweetRepository->getAllTweets();
-        $tweets = array_filter($tweets, fn (Tweet $tweet) => $tweet->userId() === $query->userId);
+        $offset = ($query->page - 1) * $query->limit;
+        $tweets = $this->tweetRepository->getByUserId($query->userId, $query->limit, $offset);
+        $totalTweets = $this->tweetRepository->countByUserId($query->userId);
 
-        $chunkLength = $query->page * $query->limit;
-        if ($query->limit > 0 && $query->page >= 0 && $chunkLength <= count($tweets)) {
-            $tweets = array_slice($tweets, $chunkLength, $query->limit);
-        }
-
-        return new GetUserTweetsQueryResult($tweets);
+        return new GetUserTweetsQueryResult(
+            $tweets,
+            new PaginationMeta($query->page, $query->limit, $totalTweets),
+        );
     }
 }

@@ -72,4 +72,30 @@ final readonly class MySQLTweetRepository implements TweetRepository
             ->getQuery()
             ->getSingleScalarResult();
     }
+
+    public function getByUserId(string $userId, int $limit, int $offset): array
+    {
+        $query = $this->entityManager->createQueryBuilder()
+            ->select('t')
+            ->from(Tweet::class, 't')
+            ->where('t.userId = :userId')
+            ->setParameter('userId', $userId, 'uuid')
+            ->orderBy('t.createdAt', 'DESC')
+            ->addOrderBy('t.id', 'DESC')
+            ->setFirstResult($offset)
+            ->setMaxResults($limit);
+
+        return iterator_to_array(new Paginator($query));
+    }
+
+    public function countByUserId(string $userId): int
+    {
+        return (int) $this->entityManager->createQueryBuilder()
+            ->select('COUNT(t.id)')
+            ->from(Tweet::class, 't')
+            ->where('t.userId = :userId')
+            ->setParameter('userId', $userId, 'uuid')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
 }
