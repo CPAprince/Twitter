@@ -17,7 +17,7 @@ final readonly class GetTweetsCommandHandler
 
     public function handle(GetTweetsCommand $command): GetTweetsResponse
     {
-        $tweets = $this->tweetRepository->getAllTweets();
+        $tweets = $this->tweetRepository->getAllTweets($command->limit, $command->page);
 
         $authorNameById = [];
         $tweetResponses = [];
