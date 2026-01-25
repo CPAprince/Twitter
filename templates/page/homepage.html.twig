@@ -3,7 +3,10 @@
 {% block title %}All tweets{% endblock %}
 
 {% block content %}
-    <h1 class="mb-2 p-3">All tweets</h1>
+    <div class="d-flex justify-content-between align-items-center mb-2 p-3">
+        <h1 class="mb-0">All tweets</h1>
+        <div id="tweets-limit-control"></div>
+    </div>
     <div
         class="tweets-section"
         data-tweets-url="{{ path('tweets_get_all') }}"
