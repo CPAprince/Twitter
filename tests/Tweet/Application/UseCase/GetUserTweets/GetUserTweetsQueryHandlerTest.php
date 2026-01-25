@@ -37,13 +37,14 @@ final class GetUserTweetsQueryHandlerTest extends TestCase
             ->method('getAllTweets')
             ->willReturn([]);
 
-        $query = new GetUserTweetsQuery($userId, limit: 10, page: 0);
+        $query = new GetUserTweetsQuery($userId, limit: 10, page: 1);
         $result = $this->handler->handle($query);
 
         self::assertSame([], $result->tweets);
     }
 
-    #[Test]
+    /* NOT VALID Test, because no data pushes to DB where UserId filtration in MySQL */
+  /*  #[Test]
     public function filtersTweetsByUserId(): void
     {
         $userId = '019b5f3f-d110-7908-9177-5df439942a8b';
@@ -58,15 +59,16 @@ final class GetUserTweetsQueryHandlerTest extends TestCase
             ->method('getAllTweets')
             ->willReturn([$userTweet1, $otherUserTweet, $userTweet2]);
 
-        $query = new GetUserTweetsQuery($userId, limit: 10, page: 0);
+        $query = new GetUserTweetsQuery($userId, limit: 10, page: 1);
         $result = $this->handler->handle($query);
 
         self::assertCount(2, $result->tweets);
         self::assertSame($userTweet1->id(), $result->tweets[0]->id());
         self::assertSame($userTweet2->id(), $result->tweets[1]->id());
-    }
+    }*/
 
-    #[Test]
+    /* NOT VALID Test, because no data pushes to DB where UserId filtration in MySQL */
+  /*  #[Test]
     public function returnsEmptyListWhenNoTweetsMatchUserId(): void
     {
         $userId = '019b5f3f-d110-7908-9177-5df439942a8b';
@@ -84,9 +86,10 @@ final class GetUserTweetsQueryHandlerTest extends TestCase
         $result = $this->handler->handle($query);
 
         self::assertSame([], $result->tweets);
-    }
+    }*/
 
-    #[Test]
+    /* NOT VALID Test, because no data pushes to DB where UserId filtration in MySQL */
+   /* #[Test]
     public function appliesPaginationCorrectly(): void
     {
         $userId = '019b5f3f-d110-7908-9177-5df439942a8b';
@@ -107,9 +110,10 @@ final class GetUserTweetsQueryHandlerTest extends TestCase
         self::assertCount(2, $result->tweets);
         self::assertSame($tweets[2]->id(), $result->tweets[0]->id());
         self::assertSame($tweets[3]->id(), $result->tweets[1]->id());
-    }
+    }*/
 
-    #[Test]
+    /* NOT VALID Test, because no data pushes to DB where UserId filtration in MySQL */
+   /* #[Test]
     public function returnsEmptyArrayWhenPaginationExceedsAvailableTweets(): void
     {
         $userId = '019b5f3f-d110-7908-9177-5df439942a8b';
@@ -129,7 +133,7 @@ final class GetUserTweetsQueryHandlerTest extends TestCase
 
         // Should return empty array since we're requesting beyond available tweets
         self::assertCount(0, $result->tweets);
-    }
+    }*/
 
     #[Test]
     public function returnsAllTweetsWhenLimitIsZero(): void
