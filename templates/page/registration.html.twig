@@ -10,16 +10,8 @@
 {% endblock %}
 
 {% block javascripts %}
-    <script>
-        window.routes = {
-            createUser: '{{ path('api_create_user') }}',
-            login: '{{ path('api_login_check') }}',
-            createProfile: '{{ path('api_create_profile') }}',
-            successRedirect: '{{ path('api_health_check') }}',
-        };
-    </script>
-
     <script src="{{ asset('js/alert.js') }}"></script>
+    <script src="{{ asset('js/loading.js') }}"></script>
     <script src="{{ asset('js/api.js') }}"></script>
     <script src="{{ asset('js/registration.js') }}"></script>
 {% endblock %}

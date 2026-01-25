@@ -10,6 +10,8 @@ interface ProfileRepository
 {
     public function add(Profile $profile);
 
+    public function flush(): void;
+
     /**
      * @throws ProfileNotFoundException
      */

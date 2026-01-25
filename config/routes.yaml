@@ -19,6 +19,10 @@ like_module:
 profile_module:
     resource: ../src/Profile/UI/REST/Controller/*/*Controller.php
     type: attribute
+    
+profile_module_web:
+    resource: ../src/Profile/UI/Web/*/*Controller.php
+    type: attribute
 
 tweet_module:
     resource: ../src/Tweet/UI/REST/*/*Controller.php

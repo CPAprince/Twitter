@@ -11,11 +11,18 @@ document.addEventListener('DOMContentLoaded', () => {
       const auth = await Api.post(window.routes.login, {
         email: data.email,
         password: data.password,
-      });
+      }, { skipAuth: true });
 
-      const accessToken = auth.token;
+      const accessToken = auth.token || auth.accessToken;
+      const refreshToken = auth.refresh_token || auth.refreshToken;
+
       if (!accessToken) {
         throw new Error('Access token is missing.');
+      }
+
+      Api.setToken(accessToken);
+      if (refreshToken) {
+        Api.setRefreshToken(refreshToken);
       }
 
       Alert.append(alerts, 'You have been successfully logged in!', 'success');

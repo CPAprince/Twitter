@@ -8,7 +8,7 @@
         "ext-ctype": "*",
         "ext-iconv": "*",
         "beberlei/assert": "^3.3.3",
-        "doctrine/doctrine-bundle": "^3.2",
+        "doctrine/doctrine-bundle": "^3.2.2",
         "doctrine/doctrine-migrations-bundle": "^3.7",
         "doctrine/orm": "^3.6.1",
         "gesdinet/jwt-refresh-token-bundle": "^1.5",
@@ -26,7 +26,6 @@
         "symfony/runtime": "7.4.*",
         "symfony/security-bundle": "7.4.*",
         "symfony/serializer": "7.4.*",
-        "symfony/twig-bundle": "7.4.*",
         "symfony/uid": "7.4.*",
         "symfony/yaml": "7.4.*",
         "symfony/twig-bundle": "7.4.*"
@@ -92,7 +91,7 @@
         "phpstan/phpstan": "^2.1.33",
         "phpstan/phpstan-doctrine": "^2.0.12",
         "phpstan/phpstan-symfony": "^2.0.9",
-        "phpunit/phpunit": "^12.5.4",
+        "phpunit/phpunit": "^12.5.6",
         "symfony/browser-kit": "7.4.*",
         "symfony/css-selector": "7.4.*"
     }
