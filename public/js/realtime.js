@@ -18,7 +18,17 @@
     eventSource.onmessage = (event) => {
       try {
         const data = JSON.parse(event.data);
-        updateLikeCount(data.tweetId, data.likesCount);
+        const currentUserId = localStorage.getItem('userId');
+        
+        // Only skip if this was OUR recent action
+        const actionTime = recentActions.get(data.tweetId);
+        const isOwnRecentAction = actionTime && 
+                                  Date.now() - actionTime < 2000 && 
+                                  data.triggeredBy === currentUserId;
+        
+        if (!isOwnRecentAction) {
+          updateLikeCount(data.tweetId, data.likesCount);
+        }
       } catch (e) {
         console.warn('Failed to parse SSE message:', e);
       }
@@ -34,9 +44,6 @@
     const selector = `.tweet-like-btn[data-tweet-id="${tweetId}"] .tweet-like-count`;
 
     document.querySelectorAll(selector).forEach((el) => {
-      const actionTime = recentActions.get(tweetId);
-      if (actionTime && Date.now() - actionTime < 2000) return;
-
       const btn = el.closest('.tweet-like-btn');
       if (btn?.disabled) return;
 

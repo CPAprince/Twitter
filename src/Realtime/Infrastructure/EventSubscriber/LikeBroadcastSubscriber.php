@@ -59,6 +59,7 @@ final readonly class LikeBroadcastSubscriber implements EventSubscriberInterface
             data: json_encode([
                 'tweetId' => $event->tweetId,
                 'likesCount' => $tweet->likes(),
+                'triggeredBy' => $event->userId,
             ], JSON_THROW_ON_ERROR),
         );
 
