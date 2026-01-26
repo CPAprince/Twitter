@@ -56,7 +56,7 @@ services:
         anonymous
         cors_origins *
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost/.well-known/mercure/healthz"]
+      test: ["CMD", "curl", "-f", "http://localhost/healthz"]
       timeout: 5s
       retries: 5
       start_period: 60s
