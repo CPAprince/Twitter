@@ -3,4 +3,7 @@ span.fw-bold.me-2 > a {
     text-decoration: none;
 }
 
+.tweets-sentinel {
+    height: 1px;
+}
 

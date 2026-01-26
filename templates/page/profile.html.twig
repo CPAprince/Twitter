@@ -34,7 +34,11 @@
     <div
         class="tweets-section"
         data-tweets-url="{{ path('tweets_get_by_user', { userId: profile.userId }) }}"
+        data-tweets-infinite="1"
+        data-tweets-limit="50"
     ></div>
+
+    <div class="tweets-sentinel"></div>
 
     {% include 'component/_tweet_templates.html.twig' %}
 

@@ -8,7 +8,11 @@
         class="tweets-section"
         data-tweets-url="{{ path('tweets_get_all') }}"
         data-tweets-show-edit="1"
+        data-tweets-infinite="1"
+        data-tweets-limit="50"
     ></div>
+
+    <div class="tweets-sentinel"></div>
     {% include 'component/_tweet_templates.html.twig' %}
 {% endblock %}
 
