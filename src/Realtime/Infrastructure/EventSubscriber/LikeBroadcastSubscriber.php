@@ -9,6 +9,7 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Mercure\HubInterface;
 use Symfony\Component\Mercure\Update;
+use Throwable;
 use Twitter\Like\Domain\Like\Event\TweetWasLiked;
 use Twitter\Like\Domain\Like\Event\TweetWasUnliked;
 use Twitter\Tweet\Domain\Tweet\Exception\TweetNotFoundException;
@@ -47,12 +48,12 @@ final readonly class LikeBroadcastSubscriber implements EventSubscriberInterface
         $port = $parsedUrl['port'] ?? null;
 
         // Strip default ports (443 for HTTPS, 80 for HTTP)
-        if (($scheme === 'https' && $port === 443) || ($scheme === 'http' && $port === 80)) {
+        if (('https' === $scheme && 443 === $port) || ('http' === $scheme && 80 === $port)) {
             $port = null;
         }
 
-        $normalizedBase = $scheme . '://' . $host . ($port !== null ? ':' . $port : '');
-        $topic = $normalizedBase . '/tweets/likes';
+        $normalizedBase = $scheme.'://'.$host.(null !== $port ? ':'.$port : '');
+        $topic = $normalizedBase.'/tweets/likes';
 
         $update = new Update(
             topics: [$topic],
@@ -65,7 +66,7 @@ final readonly class LikeBroadcastSubscriber implements EventSubscriberInterface
 
         try {
             $this->hub->publish($update);
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             // Log the error but don't break the like operation
             $this->logger?->warning('Failed to broadcast like update', [
                 'tweetId' => $event->tweetId,
