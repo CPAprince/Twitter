@@ -66,7 +66,6 @@
       if (authorNameEl) authorNameEl.textContent = authorName;
 
       const createdAtEl = node.querySelector("[data-tweet-created-at]");
-      // if (createdAtEl) createdAtEl.textContent = ` · ${formatTimeHHMM(createdAt)}`;
        if (createdAtEl) createdAtEl.textContent = ' · ' + formatPublishDate(createdAt);
 
       const contentEl = node.querySelector("[data-tweet-content]");

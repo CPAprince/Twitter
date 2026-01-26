@@ -56,8 +56,6 @@ final readonly class MySQLTweetRepository implements TweetRepository
         $offset = ($page - 1) * $limit;
         $offset = $offset < 0 ? 0 : $offset;
 
-        /* @var list<Tweet> $tweets */
-
         if ('' === $userId) {
             $tweets = $this->entityManager
                 ->getRepository(Tweet::class)
