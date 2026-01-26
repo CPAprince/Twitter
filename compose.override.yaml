@@ -20,3 +20,9 @@ services:
   database:
     ports:
       - "${MYSQL_PORT:-3306}:3306"
+
+###> symfony/mercure-bundle ###
+  mercure:
+    ports:
+      - "80"
+###< symfony/mercure-bundle ###
