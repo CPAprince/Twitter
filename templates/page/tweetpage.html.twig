@@ -12,15 +12,55 @@
         </span>
         </div>
 
-        <p class="mb-2" tweet_content>{ tweet.content }</p>
+        <div class="tweet-content-display">
+            <p class="mb-2" data-tweet-content></p>
+        </div>
+
+        <div class="tweet-edit-form" style="display: none;">
+            <div class="tweet-form-container" data-form-mode="edit" data-tweet-id="">
+                <form class="tweet-form">
+                    <textarea
+                        class="form-control mb-2"
+                        name="content"
+                        rows="3"
+                        maxlength="280"
+                        placeholder="What's happening?"
+                        required
+                    ></textarea>
+
+                    <div class="d-flex justify-content-end mb-2">
+                        <div class="tweet-char-counter text-muted small">
+                            <span class="tweet-char-count">0</span>/280
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary btn-sm">Save</button>
+                        <button type="button" class="btn btn-secondary btn-sm tweet-form-cancel">Cancel</button>
+                    </div>
+
+                    <div class="tweet-form-alerts mt-2"></div>
+                </form>
+            </div>
+        </div>
 
         <div class="tweet-actions d-flex justify-content-between w-75">
             <div class="d-flex gap-3 align-items-center">
-                <div>
-                    <i class="far fa-thumbs-up"></i>
-                    <span tweet_likes>{ tweet.likes ?? 0 }</span>
-                </div>
+                <button class="btn btn-link btn-sm p-0 tweet-like-btn"
+                        data-tweet-id=""
+                        data-liked=""
+                        type="button"
+                        style="text-decoration: none; color: inherit;">
+                    <i class="far fa-thumbs-up tweet-like-icon"></i>
+                    <span class="tweet-like-count" tweet_likes>0</span>
+                </button>
 
+                <button class="btn btn-link btn-sm p-0 tweet-edit-btn"
+                        data-tweet-id=""
+                        data-author-id=""
+                        style="display: none;">
+                    <i class="fas fa-edit"></i>
+                </button>
 
             </div>
         </div>
@@ -39,8 +79,10 @@
             showTweet(tweetData);
         });
     </script>
-
+    <script src="{{ asset('js/alert.js') }}"></script>
+    <script src="{{ asset('js/loading.js') }}"></script>
     <script src="{{ asset('js/tweet.js') }}"></script>
-
+    <script src="{{ asset('js/tweets.js') }}"></script>
+    <script src="{{ asset('js/auth.js') }}"></script>
 
 {% endblock %}

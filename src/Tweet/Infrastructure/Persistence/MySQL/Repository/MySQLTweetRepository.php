@@ -50,12 +50,21 @@ final readonly class MySQLTweetRepository implements TweetRepository
         return $tweet;
     }
 
-    public function getAllTweets(): array
+    public function getAllTweets(int $limit = 100, int $page = 1, string $userId = ''): array
     {
-        /** @var list<Tweet> $tweets */
-        $tweets = $this->entityManager
-            ->getRepository(Tweet::class)
-            ->findBy([], ['createdAt' => 'DESC']);
+        $limit = $limit <= 0 ? 100 : min(100, $limit);
+        $offset = ($page - 1) * $limit;
+        $offset = $offset < 0 ? 0 : $offset;
+
+        if ('' === $userId) {
+            $tweets = $this->entityManager
+                ->getRepository(Tweet::class)
+                ->findBy([], ['createdAt' => 'DESC'], $limit, $offset);
+        } else {
+            $binaryUserId = pack('H*', str_replace('-', '', $userId));
+            $tweets = $this->entityManager
+                ->getRepository(Tweet::class)->findBy(['userId' => $binaryUserId], ['createdAt' => 'DESC'], $limit, $offset);
+        }
 
         return $tweets;
     }

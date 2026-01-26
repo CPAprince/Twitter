@@ -32,6 +32,11 @@ function formatPublishDate(isoString) {
   const hour = 60 * minute;
   const day = 24 * hour;
 
+  if (diff < minute) {
+    const seconds = Math.max(1, Math.floor(diff / 1000));
+    return `${seconds}s ago`;
+  }
+
   if (diff < hour) {
     const minutes = Math.max(1, Math.floor(diff / minute));
     return `${minutes}m ago`;
@@ -61,8 +66,21 @@ function showTweet(tweet) {
   console.log('Tweet JSON data in show:', tweet);
   document.querySelector('[tweet_author]').innerHTML = '<a href=\"\/p\/' + tweet.author.id + '\"  style=\"color: var(--bs-body-color);\">' + tweet.author.name + '</a>';
   document.querySelector('[tweet_createdAt]').textContent = ' · ' + formatPublishDate(tweet.createdAt);
-  document.querySelector('[tweet_content]').textContent = tweet.content;
-  document.querySelector('[tweet_likes]').textContent = tweet.likes;
+  document.querySelector('[data-tweet-content]').textContent = tweet.content;
+  document.querySelector('[tweet_likes]').textContent = tweet.likesCount;
+  document.querySelector("div.tweet-actions > div > button.tweet-like-btn").setAttribute('data-tweet-id', tweet.id);
+  document.querySelector("div > div.tweet-edit-form > div").setAttribute('data-tweet-id', tweet.id);
+  document.querySelector("div > button.btn.tweet-edit-btn").setAttribute('data-tweet-id', tweet.id);
+  document.querySelector("div > button.btn.tweet-edit-btn").setAttribute('data-author-id', tweet.author.id);
 
   document.querySelector('.tweet').style.visibility = 'visible';
+
+  window.Auth.getCurrentUserId().then(function(userId) {
+    //console.log(userId); //
+    if(userId == tweet.author.id) {
+      document.querySelector("button.tweet-edit-btn").style.display = 'inline-block';
+    }
+  });
+
+
 }

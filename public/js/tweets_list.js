@@ -56,7 +56,7 @@
       const authorName = resolveAuthorName(t, authorId);
       const createdAt = t?.createdAt ?? "";
       const content = t?.content ?? "";
-      const likes = t?.likes ?? 0;
+      const likes = t?.likesCount ?? 0;
 
       if (root) root.dataset.tweetId = tweetId;
 
@@ -66,7 +66,7 @@
       if (authorNameEl) authorNameEl.textContent = authorName;
 
       const createdAtEl = node.querySelector("[data-tweet-created-at]");
-      if (createdAtEl) createdAtEl.textContent = ` · ${formatTimeHHMM(createdAt)}`;
+       if (createdAtEl) createdAtEl.textContent = ' · ' + formatPublishDate(createdAt);
 
       const contentEl = node.querySelector("[data-tweet-content]");
       if (contentEl) contentEl.textContent = content;
@@ -78,7 +78,7 @@
       if (likeCount) likeCount.textContent = String(likes);
 
       const external = node.querySelector("[data-tweet-external-link]");
-      if (external) external.href = "#";
+      if (external) external.href = "/t/" + tweetId;
 
       const editBtn = node.querySelector(".tweet-edit-btn");
       if (editBtn) {
