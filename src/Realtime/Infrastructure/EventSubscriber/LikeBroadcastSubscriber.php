@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Twitter\Realtime\Infrastructure\EventSubscriber;
 
 use Override;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Mercure\HubInterface;
 use Symfony\Component\Mercure\Update;
@@ -18,6 +19,8 @@ final readonly class LikeBroadcastSubscriber implements EventSubscriberInterface
     public function __construct(
         private HubInterface $hub,
         private TweetRepository $tweetRepository,
+        private string $topicBaseUrl,
+        private ?LoggerInterface $logger = null,
     ) {}
 
     #[Override]
@@ -37,14 +40,36 @@ final readonly class LikeBroadcastSubscriber implements EventSubscriberInterface
             return;
         }
 
+        // Normalize base URL by removing default ports to match browser's window.location.origin
+        $parsedUrl = parse_url($this->topicBaseUrl);
+        $scheme = $parsedUrl['scheme'] ?? 'https';
+        $host = $parsedUrl['host'] ?? 'localhost';
+        $port = $parsedUrl['port'] ?? null;
+
+        // Strip default ports (443 for HTTPS, 80 for HTTP)
+        if (($scheme === 'https' && $port === 443) || ($scheme === 'http' && $port === 80)) {
+            $port = null;
+        }
+
+        $normalizedBase = $scheme . '://' . $host . ($port !== null ? ':' . $port : '');
+        $topic = $normalizedBase . '/tweets/likes';
+
         $update = new Update(
-            topics: [sprintf('/tweets/%s/likes', $event->tweetId)],
+            topics: [$topic],
             data: json_encode([
                 'tweetId' => $event->tweetId,
                 'likesCount' => $tweet->likes(),
             ], JSON_THROW_ON_ERROR),
         );
 
-        $this->hub->publish($update);
+        try {
+            $this->hub->publish($update);
+        } catch (\Throwable $e) {
+            // Log the error but don't break the like operation
+            $this->logger?->warning('Failed to broadcast like update', [
+                'tweetId' => $event->tweetId,
+                'error' => $e->getMessage(),
+            ]);
+        }
     }
 }

@@ -146,6 +146,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     likeBtn.disabled = true;
 
     try {
+      if (window.Realtime?.markRecentAction) {
+        window.Realtime.markRecentAction(tweetId);
+      }
+
       const toggleUrl = window.routes?.toggleLike && window.buildRoute
         ? window.buildRoute(window.routes.toggleLike, { tweetId: tweetId })
         : `/api/tweets/${tweetId}/likes/toggle`;

@@ -121,3 +121,5 @@ services:
         arguments:
             $hub: '@Symfony\Component\Mercure\HubInterface'
             $tweetRepository: '@Twitter\Tweet\Domain\Tweet\Model\TweetRepository'
+            $topicBaseUrl: '%env(DEFAULT_URI)%'
+            $logger: '@logger'

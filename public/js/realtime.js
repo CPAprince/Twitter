@@ -2,10 +2,12 @@
   let eventSource = null;
   let reconnectAttempts = 0;
   const MAX_RECONNECT_DELAY = 30000;
+  const recentActions = new Map();
 
   function connect() {
     const mercureUrl = new URL('/.well-known/mercure', window.location.origin);
-    mercureUrl.searchParams.append('topic', '/tweets/{id}/likes');
+    const topic = new URL('/tweets/likes', window.location.origin).toString();
+    mercureUrl.searchParams.append('topic', topic);
 
     eventSource = new EventSource(mercureUrl);
 
@@ -32,6 +34,9 @@
     const selector = `.tweet-like-btn[data-tweet-id="${tweetId}"] .tweet-like-count`;
 
     document.querySelectorAll(selector).forEach((el) => {
+      const actionTime = recentActions.get(tweetId);
+      if (actionTime && Date.now() - actionTime < 2000) return;
+
       const btn = el.closest('.tweet-like-btn');
       if (btn?.disabled) return;
 
@@ -54,8 +59,12 @@
     }
   }
 
+  function markRecentAction(tweetId) {
+    recentActions.set(tweetId, Date.now());
+  }
+
   document.addEventListener('DOMContentLoaded', connect);
   window.addEventListener('beforeunload', disconnect);
 
-  window.Realtime = { connect, disconnect };
+  window.Realtime = { connect, disconnect, markRecentAction };
 })();
