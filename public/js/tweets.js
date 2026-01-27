@@ -1,36 +1,3 @@
-// Initialize character counter for tweet forms
-function initializeTweetCharCounter(container) {
-  const textarea = container.querySelector('textarea[name="content"]');
-  const counter = container.querySelector('.tweet-char-count');
-  if (!textarea || !counter) return;
-
-  // Clone textarea to remove existing listeners and prevent duplicates
-  const newTextarea = textarea.cloneNode(true);
-  textarea.parentNode.replaceChild(newTextarea, textarea);
-
-  const updateCounter = () => {
-    const length = newTextarea.value.length;
-    const remaining = 280 - length;
-    counter.textContent = length;
-
-    // Update styling based on remaining characters
-    const counterContainer = counter.closest('.tweet-char-counter');
-    if (remaining < 0) {
-      counterContainer.className = 'tweet-char-counter text-danger small';
-    } else if (remaining <= 20) {
-      counterContainer.className = 'tweet-char-counter text-warning small';
-    } else {
-      counterContainer.className = 'tweet-char-counter text-muted small';
-    }
-  };
-
-  // Update on input
-  newTextarea.addEventListener('input', updateCounter);
-
-  // Initial update
-  updateCounter();
-}
-
 function normalizeError(error) {
   if (error?.errors && Array.isArray(error.errors) && error.errors.length > 0) {
     return error.errors.map((e) => e?.message).filter(Boolean).join(". ");
@@ -161,7 +128,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   document
     .querySelectorAll('.tweet-form-container[data-form-mode="create"]')
     .forEach((container) => {
-      initializeTweetCharCounter(container);
+      window.CharCounter?.init?.(container);
     });
 
   // Tweet like/unlike functionality
@@ -284,7 +251,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       const formContainer = editFormContainer.querySelector(".tweet-form-container");
       if (formContainer) {
-        initializeTweetCharCounter(formContainer);
+        window.CharCounter?.init?.(formContainer);
       }
 
       const alerts = editFormContainer.querySelector(".tweet-form-alerts");
@@ -342,7 +309,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (textarea) {
           textarea.value = "";
         }
-        initializeTweetCharCounter(formContainer);
+        window.CharCounter?.init?.(formContainer);
 
         if (tweetsSection && window.TweetsList?.reload) {
           await window.TweetsList.reload(tweetsSection);

@@ -35,14 +35,13 @@
                         name="content"
                         rows="3"
                         maxlength="280"
+                        data-char-counter
                         placeholder="What's happening?"
                         required
                     ></textarea>
 
                     <div class="d-flex justify-content-end mb-2">
-                        <div class="tweet-char-counter text-muted small">
-                            <span class="tweet-char-count">0</span>/280
-                        </div>
+                        {% include 'component/_char_counter.html.twig' with { maxlength: 280 } only %}
                     </div>
 
                     <div class="d-flex gap-2">

@@ -6,8 +6,12 @@
                name="name"
                id="name"
                maxlength="50"
+               data-char-counter
                autocomplete="name"
                required>
+        <div class="d-flex justify-content-end mt-1">
+            {% include 'component/_char_counter.html.twig' with { maxlength: 50 } only %}
+        </div>
     </div>
     <div class="mb-3">
         <label class="form-label" for="bio">About you</label>
@@ -16,7 +20,11 @@
                name="bio"
                id="bio"
                autocomplete="off"
-               maxlength="300">
+               maxlength="300"
+               data-char-counter>
+        <div class="d-flex justify-content-end mt-1">
+            {% include 'component/_char_counter.html.twig' with { maxlength: 300 } only %}
+        </div>
     </div>
     <div class="mb-3">
         <label class="form-label" for="email">Email</label>
