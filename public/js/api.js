@@ -1,3 +1,17 @@
+class ApiError extends Error {
+  constructor(message, { code = null, errors = null, status = 0 } = {}) {
+    super(message);
+    this.name = 'ApiError';
+    this.code = code;
+    this.errors = errors;
+    this.status = status;
+  }
+
+  isValidationError() {
+    return Array.isArray(this.errors) && this.errors.length > 0;
+  }
+}
+
 window.Api = {
   /**
    * In-flight refresh promise to prevent concurrent refresh attempts
@@ -398,7 +412,14 @@ window.Api = {
     const data = await response.json().catch(() => null);
 
     if (!response.ok) {
-      throw new Error(data?.error?.message ?? data?.message ?? response.statusText);
+      throw new ApiError(
+        data?.error?.message ?? data?.message ?? response.statusText,
+        {
+          code: data?.error?.code ?? null,
+          errors: data?.errors ?? null,
+          status: response.status
+        }
+      );
     }
 
     return data;
@@ -419,7 +440,14 @@ window.Api = {
     const data = await response.json().catch(() => null);
 
     if (!response.ok) {
-      throw new Error(data?.error?.message ?? data?.message ?? response.statusText);
+      throw new ApiError(
+        data?.error?.message ?? data?.message ?? response.statusText,
+        {
+          code: data?.error?.code ?? null,
+          errors: data?.errors ?? null,
+          status: response.status
+        }
+      );
     }
 
     return data;
@@ -445,7 +473,14 @@ window.Api = {
     const data = await response.json().catch(() => null);
 
     if (!response.ok) {
-      throw new Error(data?.error?.message ?? data?.message ?? response.statusText);
+      throw new ApiError(
+        data?.error?.message ?? data?.message ?? response.statusText,
+        {
+          code: data?.error?.code ?? null,
+          errors: data?.errors ?? null,
+          status: response.status
+        }
+      );
     }
 
     return data;

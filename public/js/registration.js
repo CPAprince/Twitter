@@ -44,7 +44,21 @@ document.addEventListener("DOMContentLoaded", () => {
       window.location.href = window.routes.successRedirect;
     } catch (e) {
       Loading.hide(alerts);
-      Alert.append(alerts, "Registration failed", "danger");
+      if (e?.code === "USER_ALREADY_EXISTS") {
+        Alert.append(
+          alerts,
+          "An account with this email already exists. Try logging in instead.",
+          "warning"
+        );
+      } else if (e?.isValidationError?.()) {
+        Alert.appendValidationErrors(alerts, e.errors, "Please fix the following errors:");
+      } else {
+        Alert.append(
+          alerts,
+          e?.message || "Registration failed. Please try again.",
+          "danger"
+        );
+      }
     } finally {
       Loading.enableForm(form);
     }
