@@ -34,6 +34,9 @@
                id="email"
                autocomplete="email"
                required>
+        <div class="form-text">
+            Enter a valid email address (e.g., user@example.com).
+        </div>
     </div>
     <div class="mb-3">
         <label class="form-label" for="password">Password</label>
@@ -43,6 +46,15 @@
                id="password"
                autocomplete="new-password"
                required>
+        <div class="form-text">
+            Must contain at least 8 characters:
+            <ul class="mb-0 ps-3">
+                <li>One uppercase letter (A-Z)</li>
+                <li>One lowercase letter (a-z)</li>
+                <li>One digit (0-9)</li>
+                <li>One special character (# ? ! @ $ % ^ &amp; * - _ .)</li>
+            </ul>
+        </div>
     </div>
     <button class="btn btn-primary mb-3" type="submit">
         Register
