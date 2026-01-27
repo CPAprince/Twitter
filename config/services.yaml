@@ -115,3 +115,11 @@ services:
         tags: [ 'kernel.event_subscriber' ]
         arguments:
             $tweetRepository: '@Twitter\Tweet\Domain\Tweet\Model\TweetRepository'
+
+    Twitter\Realtime\Infrastructure\EventSubscriber\LikeBroadcastSubscriber:
+        tags: [ 'kernel.event_subscriber' ]
+        arguments:
+            $hub: '@Symfony\Component\Mercure\HubInterface'
+            $tweetRepository: '@Twitter\Tweet\Domain\Tweet\Model\TweetRepository'
+            $topicBaseUrl: '%env(DEFAULT_URI)%'
+            $logger: '@logger'

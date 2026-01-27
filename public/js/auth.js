@@ -131,12 +131,14 @@ if (window.Api && window.Auth) {
   Api.setToken = (token) => {
     originalSetToken(token);
     window.Auth.updateNavVisibility();
+    window.Tweets?.applyLikeButtonState?.();
   };
 
   const originalClearToken = Api.clearToken.bind(Api);
   Api.clearToken = () => {
     originalClearToken();
     window.Auth.updateNavVisibility();
+    window.Tweets?.applyLikeButtonState?.();
   };
 }
 

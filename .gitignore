@@ -11,6 +11,7 @@ bolt.db
 /public/bundles/
 /var/
 /vendor/
+/.composer-cache/
 
 /.php-cs-fixer.php
 /.php-cs-fixer.cache
