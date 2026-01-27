@@ -11,15 +11,17 @@ document.addEventListener("DOMContentLoaded", () => {
       Loading.clearAndShow(alerts, "Registering...");
       Loading.disableForm(form);
 
-      const user = await Api.post(window.routes.createUser, {
+      await Api.post(window.routes.registerUser, {
         email: data.email,
         password: data.password,
-      });
+        name: data.name,
+        bio: data.bio,
+      }, { skipAuth: true });
 
       const auth = await Api.post(window.routes.login, {
         email: data.email,
         password: data.password,
-      });
+      }, { skipAuth: true });
 
       // Handle both token and accessToken response formats
       const accessToken = auth.token || auth.accessToken;
@@ -37,17 +39,26 @@ document.addEventListener("DOMContentLoaded", () => {
         Api.setRefreshToken(refreshToken);
       }
 
-      await Api.post(
-        window.routes.createProfile,
-        { userId: user.id, name: data.name, bio: data.bio }
-      );
-
       Loading.hide(alerts);
       Alert.append(alerts, "You have been successfully registered!", "success");
       window.location.href = window.routes.successRedirect;
     } catch (e) {
       Loading.hide(alerts);
-      Alert.append(alerts, "Registration failed", "danger");
+      if (e?.code === "USER_ALREADY_EXISTS") {
+        Alert.append(
+          alerts,
+          "An account with this email already exists. Try logging in instead.",
+          "warning"
+        );
+      } else if (e?.isValidationError?.()) {
+        Alert.appendValidationErrors(alerts, e.errors, "Please fix the following errors:");
+      } else {
+        Alert.append(
+          alerts,
+          e?.message || "Registration failed. Please try again.",
+          "danger"
+        );
+      }
     } finally {
       Loading.enableForm(form);
     }

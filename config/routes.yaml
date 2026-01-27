@@ -8,6 +8,10 @@ iam_module:
     resource: ../src/IAM/UI/REST/Controller/
     type: attribute
 
+registration_module:
+    resource: ../src/Registration/UI/REST/Controller/
+    type: attribute
+
 iam_module_web:
     resource: ../src/IAM/UI/Web/*/*Controller.php
     type: attribute

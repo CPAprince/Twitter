@@ -25,9 +25,17 @@ services:
         resource: '../src/IAM/UI/Web/*/*Controller.php'
         tags: [ 'controller.service_arguments' ]
 
+    Twitter\Registration\UI\REST\Controller\:
+        resource: '../src/Registration/UI/REST/Controller/*Controller.php'
+        tags: [ 'controller.service_arguments' ]
+
     Twitter\IAM\Application\CreateUser\CreateUserCommandHandler:
         arguments:
             $userRepository: '@Twitter\IAM\Domain\User\Model\UserRepository'
+
+    Twitter\Registration\Application\UseCase\RegisterUser\RegisterUserCommandHandler:
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
 
     Twitter\IAM\Application\Logout\LogoutHandler:
         arguments:

@@ -32,6 +32,10 @@ function initializeTweetCharCounter(container) {
 }
 
 function normalizeError(error) {
+  if (error?.errors && Array.isArray(error.errors) && error.errors.length > 0) {
+    return error.errors.map((e) => e?.message).filter(Boolean).join(". ");
+  }
+
   const message = String(error?.message || "");
   return message || "Failed to post tweet";
 }

@@ -113,7 +113,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         Alert.append(alerts, "Profile updated successfully!", "success");
       } catch (error) {
         Loading.hide(alerts);
-        Alert.append(alerts, error.message || "Failed to update profile", "danger");
+        Alert.appendApiError(alerts, error, "Failed to update profile");
       } finally {
         Loading.enableForm(profileEditForm);
       }
