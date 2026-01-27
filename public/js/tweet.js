@@ -8,7 +8,7 @@ async function getTweet(tweetId) {
     });
 
     if (!response.ok) {
-      throw new Error(`HTTP ${response.status}`);
+      return null;
     }
 
     const data = await response.json();
@@ -17,6 +17,7 @@ async function getTweet(tweetId) {
     return data;
   } catch (error) {
     console.error('Error:', error);
+    return null;
   }
 }
 
