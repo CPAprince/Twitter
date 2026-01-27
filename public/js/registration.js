@@ -11,15 +11,17 @@ document.addEventListener("DOMContentLoaded", () => {
       Loading.clearAndShow(alerts, "Registering...");
       Loading.disableForm(form);
 
-      const user = await Api.post(window.routes.createUser, {
+      await Api.post(window.routes.registerUser, {
         email: data.email,
         password: data.password,
-      });
+        name: data.name,
+        bio: data.bio,
+      }, { skipAuth: true });
 
       const auth = await Api.post(window.routes.login, {
         email: data.email,
         password: data.password,
-      });
+      }, { skipAuth: true });
 
       // Handle both token and accessToken response formats
       const accessToken = auth.token || auth.accessToken;
@@ -36,11 +38,6 @@ document.addEventListener("DOMContentLoaded", () => {
       if (refreshToken) {
         Api.setRefreshToken(refreshToken);
       }
-
-      await Api.post(
-        window.routes.createProfile,
-        { userId: user.id, name: data.name, bio: data.bio }
-      );
 
       Loading.hide(alerts);
       Alert.append(alerts, "You have been successfully registered!", "success");
