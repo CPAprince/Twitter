@@ -68,10 +68,10 @@ function showTweet(tweet) {
   document.querySelector('[tweet_createdAt]').textContent = ' · ' + formatPublishDate(tweet.createdAt);
   document.querySelector('[data-tweet-content]').textContent = tweet.content;
   document.querySelector('[tweet_likes]').textContent = tweet.likesCount;
-  document.querySelector("div.tweet-actions > div > button.tweet-like-btn").setAttribute('data-tweet-id', tweet.id);
-  document.querySelector("div > div.tweet-edit-form > div").setAttribute('data-tweet-id', tweet.id);
-  document.querySelector("div > button.btn.tweet-edit-btn").setAttribute('data-tweet-id', tweet.id);
-  document.querySelector("div > button.btn.tweet-edit-btn").setAttribute('data-author-id', tweet.author.id);
+  document.querySelector(".tweet-like-btn").setAttribute('data-tweet-id', tweet.id);
+  document.querySelector(".tweet-form-container").setAttribute('data-tweet-id', tweet.id);
+  document.querySelector(".tweet-edit-btn").setAttribute('data-tweet-id', tweet.id);
+  document.querySelector(".tweet-edit-btn").setAttribute('data-author-id', tweet.author.id);
 
   document.querySelector('.tweet').style.visibility = 'visible';
 
