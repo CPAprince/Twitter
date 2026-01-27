@@ -21,7 +21,7 @@ use Twitter\IAM\Domain\User\Exception\UserAlreadyExistsException;
 use Twitter\Registration\Application\UseCase\RegisterUser\RegisterUserCommand;
 use Twitter\Registration\Application\UseCase\RegisterUser\RegisterUserCommandHandler;
 
-#[Group('unit')]
+#[Group('component')]
 #[CoversClass(RegisterUserCommandHandler::class)]
 final class RegisterUserCommandHandlerTest extends TestCase
 {
