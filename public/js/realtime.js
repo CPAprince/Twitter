@@ -44,9 +44,6 @@
     const selector = `.tweet-like-btn[data-tweet-id="${tweetId}"] .tweet-like-count`;
 
     document.querySelectorAll(selector).forEach((el) => {
-      const btn = el.closest('.tweet-like-btn');
-      if (btn?.disabled) return;
-
       if (el.textContent !== String(count)) {
         el.textContent = count;
       }
