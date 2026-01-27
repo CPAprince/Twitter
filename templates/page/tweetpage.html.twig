@@ -4,6 +4,17 @@
 
 {% block content %}
 
+    <div id="tweet-error" class="p-4 text-center" style="display: none;">
+        <div class="mb-2 text-muted" id="tweet-error-status" style="font-size: 3rem; font-weight: 700; line-height: 1;">
+            404
+        </div>
+        <p class="text-muted mb-1" id="tweet-error-message">Tweet not found</p>
+        <p class="text-muted small mb-3" id="tweet-error-details">
+            The tweet you're looking for doesn't exist or has been deleted.
+        </p>
+        <a href="{{ path('homepage') }}" class="btn btn-outline-primary mt-1">Go Home</a>
+    </div>
+
     <div class="tweet p-3 border-bottom" style="visibility: hidden;">
         <div class="d-flex align-items-center mb-1">
             <span class="fw-bold me-2" tweet_author>{ tweet.author.name }</span>
@@ -76,7 +87,15 @@
             const tweetId = window.location.pathname.replace('/t/', '');
             console.log('tweetId: ', tweetId);
             const tweetData = await getTweet(tweetId);
-            showTweet(tweetData);
+            if (tweetData) {
+                showTweet(tweetData);
+                return;
+            }
+
+            const errorBlock = document.getElementById('tweet-error');
+            if (errorBlock) {
+                errorBlock.style.display = 'block';
+            }
         });
     </script>
     <script src="{{ asset('js/alert.js') }}"></script>
