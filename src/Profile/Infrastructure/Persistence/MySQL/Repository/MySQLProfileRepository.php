@@ -55,4 +55,15 @@ final readonly class MySQLProfileRepository implements ProfileRepository
 
         return $profile;
     }
+
+    public function findAllByUserIds(array $userIds): array
+    {
+        return $this->entityManager->createQueryBuilder()
+            ->select('p')
+            ->from(Profile::class, 'p')
+            ->where('p.userId IN (:userIds)')
+            ->setParameter('userIds', $userIds)
+            ->getQuery()
+            ->getResult();
+    }
 }

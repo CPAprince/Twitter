@@ -18,9 +18,19 @@ final readonly class GetTweetsCommandHandler
     public function handle(GetTweetsCommand $command): GetTweetsResponse
     {
         $tweets = $this->tweetRepository->getAllTweets($command->limit, $command->page);
+        $tweetResponses = [];
+
+        if ([] === $tweets) {
+            return new GetTweetsResponse($tweetResponses);
+        }
+
+        $userIds = array_values(array_unique(array_map(static fn ($tweet) => $tweet->userId(), $tweets)));
+        $profiles = $this->profileRepository->findAllByUserIds($userIds);
 
         $authorNameById = [];
-        $tweetResponses = [];
+        foreach ($profiles as $profile) {
+            $authorNameById[$profile->userId()] = $profile->name();
+        }
 
         foreach ($tweets as $tweet) {
             $authorId = $tweet->userId();

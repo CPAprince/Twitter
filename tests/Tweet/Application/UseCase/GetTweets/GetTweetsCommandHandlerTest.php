@@ -71,12 +71,14 @@ final class GetTweetsCommandHandlerTest extends TestCase
             ->willReturn([$tweetNewest, $tweetOldest]);
 
         $this->profileRepository
-            ->expects(self::exactly(2))
-            ->method('getByUserId')
-            ->willReturnMap([
-                [$authorIdOne, $profileOne],
-                [$authorIdTwo, $profileTwo],
-            ]);
+            ->expects(self::once())
+            ->method('findAllByUserIds')
+            ->with($this->callback(function (array $userIds) use ($authorIdOne, $authorIdTwo) {
+                return 2 === count($userIds)
+                    && in_array($authorIdOne, $userIds, true)
+                    && in_array($authorIdTwo, $userIds, true);
+            }))
+            ->willReturn([$profileOne, $profileTwo]);
 
         $result = $this->handler->handle(new GetTweetsCommand());
 
@@ -116,9 +118,9 @@ final class GetTweetsCommandHandlerTest extends TestCase
 
         $this->profileRepository
             ->expects(self::once())
-            ->method('getByUserId')
-            ->with($authorId)
-            ->willReturn($profile);
+            ->method('findAllByUserIds')
+            ->with([$authorId])
+            ->willReturn([$profile]);
 
         $result = $this->handler->handle(new GetTweetsCommand());
 
