@@ -142,6 +142,7 @@
 
   async function applyBehaviors(container) {
     if (window.Tweets?.applyLikedState) await window.Tweets.applyLikedState(container);
+    if (window.Tweets?.applyLikeButtonState) await window.Tweets.applyLikeButtonState(container);
     if (window.Tweets?.applyEditVisibility) await window.Tweets.applyEditVisibility(container);
   }
 

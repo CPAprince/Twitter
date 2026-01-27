@@ -99,9 +99,60 @@ window.Tweets.applyLikedState = async (container = document) => {
   });
 };
 
+window.Tweets.applyLikeButtonState = async (container = document) => {
+  const tooltipMessage = "Sign in to like tweets (or create an account).";
+  const currentUserId = await Auth.getCurrentUserId();
+  const isAuthenticated = !!currentUserId;
+
+  container.querySelectorAll(".tweet-like-btn").forEach((btn) => {
+    // Bootstrap does not show tooltips on disabled buttons.
+    // Wrap the button and attach tooltip to the wrapper instead.
+    let wrapper = btn.parentElement;
+    if (!wrapper || !wrapper.classList.contains("tweet-like-tooltip-wrapper")) {
+      wrapper = document.createElement("span");
+      wrapper.className = "tweet-like-tooltip-wrapper";
+      wrapper.style.display = "inline-block";
+      btn.parentNode.insertBefore(wrapper, btn);
+      wrapper.appendChild(btn);
+    }
+
+    const bootstrapTooltip = window.bootstrap?.Tooltip;
+    const existingTooltip = bootstrapTooltip?.getInstance(wrapper) || null;
+
+    if (isAuthenticated) {
+      // Enable and remove guest tooltip.
+      btn.disabled = false;
+      wrapper.classList.remove("is-guest-disabled");
+      wrapper.dataset.guestDisabled = "false";
+      wrapper.removeAttribute("data-bs-toggle");
+      wrapper.removeAttribute("data-bs-title");
+      wrapper.removeAttribute("data-bs-placement");
+      wrapper.removeAttribute("data-bs-trigger");
+      wrapper.removeAttribute("tabindex");
+      existingTooltip?.dispose();
+      return;
+    }
+
+    // Guest: disable the button and add tooltip on wrapper.
+    btn.disabled = true;
+    wrapper.classList.add("is-guest-disabled");
+    wrapper.dataset.guestDisabled = "true";
+    wrapper.setAttribute("tabindex", "0");
+    wrapper.setAttribute("data-bs-toggle", "tooltip");
+    wrapper.setAttribute("data-bs-title", tooltipMessage);
+    wrapper.setAttribute("data-bs-placement", "top");
+    wrapper.setAttribute("data-bs-trigger", "hover focus");
+
+    if (bootstrapTooltip) {
+      bootstrapTooltip.getOrCreateInstance(wrapper);
+    }
+  });
+};
+
 document.addEventListener("DOMContentLoaded", async () => {
   await window.Tweets.applyEditVisibility();
   await window.Tweets.applyLikedState();
+  await window.Tweets.applyLikeButtonState();
 
   document
     .querySelectorAll('.tweet-form-container[data-form-mode="create"]')
@@ -113,6 +164,13 @@ document.addEventListener("DOMContentLoaded", async () => {
   document.addEventListener("click", async (e) => {
     const likeBtn = e.target.closest(".tweet-like-btn");
     if (!likeBtn) return;
+
+    // Guard: do nothing for guests / disabled controls
+    if (likeBtn.disabled) return;
+    const likeWrapper = likeBtn.closest(".tweet-like-tooltip-wrapper");
+    if (likeWrapper?.dataset?.guestDisabled === "true") return;
+    const currentUserId = await Auth.getCurrentUserId();
+    if (!currentUserId) return;
 
     e.preventDefault();
     e.stopPropagation();
