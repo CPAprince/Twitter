@@ -28,7 +28,13 @@ document.addEventListener('DOMContentLoaded', () => {
       Alert.append(alerts, 'You have been successfully logged in!', 'success');
       window.location.href = window.routes.successRedirect;
     } catch (e) {
-      Alert.append(alerts, 'Login failed', 'danger');
+      if (e?.isValidationError?.()) {
+        Alert.appendValidationErrors(alerts, e.errors);
+      } else if (e?.status === 401) {
+        Alert.append(alerts, 'Invalid email or password. Please try again.', 'danger');
+      } else {
+        Alert.append(alerts, e?.message || 'Login failed. Please try again.', 'danger');
+      }
     }
   });
 });
