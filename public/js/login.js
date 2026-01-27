@@ -8,6 +8,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const data = Object.fromEntries(new FormData(form));
 
     try {
+      Loading.clearAndShow(alerts, 'Logging in...');
+      Loading.disableForm(form);
+
       const auth = await Api.post(window.routes.login, {
         email: data.email,
         password: data.password,
@@ -25,9 +28,11 @@ document.addEventListener('DOMContentLoaded', () => {
         Api.setRefreshToken(refreshToken);
       }
 
+      Loading.hide(alerts);
       Alert.append(alerts, 'You have been successfully logged in!', 'success');
       window.location.href = window.routes.successRedirect;
     } catch (e) {
+      Loading.hide(alerts);
       if (e?.isValidationError?.()) {
         Alert.appendValidationErrors(alerts, e.errors);
       } else if (e?.status === 401) {
@@ -35,6 +40,8 @@ document.addEventListener('DOMContentLoaded', () => {
       } else {
         Alert.append(alerts, e?.message || 'Login failed. Please try again.', 'danger');
       }
+    } finally {
+      Loading.enableForm(form);
     }
   });
 });

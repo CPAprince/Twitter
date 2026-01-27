@@ -8,9 +8,12 @@
             name="name"
             minlength="3"
             maxlength="50"
+            data-char-counter
             required
         >
-        <div class="form-text">3-50 characters</div>
+        <div class="d-flex justify-content-end mt-1">
+            {% include 'component/_char_counter.html.twig' with { maxlength: 50 } only %}
+        </div>
     </div>
 
     <div class="mb-3">
@@ -21,8 +24,11 @@
             name="bio"
             rows="3"
             maxlength="300"
+            data-char-counter
         ></textarea>
-        <div class="form-text">Max 300 characters</div>
+        <div class="d-flex justify-content-end mt-1">
+            {% include 'component/_char_counter.html.twig' with { maxlength: 300 } only %}
+        </div>
     </div>
 
     <div class="d-flex gap-2">

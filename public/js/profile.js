@@ -18,7 +18,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (editBtn && editSection) {
       editBtn.style.display = "block";
       editBtn.addEventListener("click", () => {
-        editSection.style.display = editSection.style.display === "none" ? "block" : "none";
+        const isHidden =
+          editSection.style.display === "none" || window.getComputedStyle(editSection).display === "none";
+        editSection.style.display = isHidden ? "block" : "none";
+
+        // Programmatic value prefill doesn't trigger `input`, so refresh counters on open.
+        if (isHidden) window.CharCounter?.init?.(editSection);
       });
     }
 
@@ -34,6 +39,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     const bioInput = document.getElementById("profile-bio");
     if (nameInput) nameInput.value = profileData.name || "";
     if (bioInput) bioInput.value = profileData.bio || "";
+
+    // Counters initialize on DOMContentLoaded; we set values after that.
+    // Re-run counter init so displays reflect prefilled values.
+    const editSection = document.getElementById("profile-edit-section");
+    if (editSection) window.CharCounter?.init?.(editSection);
   }
 
   // Profile edit form handling
@@ -130,6 +140,9 @@ document.addEventListener("DOMContentLoaded", async () => {
         const bioInput = document.getElementById("profile-bio");
         if (nameInput) nameInput.value = profileData.name || "";
         if (bioInput) bioInput.value = profileData.bio || "";
+
+        // Programmatic resets don't trigger `input`, so refresh counters after resetting values.
+        if (editSection) window.CharCounter?.init?.(editSection);
       });
     }
   }
