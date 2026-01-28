@@ -12,7 +12,7 @@ final readonly class GetUserTweetsQueryHandler
 
     public function handle(GetUserTweetsQuery $query): GetUserTweetsQueryResult
     {
-        $tweets = $this->tweetRepository->getAllTweets($query->limit, $query->page, $query->userId);
+        $tweets = $this->tweetRepository->getUserTweets($query->userId, $query->limit, $query->page);
 
         return new GetUserTweetsQueryResult($tweets);
     }
