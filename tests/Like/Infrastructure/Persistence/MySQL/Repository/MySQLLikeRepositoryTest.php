@@ -49,9 +49,6 @@ final class MySQLLikeRepositoryTest extends TestCase
 
         // Act
         $this->repository->add($like);
-
-        // Assert (expectations)
-        self::assertTrue(true);
     }
 
     #[Test]
@@ -71,7 +68,7 @@ final class MySQLLikeRepositoryTest extends TestCase
         $this->entityManager
             ->expects(self::once())
             ->method('flush')
-            ->willThrowException($this->createMock(UniqueConstraintViolationException::class));
+            ->willThrowException($this->createStub(UniqueConstraintViolationException::class));
 
         // Act
         $this->expectException(LikeAlreadyExistsException::class);
@@ -100,9 +97,6 @@ final class MySQLLikeRepositoryTest extends TestCase
 
         // Act
         $this->repository->remove($like);
-
-        // Assert (expectations)
-        self::assertTrue(true);
     }
 
     #[Test]

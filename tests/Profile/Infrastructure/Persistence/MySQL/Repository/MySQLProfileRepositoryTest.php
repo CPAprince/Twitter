@@ -60,9 +60,6 @@ final class MySQLProfileRepositoryTest extends TestCase
 
         // Act
         $this->repository->add($profile);
-
-        // Assert (expectations)
-        self::assertTrue(true);
     }
 
     #[Test]
@@ -77,7 +74,7 @@ final class MySQLProfileRepositoryTest extends TestCase
         );
 
         $throwable = match ($type) {
-            'unique' => $this->createMock(UniqueConstraintViolationException::class),
+            'unique' => $this->createStub(UniqueConstraintViolationException::class),
             'collision' => EntityIdentityCollisionException::create(new stdClass(), new stdClass(), 'id_hash'),
             default => throw new LogicException('Unknown type: '.$type),
         };
@@ -123,7 +120,7 @@ final class MySQLProfileRepositoryTest extends TestCase
         $this->entityManager
             ->expects(self::once())
             ->method('flush')
-            ->willThrowException($this->createMock(ForeignKeyConstraintViolationException::class));
+            ->willThrowException($this->createStub(ForeignKeyConstraintViolationException::class));
 
         // Act
         $this->expectException(UserNotFoundException::class);
@@ -220,8 +217,5 @@ final class MySQLProfileRepositoryTest extends TestCase
 
         // Act
         $this->repository->flush();
-
-        // Assert (expectations)
-        self::assertTrue(true);
     }
 }

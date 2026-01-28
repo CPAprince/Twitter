@@ -9,7 +9,6 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
@@ -26,16 +25,16 @@ use Twitter\Tweet\Domain\Tweet\Model\TweetRepository;
 #[CoversClass(LikeBroadcastSubscriber::class)]
 final class LikeBroadcastSubscriberTest extends TestCase
 {
-    private HubInterface&MockObject $hub;
-    private TweetRepository&MockObject $tweetRepository;
-    private LoggerInterface&MockObject $logger;
+    private HubInterface $hub;
+    private TweetRepository $tweetRepository;
+    private LoggerInterface $logger;
 
     protected function setUp(): void
     {
         // Arrange
-        $this->hub = $this->createMock(HubInterface::class);
-        $this->tweetRepository = $this->createMock(TweetRepository::class);
-        $this->logger = $this->createMock(LoggerInterface::class);
+        $this->hub = $this->createStub(HubInterface::class);
+        $this->tweetRepository = $this->createStub(TweetRepository::class);
+        $this->logger = $this->createStub(LoggerInterface::class);
     }
 
     #[Test]
@@ -55,6 +54,9 @@ final class LikeBroadcastSubscriberTest extends TestCase
     public function onLikeChangedPublishesUpdateForTweetWasLiked(): void
     {
         // Arrange
+        $this->hub = $this->createMock(HubInterface::class);
+        $this->tweetRepository = $this->createMock(TweetRepository::class);
+
         $tweetId = '019b5f3f-d110-7908-9177-5df439942a8b';
         $userId = '550e8400-e29b-41d4-a716-446655440000';
         $event = new TweetWasLiked($tweetId, $userId);
@@ -95,15 +97,15 @@ final class LikeBroadcastSubscriberTest extends TestCase
 
         // Act
         $subscriber->onLikeChanged($event);
-
-        // Assert (expectations)
-        self::assertTrue(true);
     }
 
     #[Test]
     public function onLikeChangedPublishesUpdateForTweetWasUnliked(): void
     {
         // Arrange
+        $this->hub = $this->createMock(HubInterface::class);
+        $this->tweetRepository = $this->createMock(TweetRepository::class);
+
         $tweetId = '019b5f3f-d110-7908-9177-5df439942a8b';
         $userId = '550e8400-e29b-41d4-a716-446655440000';
         $event = new TweetWasUnliked($tweetId, $userId);
@@ -132,15 +134,15 @@ final class LikeBroadcastSubscriberTest extends TestCase
 
         // Act
         $subscriber->onLikeChanged($event);
-
-        // Assert (expectations)
-        self::assertTrue(true);
     }
 
     #[Test]
     public function onLikeChangedReturnsEarlyWhenTweetNotFound(): void
     {
         // Arrange
+        $this->hub = $this->createMock(HubInterface::class);
+        $this->tweetRepository = $this->createMock(TweetRepository::class);
+
         $tweetId = '019b5f3f-d110-7908-9177-5df439942a8b';
         $event = new TweetWasLiked($tweetId, '550e8400-e29b-41d4-a716-446655440000');
 
@@ -163,15 +165,16 @@ final class LikeBroadcastSubscriberTest extends TestCase
 
         // Act
         $subscriber->onLikeChanged($event);
-
-        // Assert (no exception, no publish)
-        self::assertTrue(true);
     }
 
     #[Test]
     public function onLikeChangedLogsWarningWhenHubPublishFails(): void
     {
         // Arrange
+        $this->hub = $this->createMock(HubInterface::class);
+        $this->tweetRepository = $this->createMock(TweetRepository::class);
+        $this->logger = $this->createMock(LoggerInterface::class);
+
         $tweetId = '019b5f3f-d110-7908-9177-5df439942a8b';
         $userId = '550e8400-e29b-41d4-a716-446655440000';
         $event = new TweetWasLiked($tweetId, $userId);
@@ -209,9 +212,6 @@ final class LikeBroadcastSubscriberTest extends TestCase
 
         // Act
         $subscriber->onLikeChanged($event);
-
-        // Assert (expectations)
-        self::assertTrue(true);
     }
 
     #[Test]
@@ -219,6 +219,9 @@ final class LikeBroadcastSubscriberTest extends TestCase
     public function onLikeChangedNormalizesUrlByStrippingDefaultPorts(string $topicBaseUrl, string $expectedTopic): void
     {
         // Arrange
+        $this->hub = $this->createMock(HubInterface::class);
+        $this->tweetRepository = $this->createMock(TweetRepository::class);
+
         $tweetId = '019b5f3f-d110-7908-9177-5df439942a8b';
         $userId = '550e8400-e29b-41d4-a716-446655440000';
         $event = new TweetWasLiked($tweetId, $userId);
@@ -250,9 +253,6 @@ final class LikeBroadcastSubscriberTest extends TestCase
 
         // Act
         $subscriber->onLikeChanged($event);
-
-        // Assert (expectations)
-        self::assertTrue(true);
     }
 
     public static function topicNormalizationProvider(): Generator

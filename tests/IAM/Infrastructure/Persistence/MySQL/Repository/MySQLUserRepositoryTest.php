@@ -58,9 +58,6 @@ final class MySQLUserRepositoryTest extends TestCase
 
         // Act
         $this->repository->add($user);
-
-        // Assert (expectations)
-        self::assertTrue(true);
     }
 
     #[Test]
@@ -80,7 +77,7 @@ final class MySQLUserRepositoryTest extends TestCase
         $this->entityManager
             ->expects(self::once())
             ->method('flush')
-            ->willThrowException($this->createMock(UniqueConstraintViolationException::class));
+            ->willThrowException($this->createStub(UniqueConstraintViolationException::class));
 
         // Act
         $this->expectException(UserAlreadyExistsException::class);
