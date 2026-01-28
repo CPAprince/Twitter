@@ -25,13 +25,13 @@ use Twitter\Tweet\Domain\Tweet\Exception\TweetNotFoundException;
 final class ExceptionSubscriberTest extends TestCase
 {
     private LoggerInterface&MockObject $logger;
-    private HttpKernelInterface&MockObject $kernel;
+    private HttpKernelInterface $kernel;
 
     protected function setUp(): void
     {
         // Arrange
         $this->logger = $this->createMock(LoggerInterface::class);
-        $this->kernel = $this->createMock(HttpKernelInterface::class);
+        $this->kernel = $this->createStub(HttpKernelInterface::class);
     }
 
     #[Test]

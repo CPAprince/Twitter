@@ -7,7 +7,6 @@ namespace Twitter\Tests\Tweet\Application\EventSubscriber;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Twitter\Like\Domain\Like\Event\TweetWasLiked;
 use Twitter\Like\Domain\Like\Event\TweetWasUnliked;
@@ -21,11 +20,11 @@ use Twitter\Tweet\Domain\Tweet\Model\TweetRepository;
 final class UpdateTweetLikesCountSubscriberTest extends TestCase
 {
     private UpdateTweetLikesCountSubscriber $subscriber;
-    private TweetRepository&MockObject $tweetRepository;
+    private TweetRepository $tweetRepository;
 
     protected function setUp(): void
     {
-        $this->tweetRepository = $this->createMock(TweetRepository::class);
+        $this->tweetRepository = $this->createStub(TweetRepository::class);
         $this->subscriber = new UpdateTweetLikesCountSubscriber($this->tweetRepository);
     }
 
@@ -45,6 +44,9 @@ final class UpdateTweetLikesCountSubscriberTest extends TestCase
     #[Test]
     public function onTweetLikedIncreasesCountAndSavesTweet(): void
     {
+        $this->tweetRepository = $this->createMock(TweetRepository::class);
+        $this->subscriber = new UpdateTweetLikesCountSubscriber($this->tweetRepository);
+
         $tweetId = '019b5f3f-d110-7908-9177-5df439942a8b';
         $userId = '550e8400-e29b-41d4-a716-446655440000';
         $event = new TweetWasLiked($tweetId, $userId);
@@ -72,6 +74,9 @@ final class UpdateTweetLikesCountSubscriberTest extends TestCase
     #[Test]
     public function onTweetUnlikedDecreasesCountAndSavesTweet(): void
     {
+        $this->tweetRepository = $this->createMock(TweetRepository::class);
+        $this->subscriber = new UpdateTweetLikesCountSubscriber($this->tweetRepository);
+
         $tweetId = '019b5f3f-d110-7908-9177-5df439942a8b';
         $userId = '550e8400-e29b-41d4-a716-446655440000';
         $event = new TweetWasUnliked($tweetId, $userId);
@@ -100,6 +105,9 @@ final class UpdateTweetLikesCountSubscriberTest extends TestCase
     #[Test]
     public function onTweetLikedDoesNotFailWhenTweetNotFound(): void
     {
+        $this->tweetRepository = $this->createMock(TweetRepository::class);
+        $this->subscriber = new UpdateTweetLikesCountSubscriber($this->tweetRepository);
+
         $tweetId = '019b5f3f-d110-7908-9177-5df439942a8b';
         $event = new TweetWasLiked($tweetId, 'some-user-id');
 
@@ -120,6 +128,9 @@ final class UpdateTweetLikesCountSubscriberTest extends TestCase
     public function onTweetUnlikedDoesNotFailWhenTweetNotFound(): void
     {
         // Arrange
+        $this->tweetRepository = $this->createMock(TweetRepository::class);
+        $this->subscriber = new UpdateTweetLikesCountSubscriber($this->tweetRepository);
+
         $tweetId = '019b5f3f-d110-7908-9177-5df439942a8b';
         $event = new TweetWasUnliked($tweetId, 'some-user-id');
 
@@ -135,14 +146,14 @@ final class UpdateTweetLikesCountSubscriberTest extends TestCase
 
         // Act
         $this->subscriber->onTweetUnliked($event);
-
-        // Assert (no exception)
-        self::assertTrue(true);
     }
 
     #[Test]
     public function likesCountIsUpdatedCorrectlyWhenMultipleUsersLikeAndUnlike(): void
     {
+        $this->tweetRepository = $this->createMock(TweetRepository::class);
+        $this->subscriber = new UpdateTweetLikesCountSubscriber($this->tweetRepository);
+
         $tweetId = '019b5f3f-d110-7908-9177-5df439942a8b';
         $ownerId = '550e8400-e29b-41d4-a716-446655440000';
         $tweet = Tweet::create($ownerId, 'Manual test content');

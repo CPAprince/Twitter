@@ -92,9 +92,6 @@ final class MySQLTweetRepositoryTest extends TestCase
 
         // Act
         $this->repository->add($tweet);
-
-        // Assert (expectations)
-        self::assertTrue(true);
     }
 
     #[Test]
@@ -114,7 +111,7 @@ final class MySQLTweetRepositoryTest extends TestCase
         $this->entityManager
             ->expects(self::once())
             ->method('flush')
-            ->willThrowException($this->createMock(ForeignKeyConstraintViolationException::class));
+            ->willThrowException($this->createStub(ForeignKeyConstraintViolationException::class));
 
         // Act
         $this->expectException(UserNotFoundException::class);
@@ -133,9 +130,6 @@ final class MySQLTweetRepositoryTest extends TestCase
 
         // Act
         $this->repository->flush();
-
-        // Assert (expectations)
-        self::assertTrue(true);
     }
 
     #[Test]
