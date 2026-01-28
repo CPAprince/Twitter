@@ -30,6 +30,19 @@ final class UpdateTweetLikesCountSubscriberTest extends TestCase
     }
 
     #[Test]
+    public function getSubscribedEventsReturnsCorrectMapping(): void
+    {
+        // Act
+        $events = UpdateTweetLikesCountSubscriber::getSubscribedEvents();
+
+        // Assert
+        self::assertSame([
+            TweetWasLiked::class => 'onTweetLiked',
+            TweetWasUnliked::class => 'onTweetUnliked',
+        ], $events);
+    }
+
+    #[Test]
     public function onTweetLikedIncreasesCountAndSavesTweet(): void
     {
         $tweetId = '019b5f3f-d110-7908-9177-5df439942a8b';
@@ -101,6 +114,30 @@ final class UpdateTweetLikesCountSubscriberTest extends TestCase
             ->method('add');
 
         $this->subscriber->onTweetLiked($event);
+    }
+
+    #[Test]
+    public function onTweetUnlikedDoesNotFailWhenTweetNotFound(): void
+    {
+        // Arrange
+        $tweetId = '019b5f3f-d110-7908-9177-5df439942a8b';
+        $event = new TweetWasUnliked($tweetId, 'some-user-id');
+
+        $this->tweetRepository
+            ->expects(self::once())
+            ->method('getById')
+            ->with($tweetId)
+            ->willThrowException(new TweetNotFoundException($tweetId));
+
+        $this->tweetRepository
+            ->expects(self::never())
+            ->method('add');
+
+        // Act
+        $this->subscriber->onTweetUnliked($event);
+
+        // Assert (no exception)
+        self::assertTrue(true);
     }
 
     #[Test]
