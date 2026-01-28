@@ -15,6 +15,8 @@ use Twitter\Tweet\Domain\Tweet\Model\TweetRepository;
 
 final readonly class MySQLTweetRepository implements TweetRepository
 {
+    private const int DEFAULT_LIMIT = 100;
+
     public function __construct(private EntityManagerInterface $entityManager) {}
 
     /**
@@ -50,22 +52,30 @@ final readonly class MySQLTweetRepository implements TweetRepository
         return $tweet;
     }
 
-    public function getAllTweets(int $limit = 100, int $page = 1, string $userId = ''): array
+    private function resolvePagination(int $limit, int $page): array
     {
-        $limit = $limit <= 0 ? 100 : min(100, $limit);
-        $offset = ($page - 1) * $limit;
-        $offset = $offset < 0 ? 0 : $offset;
+        $limit = $limit <= 0 ? self::DEFAULT_LIMIT : min(self::DEFAULT_LIMIT, $limit);
+        $offset = max(0, ($page - 1) * $limit);
 
-        if ('' === $userId) {
-            $tweets = $this->entityManager
-                ->getRepository(Tweet::class)
-                ->findBy([], ['createdAt' => 'DESC'], $limit, $offset);
-        } else {
-            $binaryUserId = pack('H*', str_replace('-', '', $userId));
-            $tweets = $this->entityManager
-                ->getRepository(Tweet::class)->findBy(['userId' => $binaryUserId], ['createdAt' => 'DESC'], $limit, $offset);
-        }
+        return [$limit, $offset];
+    }
 
-        return $tweets;
+    public function getAllTweets(int $limit = self::DEFAULT_LIMIT, int $page = 1): array
+    {
+        [$limit, $offset] = $this->resolvePagination($limit, $page);
+
+        return $this->entityManager
+            ->getRepository(Tweet::class)
+            ->findBy([], ['createdAt' => 'DESC'], $limit, $offset);
+    }
+
+    public function getUserTweets(string $userId, int $limit = self::DEFAULT_LIMIT, int $page = 1): array
+    {
+        [$limit, $offset] = $this->resolvePagination($limit, $page);
+        $binaryUserId = pack('H*', str_replace('-', '', $userId));
+
+        return $this->entityManager
+            ->getRepository(Tweet::class)
+            ->findBy(['userId' => $binaryUserId], ['createdAt' => 'DESC'], $limit, $offset);
     }
 }

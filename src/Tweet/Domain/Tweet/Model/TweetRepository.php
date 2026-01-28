@@ -22,5 +22,12 @@ interface TweetRepository
      *
      * @return list<Tweet>
      */
-    public function getAllTweets(int $limit = 100, int $page = 1, string $userId = ''): array;
+    public function getAllTweets(int $limit, int $page): array;
+
+    /**
+     * Returns User tweets sorted by createdAt DESC (newest first).
+     *
+     * @return list<Tweet>
+     */
+    public function getUserTweets(string $userId, int $limit, int $page): array;
 }

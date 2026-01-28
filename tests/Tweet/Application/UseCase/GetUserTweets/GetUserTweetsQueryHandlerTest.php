@@ -34,7 +34,7 @@ final class GetUserTweetsQueryHandlerTest extends TestCase
 
         $this->tweetRepository
             ->expects(self::once())
-            ->method('getAllTweets')
+            ->method('getUserTweets')
             ->willReturn([]);
 
         $query = new GetUserTweetsQuery($userId, limit: 10, page: 1);
@@ -54,7 +54,7 @@ final class GetUserTweetsQueryHandlerTest extends TestCase
 
         $this->tweetRepository
             ->expects(self::once())
-            ->method('getAllTweets')
+            ->method('getUserTweets')
             ->willReturn([$tweet1, $tweet2, $tweet3]);
 
         $query = new GetUserTweetsQuery($userId, limit: 0, page: 0);
@@ -73,7 +73,7 @@ final class GetUserTweetsQueryHandlerTest extends TestCase
 
         $this->tweetRepository
             ->expects(self::once())
-            ->method('getAllTweets')
+            ->method('getUserTweets')
             ->willReturn([$tweet1, $tweet2]);
 
         $query = new GetUserTweetsQuery($userId, limit: 10, page: -1);
