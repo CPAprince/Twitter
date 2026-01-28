@@ -152,14 +152,14 @@ final class MySQLTweetRepositoryTest extends TestCase
             ->willReturn($expected);
 
         // Act
-        $result = $this->repository->getAllTweets(limit: 10, page: 1, userId: '');
+        $result = $this->repository->getAllTweets(limit: 10, page: 1);
 
         // Assert
         self::assertSame($expected, $result);
     }
 
     #[Test]
-    public function getAllTweetsFiltersByUserId(): void
+    public function getUserTweetsFiltersByUserId(): void
     {
         // Arrange
         $repo = $this->createMock(EntityRepository::class);
@@ -181,7 +181,7 @@ final class MySQLTweetRepositoryTest extends TestCase
             ->willReturn($expected);
 
         // Act
-        $result = $this->repository->getAllTweets(limit: 10, page: 1, userId: $userId);
+        $result = $this->repository->getUserTweets(userId: $userId, limit: 10, page: 1);
 
         // Assert
         self::assertSame($expected, $result);
@@ -208,7 +208,7 @@ final class MySQLTweetRepositoryTest extends TestCase
             ->willReturn($expected);
 
         // Act
-        $result = $this->repository->getAllTweets(limit: $limit, page: $page, userId: '');
+        $result = $this->repository->getAllTweets(limit: $limit, page: $page);
 
         // Assert
         self::assertSame($expected, $result);
