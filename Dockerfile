@@ -31,10 +31,8 @@ RUN set -eux; \
 		intl \
 		opcache \
 		zip \
+    	pdo_mysql \
 	;
-
-RUN set -eux; \
-	install-php-extensions pdo_mysql
 
 COPY --link frankenphp/conf.d/10-app.ini $PHP_INI_DIR/app.conf.d/
 COPY --link --chmod=755 frankenphp/docker-entrypoint.sh /usr/local/bin/docker-entrypoint
@@ -81,9 +79,8 @@ RUN set -eux; \
 
 # copy sources
 COPY --link . ./
-RUN rm -Rf frankenphp/
-
-RUN set -eux; \
+RUN rm -Rf frankenphp; \
+    set -eux; \
 	mkdir -p var/cache var/log; \
 	composer dump-autoload --classmap-authoritative --no-dev; \
 	composer dump-env prod; \
