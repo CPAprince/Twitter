@@ -6,7 +6,6 @@ namespace Twitter\IAM\Domain\User\Model;
 
 use Error;
 use InvalidArgumentException;
-use RuntimeException;
 use Twitter\IAM\Domain\User\Exception\InvalidPasswordException;
 
 final readonly class PasswordHash
@@ -34,7 +33,7 @@ final readonly class PasswordHash
         try {
             $hash = password_hash($plainPassword, PASSWORD_BCRYPT);
         } catch (Error $error) {
-            throw new RuntimeException('Unable to hash password: '.$error->getMessage(), previous: $error);
+            throw new InvalidPasswordException('Unable to hash password: '.$error->getMessage());
         }
 
         return new self($hash);

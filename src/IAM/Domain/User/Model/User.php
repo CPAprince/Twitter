@@ -84,6 +84,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->updatedAt;
     }
 
+    /**
+     * This method is not used anymore but is required by the interface.
+     */
     #[Deprecated]
     public function eraseCredentials(): void {}
 }
