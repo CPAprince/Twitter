@@ -4,7 +4,13 @@
 
 {% block content %}
     <div class="profile-header p-3 border-bottom">
-        <h1 class="mb-2">{{ profile.name }}<sup class="fs-4"><i class="fa-solid fa-circle-check text-primary"></i></sup></h1>
+        <h1 class="mb-2">{{ profile.name }}
+            <sup class="icon-sup">
+  <span class="icon-stack">
+    <i class="fa-solid fa-certificate base"></i>
+    <i class="fa-solid fa-check overlay"></i>
+  </span>
+            </sup></h1>
         {% if profile.bio %}
             <p class="text-muted mb-2">{{ profile.bio }}</p>
         {% else %}
