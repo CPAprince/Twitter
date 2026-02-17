@@ -47,7 +47,7 @@ CMD [ "frankenphp", "run", "--config", "/etc/frankenphp/Caddyfile" ]
 FROM frankenphp_base AS frankenphp_dev
 
 ENV APP_ENV=dev
-ENV XDEBUG_MODE=on
+ENV XDEBUG_MODE=off
 ENV FRANKENPHP_WORKER_CONFIG=watch
 
 VOLUME /app/var/
