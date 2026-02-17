@@ -4,7 +4,7 @@
 
 {% block content %}
     <div class="profile-header p-3 border-bottom">
-        <h1 class="mb-2">{{ profile.name }}</h1>
+        <h1 class="mb-2">{{ profile.name }}<sup class="fs-4"><i class="fa-solid fa-circle-check text-primary"></i></sup></h1>
         {% if profile.bio %}
             <p class="text-muted mb-2">{{ profile.bio }}</p>
         {% else %}
@@ -24,7 +24,7 @@
     </div>
 
     <div id="tweet-create-section" class="p-3 border-bottom" style="display: none;">
-        <h5 class="mb-3">Create New Tweet</h5>
+        <!--<h5 class="mb-3">Create New Tweet</h5> -->
         {% include 'component/_tweet_form.html.twig' with {
             formId: 'tweet-create-form',
             alertsContainerId: 'tweet-create-alerts'
