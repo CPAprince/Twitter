@@ -39,3 +39,7 @@ api_login_check:
 web:
     resource: ../src/*/UI/Web/**/*Controller.php
     type: attribute
+
+metrics:
+    resource: ../src/Metrics/Controller/MetricsController.php
+    type: attribute
