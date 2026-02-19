@@ -14,7 +14,6 @@ final class MetricsController
     #[Route('/metrics', name: 'metrics', methods: ['GET'])]
     public function __invoke(CollectorRegistry $registry): Response
     {
-
         $renderer = new RenderTextFormat();
         $metrics = $registry->getMetricFamilySamples();
 

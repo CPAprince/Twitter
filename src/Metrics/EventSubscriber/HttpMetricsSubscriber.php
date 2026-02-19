@@ -43,10 +43,10 @@ final class HttpMetricsSubscriber implements EventSubscriberInterface
 
         $duration = microtime(true) - $this->start;
 
-        $request  = $event->getRequest();
+        $request = $event->getRequest();
         $response = $event->getResponse();
 
-        $route  = $request->attributes->get('_route', 'unknown');
+        $route = $request->attributes->get('_route', 'unknown');
         $method = $request->getMethod();
         $status = (string) $response->getStatusCode();
 
