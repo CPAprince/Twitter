@@ -68,6 +68,51 @@ services:
       - mercure_config:/config
 ###< symfony/mercure-bundle ###
 
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+  rabbitmq:
+    image: rabbitmq:3.13-management
+    restart: unless-stopped
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER:-app}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS:-app}
+      RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS: "-rabbitmq_prometheus return_per_object_metrics true"
+    ports:
+      - "5672:5672"
+      - "15672:15672" # management UI
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+
+  prometheus:
+    image: prom/prometheus:v2.50.1
+    restart: unless-stopped
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./infra/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+
+  grafana:
+    image: grafana/grafana:10.3.3
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+    volumes:
+      - grafana_data:/var/lib/grafana
+    depends_on:
+      - prometheus
+
 volumes:
   caddy_data:
   caddy_config:
@@ -77,3 +122,7 @@ volumes:
   mercure_data:
   mercure_config:
 ###< symfony/mercure-bundle ###
+
+  redis_data:
+  rabbitmq_data:
+  grafana_data:

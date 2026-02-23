@@ -131,3 +131,19 @@ services:
             $tweetRepository: '@Twitter\Tweet\Domain\Tweet\Model\TweetRepository'
             $topicBaseUrl: '%env(DEFAULT_URI)%'
             $logger: '@logger'
+
+    Twitter\Metrics\Controller\:
+        resource: '../src/Metrics/Controller'
+        tags: ['controller.service_arguments']   
+        
+    Twitter\Metrics\EventSubscriber\HttpMetricsSubscriber:
+        tags:
+            - { name: kernel.event_subscriber }
+    
+    Prometheus\Storage\InMemory:
+        public: true
+    
+    Prometheus\CollectorRegistry:
+        class: Prometheus\CollectorRegistry
+        arguments:
+            - '@Prometheus\Storage\InMemory'
