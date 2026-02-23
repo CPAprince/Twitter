@@ -81,8 +81,8 @@ services:
     image: rabbitmq:3.13-management
     restart: unless-stopped
     environment:
-      RABBITMQ_DEFAULT_USER: app
-      RABBITMQ_DEFAULT_PASS: app
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER:-app}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS:-app}
       RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS: "-rabbitmq_prometheus return_per_object_metrics true"
     ports:
       - "5672:5672"

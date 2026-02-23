@@ -66,7 +66,7 @@ final class HttpMetricsSubscriber implements EventSubscriberInterface
             'request_duration_seconds',
             'HTTP request latency',
             ['route'],
-            [0.1, 0.3, 0.5, 1, 2, 5]
+            [0.03, 0.05, 0.075, 0.1, 0.15, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1, 2, 3, 4, 5]
         );
 
         $latency->observe($duration, [$route]);
