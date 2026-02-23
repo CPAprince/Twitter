@@ -39,7 +39,12 @@ Generate keys for JWT
 docker compose exec php php bin/console lexik:jwt:generate-keypair
 ```
 
-Open https://localhost
+Open  https://localhost
+
+
+
+*You also can import [Demo Dataset with 555 users, 21k tweets, 79k likes](docs/Dump4tables_for_import_owerwrite_ready.sql)*
+
 
 ## License
 

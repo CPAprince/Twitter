@@ -23,3 +23,61 @@ span.fw-bold.me-2 > a {
     cursor: not-allowed;
 }
 
+.logolink {text-decoration: unset;}
+
+#edit-profile-btn {
+    display: contents;
+}
+#edit-profile-btn:hover {color: var(--bs-body-color); }
+
+
+
+.auth-guest-only,
+.auth-user-only {
+    display: none !important;
+}
+
+body.is-authenticated .auth-user-only {
+    display: block !important;
+}
+
+body.is-guest .auth-guest-only {
+    display: block !important;
+}
+.icon-sup {
+    vertical-align: middle;      /* prevents weird baseline shift */
+    position: relative;
+}
+
+.icon-stack {
+    position: relative;
+    display: inline-block;
+    line-height: 1;
+}
+
+.base {
+    font-size: 20px;
+    color: gold;
+}
+
+.overlay {
+    position: absolute;
+    bottom: 5px;
+    right: 6px;
+    font-size: 10px;
+    color: white;
+
+}
+
+.auth-guest-only,
+.auth-user-only {
+    display: none !important;
+}
+
+body.is-authenticated .auth-user-only {
+    display: block !important;
+}
+
+body.is-guest .auth-guest-only {
+    display: block !important;
+}

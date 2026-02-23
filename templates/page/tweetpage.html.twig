@@ -88,6 +88,7 @@
             const tweetData = await getTweet(tweetId);
             if (tweetData) {
                 showTweet(tweetData);
+                await window.Tweets.applyLikedState();
                 return;
             }
 
