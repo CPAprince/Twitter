@@ -6,8 +6,8 @@ services:
       database:
         condition: service_healthy
     environment:
-      APP_ENV: prod
-      APP_DEBUG: 0
+      APP_ENV: dev
+      APP_DEBUG: 1
       SERVER_NAME: ${SERVER_NAME:-localhost}, php:80
       DEFAULT_URI: https://${SERVER_NAME:-localhost}:${HTTPS_PORT:-443}
       TRUSTED_PROXIES: ${TRUSTED_PROXIES:-127.0.0.0/8,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16}
