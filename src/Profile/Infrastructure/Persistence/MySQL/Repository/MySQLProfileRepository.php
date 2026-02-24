@@ -58,12 +58,18 @@ final readonly class MySQLProfileRepository implements ProfileRepository
 
     public function findAllByUserIds(array $userIds): array
     {
+        $binaryIds = array_map(
+            static fn (string $uuid) => pack('H*', str_replace('-', '', $uuid)),
+            $userIds
+        );
+
         return $this->entityManager->createQueryBuilder()
             ->select('p')
             ->from(Profile::class, 'p')
             ->where('p.userId IN (:userIds)')
-            ->setParameter('userIds', $userIds)
+            ->setParameter('userIds', $binaryIds)
             ->getQuery()
             ->getResult();
     }
+
 }

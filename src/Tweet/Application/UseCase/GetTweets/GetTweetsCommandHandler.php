@@ -35,10 +35,6 @@ final readonly class GetTweetsCommandHandler
         foreach ($tweets as $tweet) {
             $authorId = $tweet->userId();
 
-            if (!isset($authorNameById[$authorId])) {
-                $authorNameById[$authorId] = $this->profileRepository->getByUserId($authorId)->name();
-            }
-
             $tweetResponses[] = new TweetResponse(
                 id: $tweet->id(),
                 content: $tweet->content(),
