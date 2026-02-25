@@ -12,7 +12,7 @@ use Symfony\Component\HttpKernel\KernelEvents;
 final class DoctrineClearSubscriber implements EventSubscriberInterface
 {
     public function __construct(
-        private EntityManagerInterface $entityManager
+        private EntityManagerInterface $entityManager,
     ) {}
 
     public static function getSubscribedEvents(): array
