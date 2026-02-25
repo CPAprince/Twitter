@@ -169,7 +169,7 @@ final class MySQLProfileRepositoryTest extends TestCase
     }
 
     #[Test]
-    public function findAllByUserIdsReturnsProfiles(): void
+    public function testFindAllByUserIdsReturnsProfiles(): void
     {
         // Arrange
         $userIds = [
@@ -187,12 +187,14 @@ final class MySQLProfileRepositoryTest extends TestCase
             Profile::create($userIds[1], 'Jane Doe', 'Bio'),
         ];
 
+        // Mock Query
         $query = $this->createMock(Query::class);
         $query
             ->expects(self::once())
             ->method('getResult')
             ->willReturn($expectedProfiles);
 
+        // Mock QueryBuilder
         $qb = $this->createMock(QueryBuilder::class);
         $qb->expects(self::once())->method('select')->with('p')->willReturnSelf();
         $qb->expects(self::once())->method('from')->with(Profile::class, 'p')->willReturnSelf();
