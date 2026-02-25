@@ -19,8 +19,8 @@ final class HealthCheckController
             'env' => $_ENV['APP_ENV'] ?? 'unknown',
             'debug' => $_ENV['APP_DEBUG'] ?? 'unknown',
             'opcache' => ini_get('opcache.enable'),
-            'ENV_FRANKENPHP_WORKER_CONFIG' => $_ENV['FRANKENPHP_WORKER_CONFIG'],
-            'SERVER_FRANKENPHP_WORKER_CONFIG' => $_SERVER['FRANKENPHP_WORKER_CONFIG'],
+            'ENV_FRANKENPHP_WORKER_CONFIG' => $_ENV['FRANKENPHP_WORKER_CONFIG'] ?? 'unknown',
+            'SERVER_FRANKENPHP_WORKER_CONFIG' => $_SERVER['FRANKENPHP_WORKER_CONFIG'] ?? 'unknown',
         ]);
     }
 }
