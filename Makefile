@@ -19,9 +19,6 @@ test:
 about:
 	docker compose exec php php bin/console about
 
-router:
-	docker compose exec php bin/console debug:router
-
 start:
 	docker compose up --wait -d
 

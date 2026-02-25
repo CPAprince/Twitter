@@ -169,7 +169,7 @@ final class MySQLProfileRepositoryTest extends TestCase
     }
 
     #[Test]
-    public function findAllByUserIdsReturnsProfiles(): void
+    public function testFindAllByUserIdsReturnsProfiles(): void
     {
         // Arrange
         $userIds = [
@@ -177,24 +177,47 @@ final class MySQLProfileRepositoryTest extends TestCase
             '550e8400-e29b-41d4-a716-446655440000',
         ];
 
-        $expected = [
+        $binaryIds = array_map(
+            static fn (string $uuid) => pack('H*', str_replace('-', '', $uuid)),
+            $userIds
+        );
+
+        $expectedProfiles = [
             Profile::create($userIds[0], 'John Doe', 'Bio'),
             Profile::create($userIds[1], 'Jane Doe', 'Bio'),
         ];
 
+        // Mock Query
         $query = $this->createMock(Query::class);
         $query
             ->expects(self::once())
             ->method('getResult')
-            ->willReturn($expected);
+            ->willReturn($expectedProfiles);
 
+        // Mock QueryBuilder
         $qb = $this->createMock(QueryBuilder::class);
-        $qb->expects(self::once())->method('select')->with('p')->willReturnSelf();
-        $qb->expects(self::once())->method('from')->with(Profile::class, 'p')->willReturnSelf();
-        $qb->expects(self::once())->method('where')->with('p.userId IN (:userIds)')->willReturnSelf();
-        $qb->expects(self::once())->method('setParameter')->with('userIds', $userIds)->willReturnSelf();
-        $qb->expects(self::once())->method('getQuery')->willReturn($query);
+        $qb->expects(self::once())
+            ->method('select')
+            ->with('p')
+            ->willReturnSelf();
+        $qb->expects(self::once())
+            ->method('from')
+            ->with(Profile::class, 'p')
+            ->willReturnSelf();
+        $qb->expects(self::once())
+            ->method('where')
+            ->with('p.userId IN (:userIds)')
+            ->willReturnSelf();
+        // $binaryIds replace $userIds
+        $qb->expects(self::once())
+            ->method('setParameter')
+            ->with('userIds', $binaryIds)
+            ->willReturnSelf();
+        $qb->expects(self::once())
+            ->method('getQuery')
+            ->willReturn($query);
 
+        // мокаем EntityManager
         $this->entityManager
             ->expects(self::once())
             ->method('createQueryBuilder')
@@ -204,7 +227,7 @@ final class MySQLProfileRepositoryTest extends TestCase
         $result = $this->repository->findAllByUserIds($userIds);
 
         // Assert
-        self::assertSame($expected, $result);
+        self::assertSame($expectedProfiles, $result);
     }
 
     #[Test]

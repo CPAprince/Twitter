@@ -71,5 +71,4 @@ final readonly class MySQLProfileRepository implements ProfileRepository
             ->getQuery()
             ->getResult();
     }
-
 }
