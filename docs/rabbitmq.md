@@ -24,7 +24,6 @@ The handler uses `UPDATE tweets SET likes_count = GREATEST(0, likes_count + :del
 
 - **Retry:** 3 attempts with exponential backoff (1s, 2s, 4s).
 - **Failure transport:** After retries, messages go to the `failed` queue.
-- **Inspect:** `bin/console messenger:failed:show`
 - **Retry:** `bin/console messenger:failed:retry`
 - **DLQ:** RabbitMQ dead-letter exchange `twitter_dlx` routes rejected/unacked messages to `failed`.
 
@@ -44,7 +43,7 @@ RabbitMQ Prometheus plugin exposes metrics at `:15692`. Prometheus scrapes `rabb
 
 - `rabbitmq_queue_messages` — queue depth
 - `rabbitmq_queue_messages_unacked` — in-flight
-- `rabbitmq_channel_messages_*` — publish/consume rates
+- `rabbitmq_channel_messages_`* — publish/consume rates
 
 Create a Grafana dashboard for queue depth, DLQ size, and throughput.
 
@@ -53,3 +52,4 @@ Create a Grafana dashboard for queue depth, DLQ size, and throughput.
 - **Transport DSN:** `MESSENGER_TRANSPORT_DSN` in `.env` (default: `amqp://app:app@rabbitmq:5672/%2f/messages`).
 - **Exchanges:** `twitter` (main), `twitter_dlx` (dead-letter).
 - **Queues:** `likes` (async work), `failed` (DLQ).
+

@@ -142,6 +142,8 @@ services:
     Twitter\Realtime\Infrastructure\EventSubscriber\LikeBroadcastSubscriber:
         tags: [ 'kernel.event_subscriber' ]
 
+    Twitter\Tweet\Application\Message\UpdateTweetLikesCountHandler: ~
+
     Twitter\Tweet\Infrastructure\Service\TweetLikesCountUpdaterInterface:
         class: Twitter\Tweet\Infrastructure\Service\TweetLikesCountUpdater
 

@@ -1,10 +1,5 @@
 framework:
     messenger:
-        buses:
-            default:
-                middleware:
-                    - doctrine_clear_entity_manager
-
         transports:
             async:
                 dsn: '%env(MESSENGER_TRANSPORT_DSN)%'
