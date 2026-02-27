@@ -34,6 +34,7 @@ RUN set -eux; \
     	pdo_mysql \
     	igbinary \
     	redis \
+		amqp \
 	;
 
 COPY --link frankenphp/conf.d/10-app.ini $PHP_INI_DIR/app.conf.d/

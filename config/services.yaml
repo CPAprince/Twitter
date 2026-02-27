@@ -129,6 +129,9 @@ services:
         arguments:
             $tweetRepository: '@Twitter\Tweet\Domain\Tweet\Model\TweetRepository'
 
+    Twitter\Tweet\Application\EventSubscriber\LikeMessageBridgeSubscriber:
+        tags: [ 'kernel.event_subscriber' ]
+        
     Twitter\Tweet\Application\UseCase\GetUserTweets\GetUserTweetsQueryHandlerInterface: '@Twitter\Tweet\Application\UseCase\GetUserTweets\GetUserTweetsQueryHandler'
 
     Twitter\Tweet\Application\EventSubscriber\UpdateTweetLikesCountSubscriber:
@@ -138,9 +141,14 @@ services:
 
     Twitter\Realtime\Infrastructure\EventSubscriber\LikeBroadcastSubscriber:
         tags: [ 'kernel.event_subscriber' ]
+
+    Twitter\Tweet\Infrastructure\Service\TweetLikesCountUpdaterInterface:
+        class: Twitter\Tweet\Infrastructure\Service\TweetLikesCountUpdater
+
+    Twitter\Tweet\Infrastructure\Service\LikeBroadcasterInterface:
+        class: Twitter\Tweet\Infrastructure\Service\LikeBroadcaster
         arguments:
             $hub: '@Symfony\Component\Mercure\HubInterface'
-            $tweetRepository: '@Twitter\Tweet\Domain\Tweet\Model\TweetRepository'
             $topicBaseUrl: '%env(DEFAULT_URI)%'
             $logger: '@logger'
 
@@ -160,5 +168,8 @@ services:
         arguments:
             - '@Prometheus\Storage\InMemory'
     
-    Twitter\Shared\Infrastructure\EventSubscriber\DoctrineClearSubscriber:
-        tags: [ 'kernel.event_subscriber' ]
+    # DoctrineClearSubscriber commented out: redundant with DoctrineResetSubscriber.
+    # In FrankenPHP worker mode, resetManager() already clears the identity map; this subscriber's
+    # injected EM reference becomes stale after reset, making it redundant at best.
+    # Twitter\Shared\Infrastructure\EventSubscriber\DoctrineClearSubscriber:
+    #     tags: [ 'kernel.event_subscriber' ]

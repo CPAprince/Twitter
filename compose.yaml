@@ -5,6 +5,8 @@ services:
     depends_on:
       database:
         condition: service_healthy
+      rabbitmq:
+        condition: service_started
     environment:
       APP_ENV: dev
       APP_DEBUG: 1
@@ -16,6 +18,7 @@ services:
       MERCURE_URL: ${MERCURE_URL:-http://mercure/.well-known/mercure}
       MERCURE_PUBLIC_URL: ${MERCURE_PUBLIC_URL:-/.well-known/mercure}
       MERCURE_JWT_SECRET: ${MERCURE_JWT_SECRET:-!ChangeThisMercureHubJWTSecretKey!}
+      MESSENGER_TRANSPORT_DSN: amqp://${RABBITMQ_DEFAULT_USER:-app}:${RABBITMQ_DEFAULT_PASS:-app}@rabbitmq:5672/%2f/messages
     volumes:
       - caddy_data:/data
       - caddy_config:/config
@@ -28,6 +31,23 @@ services:
       timeout: 5s
       retries: 5
       start_period: 60s
+
+  php-worker:
+    image: ${IMAGES_PREFIX:-}app-php
+    restart: unless-stopped
+    depends_on:
+      php:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_started
+    environment:
+      APP_ENV: dev
+      DATABASE_URL: mysql://${MYSQL_USER:-app}:${MYSQL_PASSWORD:-!ChangeMe!}@database:3306/${MYSQL_DATABASE:-app}?serverVersion=${MYSQL_VERSION:-8}&charset=${MYSQL_CHARSET:-utf8mb4}
+      MESSENGER_TRANSPORT_DSN: amqp://${RABBITMQ_DEFAULT_USER:-app}:${RABBITMQ_DEFAULT_PASS:-app}@rabbitmq:5672/%2f/messages
+      MERCURE_URL: ${MERCURE_URL:-http://mercure/.well-known/mercure}
+      MERCURE_JWT_SECRET: ${MERCURE_JWT_SECRET:-!ChangeThisMercureHubJWTSecretKey!}
+      DEFAULT_URI: ${DEFAULT_URI:-http://localhost}
+    command: ["php", "bin/console", "messenger:consume", "async", "--time-limit=3600", "--memory-limit=128M", "-vv"]
 
   database:
     image: mysql:${MYSQL_VERSION:-8}
