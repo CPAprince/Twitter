@@ -22,7 +22,7 @@ over inheritance.
 
 | Use Case        | Key Pattern                               | Tags                                      |
 |:----------------|:------------------------------------------|:------------------------------------------|
-| **Global Feed** | `tweets_global_limit_{N}_page_{M}`        | `['tweets_global']`                       |
+| **Main Feed**   | `tweets_main_limit_{N}_page_{M}`          | `['tweets_main']`                         |
 | **User Feed**   | `user_tweets_{userId}_limit_{N}_page_{M}` | `['user_tweets', 'user_tweets_{userId}']` |
 | **Profile**     | `profile_{userId}`                        | `['profile', 'profile_{userId}']`         |
 
@@ -41,8 +41,8 @@ We adopt a hybrid strategy of **Time-based Expiration (TTL)** and
 2. **New Tweet Creation:**
     * **Trigger:** `CreateTweetCommandHandler`.
     * **Action:** Invalidate tag `user_tweets_{userId}`.
-    * **Trade-off:** We **do not** invalidate the Global Feed (`tweets_global`). Doing so would
-      cause a "Thundering Herd" effect on the database during high traffic. The Global Feed relies
+    * **Trade-off:** We **do not** invalidate the Main Feed (`tweets_main`). Doing so would
+      cause a "Thundering Herd" effect on the database during high traffic. The Main Feed relies
       on short TTL (eventual consistency).
 
 3. **Tweet Update:**
@@ -57,13 +57,13 @@ deployment.
 
 ### Policies
 
-1. **Global Feed (`GetTweets`): 60 seconds**
+1. **Main Feed (`GetTweets`): 60 seconds**
     * **Justification:** High-traffic endpoint. A 60s window significantly reduces DB load while
       keeping content relatively fresh.
-    * **Env Var:** `CACHE_TTL_FEED_GLOBAL`
+    * **Env Var:** `CACHE_TTL_FEED_MAIN`
 
 2. **User Tweets (`GetUserTweets`): 600 seconds (10 minutes)**
-    * **Justification:** Lower traffic than the global feed. Users visit specific profiles less
+    * **Justification:** Lower traffic than the main feed. Users visit specific profiles less
       frequently. 10 minutes serves as a fail-safe if explicit invalidation fails.
     * **Env Var:** `CACHE_TTL_FEED_USER`
 
