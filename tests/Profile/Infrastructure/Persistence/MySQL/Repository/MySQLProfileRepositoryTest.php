@@ -196,28 +196,12 @@ final class MySQLProfileRepositoryTest extends TestCase
 
         // Mock QueryBuilder
         $qb = $this->createMock(QueryBuilder::class);
-        $qb->expects(self::once())
-            ->method('select')
-            ->with('p')
-            ->willReturnSelf();
-        $qb->expects(self::once())
-            ->method('from')
-            ->with(Profile::class, 'p')
-            ->willReturnSelf();
-        $qb->expects(self::once())
-            ->method('where')
-            ->with('p.userId IN (:userIds)')
-            ->willReturnSelf();
-        // $binaryIds replace $userIds
-        $qb->expects(self::once())
-            ->method('setParameter')
-            ->with('userIds', $binaryIds)
-            ->willReturnSelf();
-        $qb->expects(self::once())
-            ->method('getQuery')
-            ->willReturn($query);
+        $qb->expects(self::once())->method('select')->with('p')->willReturnSelf();
+        $qb->expects(self::once())->method('from')->with(Profile::class, 'p')->willReturnSelf();
+        $qb->expects(self::once())->method('where')->with('p.userId IN (:userIds)')->willReturnSelf();
+        $qb->expects(self::once())->method('setParameter')->with('userIds', $binaryIds)->willReturnSelf();
+        $qb->expects(self::once())->method('getQuery')->willReturn($query);
 
-        // мокаем EntityManager
         $this->entityManager
             ->expects(self::once())
             ->method('createQueryBuilder')
