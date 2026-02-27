@@ -9,6 +9,7 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use stdClass;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Twitter\Like\Domain\Like\Event\TweetWasLiked;
@@ -52,12 +53,12 @@ final class LikeMessageBridgeSubscriberTest extends TestCase
             ->method('dispatch')
             ->with(
                 self::callback(function (UpdateTweetLikesCountMessage $message): bool {
-                    return $message->tweetId === '019b5f3f-d110-7908-9177-5df439942a8b'
-                        && $message->userId === '550e8400-e29b-41d4-a716-446655440000'
-                        && $message->delta === 1;
+                    return '019b5f3f-d110-7908-9177-5df439942a8b' === $message->tweetId
+                        && '550e8400-e29b-41d4-a716-446655440000' === $message->userId
+                        && 1 === $message->delta;
                 }),
             )
-            ->willReturn(new Envelope(new \stdClass()));
+            ->willReturn(new Envelope(new stdClass()));
 
         $this->subscriber->onTweetLiked($event);
     }
@@ -74,12 +75,12 @@ final class LikeMessageBridgeSubscriberTest extends TestCase
             ->method('dispatch')
             ->with(
                 self::callback(function (UpdateTweetLikesCountMessage $message): bool {
-                    return $message->tweetId === '019b5f3f-d110-7908-9177-5df439942a8b'
-                        && $message->userId === '550e8400-e29b-41d4-a716-446655440000'
-                        && $message->delta === -1;
+                    return '019b5f3f-d110-7908-9177-5df439942a8b' === $message->tweetId
+                        && '550e8400-e29b-41d4-a716-446655440000' === $message->userId
+                        && -1 === $message->delta;
                 }),
             )
-            ->willReturn(new Envelope(new \stdClass()));
+            ->willReturn(new Envelope(new stdClass()));
 
         $this->subscriber->onTweetUnliked($event);
     }

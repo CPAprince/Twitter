@@ -39,7 +39,7 @@ final class TweetLikesCountUpdaterTest extends TestCase
             ->with(
                 self::stringContains('UPDATE tweets SET likes_count'),
                 self::callback(function (array $params): bool {
-                    return isset($params['delta']) && $params['delta'] === 1
+                    return isset($params['delta']) && 1 === $params['delta']
                         && isset($params['id']);
                 }),
             )
