@@ -1,0 +1,26 @@
+groups:
+    - name: twitter-observability
+      rules:
+          - alert: HighErrorRate5xx
+            expr: (sum(rate(http_requests_total{status=~"5.."}[5m])) / sum(rate(http_requests_total[5m]))) > 0.02
+            for: 5m
+            labels:
+                severity: warning
+            annotations:
+                summary: "High 5xx error rate (>2% for 5m)"
+
+          - alert: RabbitMQQueueTooLong
+            expr: max(rabbitmq_queue_messages_ready{queue!~"(?i).*dlq.*|(?i).*dead.*|(?i).*failure.*"}) > 100
+            for: 10m
+            labels:
+                severity: warning
+            annotations:
+                summary: "RabbitMQ queue backlog too large (ready > 100 for 10m)"
+
+          - alert: RabbitMQDLQNotEmpty
+            expr: sum(rabbitmq_queue_messages_ready{queue=~"(?i).*dlq.*|(?i).*dead.*|(?i).*failure.*"}) > 0
+            for: 5m
+            labels:
+                severity: warning
+            annotations:
+                summary: "DLQ has messages (ready > 0)"
