@@ -147,3 +147,6 @@ services:
         class: Prometheus\CollectorRegistry
         arguments:
             - '@Prometheus\Storage\InMemory'
+    
+    Twitter\Shared\Infrastructure\EventSubscriber\DoctrineClearSubscriber:
+        tags: [ 'kernel.event_subscriber' ]

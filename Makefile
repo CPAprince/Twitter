@@ -16,7 +16,16 @@ csdr:
 test:
 	docker compose exec php vendor/bin/phpunit
 
-allcheks: stan cs test
+about:
+	docker compose exec php php bin/console about
+
+start:
+	docker compose up --wait -d
+
+stop:
+	docker compose down
+
+allchecks: stan cs test
 
 r: router
 cc: cache-clear
