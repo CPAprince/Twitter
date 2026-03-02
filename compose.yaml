@@ -49,8 +49,11 @@ services:
       DEFAULT_URI: https://${SERVER_NAME:-localhost}:${HTTPS_PORT:-443}
     command: [ "php", "bin/console", "messenger:consume", "async", "--time-limit=3600", "--memory-limit=128M", "-vv" ]
     healthcheck:
-      test: [ 'NONE' ]
-      disable: true
+      test: ["CMD-SHELL", "grep -qa messenger /proc/1/cmdline"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
 
   database:
     image: mysql:${MYSQL_VERSION:-8}
