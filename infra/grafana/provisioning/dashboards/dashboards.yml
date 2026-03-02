@@ -1,0 +1,11 @@
+apiVersion: 1
+
+providers:
+    - name: "Twitter"
+      orgId: 1
+      folder: "Twitter"
+      type: file
+      disableDeletion: true
+      editable: true
+      options:
+          path: /var/lib/grafana/dashboards
