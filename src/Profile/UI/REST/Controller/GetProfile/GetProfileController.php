@@ -9,13 +9,13 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Twitter\Profile\Application\UseCase\GetProfile\GetProfileQuery;
-use Twitter\Profile\Application\UseCase\GetProfile\GetProfileQueryHandler;
+use Twitter\Profile\Application\UseCase\GetProfile\GetProfileQueryHandlerInterface;
 use Twitter\Profile\Domain\Profile\Exception\ProfileNotFoundException;
 
 #[Route('/api/profiles/{userId}', name: 'api_get_profile', methods: [Request::METHOD_GET])]
 final readonly class GetProfileController
 {
-    public function __construct(private GetProfileQueryHandler $queryHandler) {}
+    public function __construct(private GetProfileQueryHandlerInterface $queryHandler) {}
 
     /**
      * @throws ProfileNotFoundException
