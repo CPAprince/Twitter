@@ -12,14 +12,14 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Twitter\IAM\Domain\User\Model\User;
 use Twitter\Tweet\Application\UseCase\UpdateTweet\UpdateTweetCommand;
-use Twitter\Tweet\Application\UseCase\UpdateTweet\UpdateTweetCommandHandler;
+use Twitter\Tweet\Application\UseCase\UpdateTweet\UpdateTweetCommandHandlerInterface;
 use Twitter\Tweet\Domain\Tweet\Exception\TweetAccessDeniedException;
 use Twitter\Tweet\Domain\Tweet\Exception\TweetNotFoundException;
 
 #[Route('/api/tweets/{tweetId}', name: 'api_update_tweet', methods: [Request::METHOD_PATCH])]
 final readonly class UpdateTweetController
 {
-    public function __construct(private UpdateTweetCommandHandler $commandHandler) {}
+    public function __construct(private UpdateTweetCommandHandlerInterface $commandHandler) {}
 
     /**
      * @throws TweetAccessDeniedException
