@@ -1,0 +1,16 @@
+framework:
+    rate_limiter:
+        tweet_create:
+            policy: 'sliding_window'
+            limit: '%env(int:RATE_LIMIT_TWEET_CREATE)%'
+            interval: '1 minute'
+
+        like:
+            policy: 'token_bucket'
+            limit: '%env(int:RATE_LIMIT_LIKE)%'
+            rate: { interval: '2 seconds', amount: 1 }
+
+        login:
+            policy: 'fixed_window'
+            limit: '%env(int:RATE_LIMIT_LOGIN)%'
+            interval: '15 minutes'
