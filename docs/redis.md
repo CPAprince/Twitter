@@ -5,10 +5,10 @@ rate limiting, and concurrency control within this application.
 
 ## Caching
 
-We utilize the **Decorator Pattern** to wrap Query Handlers. This ensures the separation of
-concerns: domain logic remains pure while infrastructure concerns (caching) are handled by the
-decorator. Furthermore, this approach adheres to the open/closed principle and favors composition
-over inheritance.
+We utilize the **Proxy Pattern** to wrap query handlers. The proxy acts as a gateway: it checks
+whether the requested data exists in Redis and returns it immediately; otherwise, it delegates
+the call to the actual query handler and stores the result in the cache. This approach ensures
+that domain logic remains isolated from infrastructure concerns.
 
 ### Strategy
 
