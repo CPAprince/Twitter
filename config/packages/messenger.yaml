@@ -1,0 +1,44 @@
+framework:
+    messenger:
+        transports:
+            async:
+                dsn: '%env(MESSENGER_TRANSPORT_DSN)%'
+                retry_strategy:
+                    max_retries: 3
+                    delay: 1000
+                    multiplier: 2
+                    max_delay: 10000
+                options:
+                    exchange:
+                        name: twitter
+                        type: direct
+                        default_publish_routing_key: likes
+                    queues:
+                        likes:
+                            binding_keys: ['likes']
+                            arguments:
+                                x-dead-letter-exchange: twitter_dlx
+                                x-dead-letter-routing-key: failed
+
+            failed:
+                dsn: '%env(MESSENGER_TRANSPORT_DSN)%'
+                options:
+                    exchange:
+                        name: twitter_dlx
+                        type: direct
+                        default_publish_routing_key: failed
+                    queues:
+                        failed:
+                            binding_keys: ['failed']
+
+        failure_transport: failed
+
+        routing:
+            'Twitter\Tweet\Application\Message\UpdateTweetLikesCountMessage': async
+
+when@test:
+    framework:
+        messenger:
+            transports:
+                async: 'in-memory://'
+                failed: 'in-memory://'

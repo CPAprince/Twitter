@@ -21,6 +21,15 @@ services:
     ports:
       - "${MYSQL_PORT:-3306}:3306"
 
+  php-worker:
+    build:
+      context: .
+      target: frankenphp_dev
+    volumes:
+      - ./:/app
+      - /app/var
+      - /app/vendor
+
 ###> symfony/mercure-bundle ###
   mercure:
     ports:

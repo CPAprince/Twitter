@@ -16,9 +16,11 @@ jobs:
       - name: Install system dependencies (git, unzip, zip extension)
         run: |
           apt-get update
-          apt-get install -y git unzip libzip-dev zlib1g-dev
+          apt-get install -y git unzip libzip-dev zlib1g-dev librabbitmq-dev
           docker-php-ext-configure zip
           docker-php-ext-install zip
+          pecl install amqp
+          docker-php-ext-enable amqp
           rm -rf /var/lib/apt/lists/*
 
       - name: Checkout repository
