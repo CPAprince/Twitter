@@ -14,13 +14,13 @@ use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Twitter\IAM\Domain\Auth\Exception\UnauthorizedException;
 use Twitter\IAM\Domain\User\Model\User;
 use Twitter\Profile\Application\UseCase\UpdateProfile\UpdateProfileCommand;
-use Twitter\Profile\Application\UseCase\UpdateProfile\UpdateProfileCommandHandler;
+use Twitter\Profile\Application\UseCase\UpdateProfile\UpdateProfileCommandHandlerInterface;
 use Twitter\Profile\Domain\Profile\Exception\ProfileNotFoundException;
 
 #[Route('/api/profiles/{userId}', name: 'api_update_profile', methods: [Request::METHOD_PATCH])]
 final readonly class UpdateProfileController
 {
-    public function __construct(private UpdateProfileCommandHandler $handler) {}
+    public function __construct(private UpdateProfileCommandHandlerInterface $handler) {}
 
     /**
      * @throws ProfileNotFoundException

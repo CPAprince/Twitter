@@ -20,7 +20,7 @@ services:
     Twitter\IAM\UI\REST\Controller\:
         resource: '../src/IAM/UI/REST/Controller/*Controller.php'
         tags: [ 'controller.service_arguments' ]
-        
+    
     Twitter\IAM\UI\Web\:
         resource: '../src/IAM/UI/Web/*/*Controller.php'
         tags: [ 'controller.service_arguments' ]
@@ -71,14 +71,18 @@ services:
     Twitter\Like\Application\UseCase\ToggleLike\ToggleLikeCommandHandler:
         arguments:
             $likeRepository: '@Twitter\Like\Domain\Like\Model\LikeRepository'
-            
+    
     Twitter\Profile\Application\UseCase\GetProfile\GetProfileQueryHandler:
         arguments:
             $profileRepository: '@Twitter\Profile\Domain\Profile\Model\ProfileRepository'
 
+    Twitter\Profile\Application\UseCase\GetProfile\GetProfileQueryHandlerInterface: '@Twitter\Profile\Application\UseCase\GetProfile\GetProfileQueryHandler'
+
     Twitter\Profile\Application\UseCase\UpdateProfile\UpdateProfileCommandHandler:
         arguments:
             $profileRepository: '@Twitter\Profile\Domain\Profile\Model\ProfileRepository'
+
+    Twitter\Profile\Application\UseCase\UpdateProfile\UpdateProfileCommandHandlerInterface: '@Twitter\Profile\Application\UseCase\UpdateProfile\UpdateProfileCommandHandler'
 
     Twitter\Profile\Domain\Profile\Model\ProfileRepository:
         class: Twitter\Profile\Infrastructure\Persistence\MySQL\Repository\MySQLProfileRepository
@@ -93,6 +97,8 @@ services:
     Twitter\Tweet\Application\UseCase\CreateTweet\CreateTweetCommandHandler:
         arguments:
             $tweetRepository: '@Twitter\Tweet\Domain\Tweet\Model\TweetRepository'
+
+    Twitter\Tweet\Application\UseCase\CreateTweet\CreateTweetCommandHandlerInterface: '@Twitter\Tweet\Application\UseCase\CreateTweet\CreateTweetCommandHandler'
     
     Twitter\Like\Domain\Like\Model\LikeRepository:
         class: Twitter\Like\Infrastructure\Persistence\MySQL\Repository\MySQLLikeRepository
@@ -100,24 +106,30 @@ services:
     Twitter\Tweet\UI\Web\:
         resource: '../src/Tweet/UI/Web/'
         tags: [ 'controller.service_arguments' ]
-        
+    
     Twitter\Tweet\Application\UseCase\GetTweet\GetTweetCommandHandler:
         arguments:
             $tweetRepository: '@Twitter\Tweet\Domain\Tweet\Model\TweetRepository'
             $profileRepository: '@Twitter\Profile\Domain\Profile\Model\ProfileRepository'
-            
+    
     Twitter\Tweet\Application\UseCase\GetTweets\GetTweetsCommandHandler:
         arguments:
             $tweetRepository: '@Twitter\Tweet\Domain\Tweet\Model\TweetRepository'
             $profileRepository: '@Twitter\Profile\Domain\Profile\Model\ProfileRepository'
-            
+
+    Twitter\Tweet\Application\UseCase\GetTweets\GetTweetsCommandHandlerInterface: '@Twitter\Tweet\Application\UseCase\GetTweets\GetTweetsCommandHandler'
+
     Twitter\Tweet\Application\UseCase\UpdateTweet\UpdateTweetCommandHandler:
         arguments:
             $tweetRepository: '@Twitter\Tweet\Domain\Tweet\Model\TweetRepository'
-            
+    
+    Twitter\Tweet\Application\UseCase\UpdateTweet\UpdateTweetCommandHandlerInterface: '@Twitter\Tweet\Application\UseCase\UpdateTweet\UpdateTweetCommandHandler'
+
     Twitter\Tweet\Application\UseCase\GetUserTweets\GetUserTweetsQueryHandler:
         arguments:
             $tweetRepository: '@Twitter\Tweet\Domain\Tweet\Model\TweetRepository'
+
+    Twitter\Tweet\Application\UseCase\GetUserTweets\GetUserTweetsQueryHandlerInterface: '@Twitter\Tweet\Application\UseCase\GetUserTweets\GetUserTweetsQueryHandler'
 
     Twitter\Tweet\Application\EventSubscriber\UpdateTweetLikesCountSubscriber:
         tags: [ 'kernel.event_subscriber' ]
@@ -134,8 +146,8 @@ services:
 
     Twitter\Metrics\Controller\:
         resource: '../src/Metrics/Controller'
-        tags: ['controller.service_arguments']   
-        
+        tags: [ 'controller.service_arguments' ]
+    
     Twitter\Metrics\EventSubscriber\HttpMetricsSubscriber:
         tags:
             - { name: kernel.event_subscriber }

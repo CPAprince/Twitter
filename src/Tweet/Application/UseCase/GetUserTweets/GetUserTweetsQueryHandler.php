@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace Twitter\Tweet\Application\UseCase\GetUserTweets;
 
+use Override;
 use Twitter\Tweet\Domain\Tweet\Model\TweetRepository;
 
-final readonly class GetUserTweetsQueryHandler
+final readonly class GetUserTweetsQueryHandler implements GetUserTweetsQueryHandlerInterface
 {
     public function __construct(private TweetRepository $tweetRepository) {}
 
+    #[Override]
     public function handle(GetUserTweetsQuery $query): GetUserTweetsQueryResult
     {
         $tweets = $this->tweetRepository->getUserTweets($query->userId, $query->limit, $query->page);
