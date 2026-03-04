@@ -32,6 +32,7 @@ RUN set -eux; \
 		opcache \
 		zip \
     	pdo_mysql \
+    	igbinary \
     	redis \
 	;
 
