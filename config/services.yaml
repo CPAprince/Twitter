@@ -134,14 +134,6 @@ services:
         
     Twitter\Tweet\Application\UseCase\GetUserTweets\GetUserTweetsQueryHandlerInterface: '@Twitter\Tweet\Application\UseCase\GetUserTweets\GetUserTweetsQueryHandler'
 
-    Twitter\Tweet\Application\EventSubscriber\UpdateTweetLikesCountSubscriber:
-        tags: [ 'kernel.event_subscriber' ]
-        arguments:
-            $tweetRepository: '@Twitter\Tweet\Domain\Tweet\Model\TweetRepository'
-
-    Twitter\Realtime\Infrastructure\EventSubscriber\LikeBroadcastSubscriber:
-        tags: [ 'kernel.event_subscriber' ]
-
     Twitter\Tweet\Application\Message\UpdateTweetLikesCountHandler: ~
 
     Twitter\Tweet\Infrastructure\Service\TweetLikesCountUpdaterInterface:
