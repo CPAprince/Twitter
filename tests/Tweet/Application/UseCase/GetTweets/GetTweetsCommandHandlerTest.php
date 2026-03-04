@@ -128,4 +128,30 @@ final class GetTweetsCommandHandlerTest extends TestCase
         self::assertSame('Same Author', $result->tweets[0]->authorName);
         self::assertSame('Same Author', $result->tweets[1]->authorName);
     }
+
+    #[Test]
+    public function itReturnsUnknownWhenAuthorProfileIsMissing(): void
+    {
+        $authorId = '019b5f3f-d110-7908-9177-5df439942a8b';
+        $tweet = Tweet::create($authorId, 'A tweet');
+
+        $this->tweetRepository
+            ->expects(self::once())
+            ->method('getAllTweets')
+            ->willReturn([$tweet]);
+
+        $this->profileRepository
+            ->expects(self::once())
+            ->method('findAllByUserIds')
+            ->with([$authorId])
+            ->willReturn([]);
+
+        $result = $this->handler->handle(new GetTweetsCommand());
+
+        self::assertCount(1, $result->tweets);
+        self::assertSame(
+            GetTweetsCommandHandler::UNKNOWN_AUTHOR,
+            $result->tweets[0]->authorName,
+        );
+    }
 }
