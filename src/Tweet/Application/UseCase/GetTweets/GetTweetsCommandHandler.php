@@ -4,17 +4,21 @@ declare(strict_types=1);
 
 namespace Twitter\Tweet\Application\UseCase\GetTweets;
 
+use Override;
 use Twitter\Profile\Domain\Profile\Model\ProfileRepository;
 use Twitter\Tweet\Application\UseCase\Shared\TweetResponse;
 use Twitter\Tweet\Domain\Tweet\Model\TweetRepository;
 
-final readonly class GetTweetsCommandHandler
+final readonly class GetTweetsCommandHandler implements GetTweetsCommandHandlerInterface
 {
+    public const string UNKNOWN_AUTHOR = 'Unknown';
+
     public function __construct(
         private TweetRepository $tweetRepository,
         private ProfileRepository $profileRepository,
     ) {}
 
+    #[Override]
     public function handle(GetTweetsCommand $command): GetTweetsResponse
     {
         $tweets = $this->tweetRepository->getAllTweets($command->limit, $command->page);
@@ -41,7 +45,7 @@ final readonly class GetTweetsCommandHandler
                 createdAt: $tweet->createdAt(),
                 updatedAt: $tweet->updatedAt(),
                 authorId: $authorId,
-                authorName: $authorNameById[$authorId],
+                authorName: $authorNameById[$authorId] ?? self::UNKNOWN_AUTHOR,
                 likesCount: $tweet->likes(),
             );
         }
