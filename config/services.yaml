@@ -162,6 +162,18 @@ services:
         arguments:
             - '@Prometheus\Storage\InMemory'
     
+    Twitter\Tweet\Domain\Tweet\ModerationServiceInterface:
+        alias: Twitter\Tweet\Infrastructure\AI\OpenAIModerationService
+
+    Twitter\Tweet\Infrastructure\AI\OpenAIModerationService:
+        arguments:
+            $apiKey: '%env(OPENAI_API_KEY)%'
+    
+    Twitter\Tweet\UI\CLI\TestModerationCommand:
+        tags: [ 'console.command' ]
+        arguments:
+            $moderation: '@Twitter\Tweet\Infrastructure\AI\OpenAIModerationService'
+            
     # DoctrineClearSubscriber commented out: redundant with DoctrineResetSubscriber.
     # In FrankenPHP worker mode, resetManager() already clears the identity map; this subscriber's
     # injected EM reference becomes stale after reset, making it redundant at best.
