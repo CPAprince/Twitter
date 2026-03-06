@@ -173,6 +173,67 @@ services:
         tags: [ 'console.command' ]
         arguments:
             $moderation: '@Twitter\Tweet\Infrastructure\AI\OpenAIModerationService'
+    
+    Twitter\Tweet\Infrastructure\Moderation\ModerationConfigFactory:
+        public: true
+        arguments:
+            $enabled: '%moderation.enabled%'
+            $mode: '%moderation.mode%'
+            $provider: '%moderation.provider%'
+            $model: '%moderation.model%'
+            $apiKey: '%moderation.api_key%'
+            
+            $batchMaxItems: '%moderation.batch.max_items%'
+            $batchSoftTokenCap: '%moderation.batch.soft_token_cap%'
+            $batchHardTokenCap: '%moderation.batch.hard_token_cap%'
+            $batchFlushIntervalMs: '%moderation.batch.flush_interval_ms%'
+            
+            $limitRpm: '%moderation.limits.rpm%'
+            $limitTpm: '%moderation.limits.tpm%'
+            $limitRpd: '%moderation.limits.rpd%'
+            
+            $demoApprovePercent: '%moderation.demo.approve_percent%'
+            $demoSetModeratedAt: '%moderation.demo.set_moderated_at%'
+            
+            $bypassSetModeratedAt: '%moderation.bypass.set_moderated_at%'
+            
+            $redisQueueKey: '%moderation.redis.queue_key%'
+            $redisFlushLockKey: '%moderation.redis.flush_lock_key%'
+            $redisRateReqPrefix: '%moderation.redis.rate_req_prefix%'
+            $redisRateTokPrefix: '%moderation.redis.rate_tok_prefix%'
+            $redisRateReqDayPrefix: '%moderation.redis.rate_req_day_prefix%'
+            
+            $workerIdleSleepMs: '%moderation.worker.idle_sleep_ms%'
+            $workerLockTtlSeconds: '%moderation.worker.lock_ttl_seconds%'
+            $workerMaxFetchItems: '%moderation.worker.max_fetch_items%'
+            
+            $statusPending: '%moderation.status.pending%'
+            $statusApproved: '%moderation.status.approved%'
+            $statusRejected: '%moderation.status.rejected%'
+
+    Twitter\Tweet\Application\Moderation\ModerationConfig:
+        public: true
+        factory: [ '@Twitter\Tweet\Infrastructure\Moderation\ModerationConfigFactory', 'create' ]
+        
+    Twitter\Tweet\Infrastructure\Moderation\TweetModerationProviderResolver:
+        public: true
+
+    Twitter\Tweet\Infrastructure\Moderation\DemoTweetModerationProvider:
+        public: true
+
+    Twitter\Tweet\Infrastructure\Moderation\BypassTweetModerationProvider:
+        public: true
+
+    Twitter\Tweet\Infrastructure\Moderation\OpenAiTweetModerationProvider:
+        public: true
+    
+    Twitter\Tweet\Application\Moderation\TweetModerationProviderInterface:
+        public: true
+        factory: [ '@Twitter\Tweet\Infrastructure\Moderation\TweetModerationProviderResolver', 'resolve' ]
+    
+    Twitter\Tweet\UI\CLI\TestModerationProviderCommand:
+        tags: [ 'console.command' ]
+
             
     # DoctrineClearSubscriber commented out: redundant with DoctrineResetSubscriber.
     # In FrankenPHP worker mode, resetManager() already clears the identity map; this subscriber's

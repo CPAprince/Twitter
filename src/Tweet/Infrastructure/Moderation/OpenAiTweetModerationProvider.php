@@ -1,0 +1,70 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Twitter\Tweet\Infrastructure\Moderation;
+
+use OpenAI;
+use OpenAI\Client;
+use Twitter\Tweet\Application\Moderation\ModerationBatchItem;
+use Twitter\Tweet\Application\Moderation\ModerationConfig;
+use Twitter\Tweet\Application\Moderation\ModerationDecision;
+use Twitter\Tweet\Application\Moderation\TweetModerationProviderInterface;
+
+final class OpenAiTweetModerationProvider implements TweetModerationProviderInterface
+{
+    private Client $client;
+
+    public function __construct(
+        private readonly ModerationConfig $config,
+    ) {
+        if (!$this->config->hasApiKey()) {
+            throw new \RuntimeException('OPENAI_API_KEY is not configured.');
+        }
+
+        $this->client = OpenAI::client($this->config->apiKey);
+    }
+
+    public function moderateBatch(array $items): array
+    {
+        foreach ($items as $item) {
+            if (!$item instanceof ModerationBatchItem) {
+                throw new \InvalidArgumentException('All items must be instances of ModerationBatchItem.');
+            }
+        }
+
+        if ($items === []) {
+            return [];
+        }
+
+        $inputs = array_map(
+            static fn (ModerationBatchItem $item) => $item->text,
+            $items
+        );
+
+        $response = $this->client->moderations()->create([
+            'model' => $this->config->model,
+            'input' => $inputs,
+        ]);
+
+        $results = $response->results;
+
+        $decisions = [];
+
+        foreach ($items as $index => $item) {
+
+            $result = $results[$index];
+
+            $flagged = $result->flagged ?? false;
+
+            $decisions[] = new ModerationDecision(
+                tweetId: $item->tweetId,
+                approved: !$flagged,
+                reason: $flagged ? 'Rejected by OpenAI moderation.' : null,
+                categories: [],
+            );
+        }
+
+        return $decisions;
+    }
+}

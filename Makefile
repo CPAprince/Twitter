@@ -19,6 +19,9 @@ test:
 about:
 	docker compose exec php php bin/console about
 
+container:
+	docker compose exec php php bin/console debug:container
+
 start:
 	docker compose up --wait -d
 
