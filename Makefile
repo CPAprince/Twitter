@@ -16,6 +16,9 @@ csdr:
 test:
 	docker compose exec php vendor/bin/phpunit
 
+testdetails:
+	docker compose exec php vendor/bin/phpunit --display-all-issues --colors=always
+
 about:
 	docker compose exec php php bin/console about
 
@@ -34,3 +37,4 @@ r: router
 cc: cache-clear
 s: stan
 t: test
+td: testdetails
