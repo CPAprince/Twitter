@@ -145,6 +145,13 @@ services:
             $cacheTweets: '@cache.tweets'
             $ttl: '%cache_ttl_feed_main%'
 
+    Twitter\Tweet\Infrastructure\Cache\Proxy\GetUserTweetsQueryHandlerProxy:
+        decorates: Twitter\Tweet\Application\UseCase\GetUserTweets\GetUserTweetsQueryHandlerInterface
+        arguments:
+            $inner: '@.inner'
+            $cacheTweets: '@cache.tweets'
+            $ttl: '%cache_ttl_feed_user%'
+
     Twitter\Tweet\Application\Message\UpdateTweetLikesCountHandler: ~
 
     Twitter\Tweet\Infrastructure\Service\TweetLikesCountUpdaterInterface:
