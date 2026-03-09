@@ -41,6 +41,7 @@ services:
     Twitter\Registration\Application\Message\SendWelcomeEmailHandler:
         arguments:
             $senderAddress: '%env(MAILER_SENDER)%'
+            $appBaseUrl: '%env(DEFAULT_URI)%'
 
     Twitter\IAM\Application\Logout\LogoutHandler:
         arguments:

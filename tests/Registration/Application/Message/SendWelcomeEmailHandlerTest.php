@@ -30,6 +30,7 @@ final class SendWelcomeEmailHandlerTest extends TestCase
         $this->handler = new SendWelcomeEmailHandler(
             mailer: $this->mailer,
             senderAddress: 'noreply@twitter.local',
+            appBaseUrl: 'https://localhost',
         );
     }
 

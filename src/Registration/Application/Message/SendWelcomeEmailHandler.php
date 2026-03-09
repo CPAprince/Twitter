@@ -15,6 +15,7 @@ final readonly class SendWelcomeEmailHandler
     public function __construct(
         private MailerInterface $mailer,
         private string $senderAddress,
+        private string $appBaseUrl,
     ) {}
 
     /**
@@ -29,6 +30,7 @@ final readonly class SendWelcomeEmailHandler
             ->htmlTemplate('email/welcome.html.twig')
             ->context([
                 'name' => $message->name,
+                'appBaseUrl' => $this->appBaseUrl,
             ]);
 
         $this->mailer->send($email);
