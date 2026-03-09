@@ -6,6 +6,7 @@ namespace Twitter\Tests\Registration\Application\UseCase\RegisterUser;
 
 use Assert\LazyAssertionException;
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Exception;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
@@ -15,9 +16,15 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
+use stdClass;
+use Symfony\Component\Messenger\Envelope;
+use Symfony\Component\Messenger\Exception\ExceptionInterface;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Twitter\IAM\Domain\User\Exception\InvalidEmailException;
 use Twitter\IAM\Domain\User\Exception\InvalidPasswordException;
 use Twitter\IAM\Domain\User\Exception\UserAlreadyExistsException;
+use Twitter\Profile\Domain\Profile\Exception\UserNotFoundException;
+use Twitter\Registration\Application\Message\SendWelcomeEmailMessage;
 use Twitter\Registration\Application\UseCase\RegisterUser\RegisterUserCommand;
 use Twitter\Registration\Application\UseCase\RegisterUser\RegisterUserCommandHandler;
 
@@ -28,14 +35,17 @@ final class RegisterUserCommandHandlerTest extends TestCase
     private RegisterUserCommandHandler $handler;
     private EntityManagerInterface&MockObject $entityManager;
     private Connection&MockObject $connection;
+    private MessageBusInterface&MockObject $messageBus;
 
     protected function setUp(): void
     {
         $this->entityManager = $this->createMock(EntityManagerInterface::class);
         $this->connection = $this->createMock(Connection::class);
+        $this->messageBus = $this->createMock(MessageBusInterface::class);
 
         $this->handler = new RegisterUserCommandHandler(
             $this->entityManager,
+            $this->messageBus,
         );
     }
 
@@ -67,6 +77,16 @@ final class RegisterUserCommandHandlerTest extends TestCase
             ->expects(self::once())
             ->method('flush');
 
+        $this->messageBus
+            ->expects(self::once())
+            ->method('dispatch')
+            ->with(self::callback(
+                static fn (mixed $message): bool => $message instanceof SendWelcomeEmailMessage
+                    && 'test@example.com' === $message->email
+                    && 'John Doe' === $message->name,
+            ))
+            ->willReturn(new Envelope(new stdClass()));
+
         $result = $this->handler->handle(new RegisterUserCommand(
             email: 'test@example.com',
             password: 'Qwerty.123',
@@ -81,6 +101,14 @@ final class RegisterUserCommandHandlerTest extends TestCase
         );
     }
 
+    /**
+     * @throws UserNotFoundException
+     * @throws \Throwable
+     * @throws InvalidPasswordException
+     * @throws UserAlreadyExistsException
+     * @throws Exception
+     * @throws ExceptionInterface
+     */
     #[Test]
     #[AllowMockObjectsWithoutExpectations]
     public function failsWhenEmailIsInvalid(): void
@@ -91,6 +119,10 @@ final class RegisterUserCommandHandlerTest extends TestCase
             ->expects(self::never())
             ->method('getConnection');
 
+        $this->messageBus
+            ->expects(self::never())
+            ->method('dispatch');
+
         $this->handler->handle(new RegisterUserCommand(
             email: 'invalid',
             password: 'Qwerty.123',
@@ -99,6 +131,14 @@ final class RegisterUserCommandHandlerTest extends TestCase
         ));
     }
 
+    /**
+     * @throws UserNotFoundException
+     * @throws \Throwable
+     * @throws InvalidEmailException
+     * @throws Exception
+     * @throws ExceptionInterface
+     * @throws UserAlreadyExistsException
+     */
     #[Test]
     #[AllowMockObjectsWithoutExpectations]
     public function failsWhenPasswordIsInvalid(): void
@@ -109,6 +149,10 @@ final class RegisterUserCommandHandlerTest extends TestCase
             ->expects(self::never())
             ->method('getConnection');
 
+        $this->messageBus
+            ->expects(self::never())
+            ->method('dispatch');
+
         $this->handler->handle(new RegisterUserCommand(
             email: 'test@example.com',
             password: 'invalid',
@@ -117,6 +161,15 @@ final class RegisterUserCommandHandlerTest extends TestCase
         ));
     }
 
+    /**
+     * @throws UserNotFoundException
+     * @throws InvalidPasswordException
+     * @throws UserAlreadyExistsException
+     * @throws \Throwable
+     * @throws InvalidEmailException
+     * @throws Exception
+     * @throws ExceptionInterface
+     */
     #[Test]
     #[AllowMockObjectsWithoutExpectations]
     public function failsWhenProfileNameIsInvalid(): void
@@ -127,6 +180,10 @@ final class RegisterUserCommandHandlerTest extends TestCase
             ->expects(self::never())
             ->method('getConnection');
 
+        $this->messageBus
+            ->expects(self::never())
+            ->method('dispatch');
+
         $this->handler->handle(new RegisterUserCommand(
             email: 'test@example.com',
             password: 'Qwerty.123',
@@ -135,6 +192,14 @@ final class RegisterUserCommandHandlerTest extends TestCase
         ));
     }
 
+    /**
+     * @throws UserNotFoundException
+     * @throws \Throwable
+     * @throws InvalidPasswordException
+     * @throws InvalidEmailException
+     * @throws ExceptionInterface
+     * @throws Exception
+     */
     #[Test]
     #[AllowMockObjectsWithoutExpectations]
     public function rollsBackWhenUserAlreadyExists(): void
@@ -167,6 +232,10 @@ final class RegisterUserCommandHandlerTest extends TestCase
             ->method('flush')
             ->willThrowException($this->createMock(UniqueConstraintViolationException::class));
 
+        $this->messageBus
+            ->expects(self::never())
+            ->method('dispatch');
+
         $this->handler->handle(new RegisterUserCommand(
             email: 'test@example.com',
             password: 'Qwerty.123',
@@ -175,6 +244,15 @@ final class RegisterUserCommandHandlerTest extends TestCase
         ));
     }
 
+    /**
+     * @throws UserNotFoundException
+     * @throws InvalidPasswordException
+     * @throws UserAlreadyExistsException
+     * @throws \Throwable
+     * @throws InvalidEmailException
+     * @throws ExceptionInterface
+     * @throws Exception
+     */
     #[Test]
     #[AllowMockObjectsWithoutExpectations]
     public function propagatesUnexpectedFailuresAndRollsBack(): void
@@ -206,6 +284,10 @@ final class RegisterUserCommandHandlerTest extends TestCase
             ->expects(self::once())
             ->method('flush')
             ->willThrowException(new RuntimeException());
+
+        $this->messageBus
+            ->expects(self::never())
+            ->method('dispatch');
 
         $this->handler->handle(new RegisterUserCommand(
             email: 'test@example.com',
