@@ -10,7 +10,15 @@ use Symfony\Component\Uid\Uuid;
 
 final class Tweet
 {
+    public const int MODERATION_PENDING = 0;
+    public const int MODERATION_APPROVED = 1;
+    public const int MODERATION_REJECTED = 2;
+
     private int $likesCount = 0;
+
+    private int $moderationStatus = self::MODERATION_PENDING;
+
+    private ?DateTimeImmutable $moderatedAt = null;
 
     private function __construct(
         private readonly string $id,
@@ -18,7 +26,8 @@ final class Tweet
         private string $content,
         private readonly DateTimeImmutable $createdAt = new DateTimeImmutable(),
         private DateTimeImmutable $updatedAt = new DateTimeImmutable(),
-    ) {}
+    ) {
+    }
 
     public static function create(string $userId, string $content): self
     {
@@ -49,14 +58,21 @@ final class Tweet
         return $this->content;
     }
 
-    public function updateContent(string $content): void
+    public function updateContent(string $content): bool
     {
         Assert::lazy()
             ->that($content, 'content')->notBlank()->maxLength(280)
             ->verifyNow();
 
+        if ($this->content === $content) {
+            return false;
+        }
+
         $this->content = $content;
         $this->updatedAt = new DateTimeImmutable();
+        $this->resetModeration();
+
+        return true;
     }
 
     public function createdAt(): DateTimeImmutable
@@ -84,5 +100,21 @@ final class Tweet
         if ($this->likesCount > 0) {
             --$this->likesCount;
         }
+    }
+
+    public function moderationStatus(): int
+    {
+        return $this->moderationStatus;
+    }
+
+    public function moderatedAt(): ?DateTimeImmutable
+    {
+        return $this->moderatedAt;
+    }
+
+    public function resetModeration(): void
+    {
+        $this->moderationStatus = self::MODERATION_PENDING;
+        $this->moderatedAt = null;
     }
 }
