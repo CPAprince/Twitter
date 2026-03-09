@@ -45,7 +45,7 @@ final readonly class MySQLTweetRepository implements TweetRepository
     public function getById(string $tweetId): Tweet
     {
         $tweet = $this->entityManager->find(Tweet::class, $tweetId);
-        if (null === $tweet) {
+        if (null === $tweet || $tweet->moderationStatus() !== Tweet::MODERATION_APPROVED) {
             throw new TweetNotFoundException($tweetId);
         }
 

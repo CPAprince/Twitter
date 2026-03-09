@@ -38,6 +38,7 @@ final class MySQLTweetRepositoryTest extends TestCase
         // Arrange
         $userId = '019b5f3f-d110-7908-9177-5df439942a8b';
         $tweet = Tweet::create($userId, 'Hello');
+        $tweet->approveModeration();
         $tweetId = $tweet->id();
 
         $this->entityManager

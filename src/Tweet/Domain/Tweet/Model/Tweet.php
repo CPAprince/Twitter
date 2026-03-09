@@ -117,4 +117,16 @@ final class Tweet
         $this->moderationStatus = self::MODERATION_PENDING;
         $this->moderatedAt = null;
     }
+
+    public function approveModeration(): void
+    {
+        $this->moderationStatus = self::MODERATION_APPROVED;
+        $this->moderatedAt = new DateTimeImmutable();
+    }
+
+    public function rejectModeration(): void
+    {
+        $this->moderationStatus = self::MODERATION_REJECTED;
+        $this->moderatedAt = new DateTimeImmutable();
+    }
 }
