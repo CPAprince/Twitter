@@ -20,6 +20,7 @@ use stdClass;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\Exception\ExceptionInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
+use Throwable;
 use Twitter\IAM\Domain\User\Exception\InvalidEmailException;
 use Twitter\IAM\Domain\User\Exception\InvalidPasswordException;
 use Twitter\IAM\Domain\User\Exception\UserAlreadyExistsException;
@@ -103,7 +104,7 @@ final class RegisterUserCommandHandlerTest extends TestCase
 
     /**
      * @throws UserNotFoundException
-     * @throws \Throwable
+     * @throws Throwable
      * @throws InvalidPasswordException
      * @throws UserAlreadyExistsException
      * @throws Exception
@@ -133,7 +134,7 @@ final class RegisterUserCommandHandlerTest extends TestCase
 
     /**
      * @throws UserNotFoundException
-     * @throws \Throwable
+     * @throws Throwable
      * @throws InvalidEmailException
      * @throws Exception
      * @throws ExceptionInterface
@@ -165,7 +166,7 @@ final class RegisterUserCommandHandlerTest extends TestCase
      * @throws UserNotFoundException
      * @throws InvalidPasswordException
      * @throws UserAlreadyExistsException
-     * @throws \Throwable
+     * @throws Throwable
      * @throws InvalidEmailException
      * @throws Exception
      * @throws ExceptionInterface
@@ -194,7 +195,7 @@ final class RegisterUserCommandHandlerTest extends TestCase
 
     /**
      * @throws UserNotFoundException
-     * @throws \Throwable
+     * @throws Throwable
      * @throws InvalidPasswordException
      * @throws InvalidEmailException
      * @throws ExceptionInterface
@@ -248,7 +249,7 @@ final class RegisterUserCommandHandlerTest extends TestCase
      * @throws UserNotFoundException
      * @throws InvalidPasswordException
      * @throws UserAlreadyExistsException
-     * @throws \Throwable
+     * @throws Throwable
      * @throws InvalidEmailException
      * @throws ExceptionInterface
      * @throws Exception
