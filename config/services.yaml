@@ -1,5 +1,9 @@
 # yaml-language-server: $schema=../vendor/symfony/dependency-injection/Loader/schema/services.schema.json
 
+parameters:
+    cache_ttl_feed_main: '%env(int:CACHE_TTL_FEED_MAIN)%'
+    cache_ttl_feed_user: '%env(int:CACHE_TTL_FEED_USER)%'
+
 services:
     _defaults:
         autowire: true
