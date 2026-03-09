@@ -138,6 +138,13 @@ services:
         
     Twitter\Tweet\Application\UseCase\GetUserTweets\GetUserTweetsQueryHandlerInterface: '@Twitter\Tweet\Application\UseCase\GetUserTweets\GetUserTweetsQueryHandler'
 
+    Twitter\Tweet\Infrastructure\Cache\Proxy\GetTweetsCommandHandlerProxy:
+        decorates: Twitter\Tweet\Application\UseCase\GetTweets\GetTweetsCommandHandlerInterface
+        arguments:
+            $inner: '@.inner'
+            $cacheTweets: '@cache.tweets'
+            $ttl: '%cache_ttl_feed_main%'
+
     Twitter\Tweet\Application\Message\UpdateTweetLikesCountHandler: ~
 
     Twitter\Tweet\Infrastructure\Service\TweetLikesCountUpdaterInterface:
