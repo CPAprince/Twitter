@@ -36,6 +36,11 @@ services:
     Twitter\Registration\Application\UseCase\RegisterUser\RegisterUserCommandHandler:
         arguments:
             $entityManager: '@doctrine.orm.entity_manager'
+            $messageBus: '@messenger.default_bus'
+
+    Twitter\Registration\Application\Message\SendWelcomeEmailHandler:
+        arguments:
+            $senderAddress: '%env(MAILER_SENDER)%'
 
     Twitter\IAM\Application\Logout\LogoutHandler:
         arguments:
@@ -131,7 +136,7 @@ services:
 
     Twitter\Tweet\Application\EventSubscriber\LikeMessageBridgeSubscriber:
         tags: [ 'kernel.event_subscriber' ]
-        
+    
     Twitter\Tweet\Application\UseCase\GetUserTweets\GetUserTweetsQueryHandlerInterface: '@Twitter\Tweet\Application\UseCase\GetUserTweets\GetUserTweetsQueryHandler'
 
     Twitter\Tweet\Application\Message\UpdateTweetLikesCountHandler: ~
