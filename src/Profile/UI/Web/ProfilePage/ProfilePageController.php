@@ -11,14 +11,14 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Attribute\Route;
 use Twitter\Profile\Application\UseCase\GetProfile\GetProfileQuery;
-use Twitter\Profile\Application\UseCase\GetProfile\GetProfileQueryHandler;
+use Twitter\Profile\Application\UseCase\GetProfile\GetProfileQueryHandlerInterface;
 use Twitter\Profile\Domain\Profile\Exception\ProfileNotFoundException;
 
 #[Route('/p/{userId}', name: 'profile_page', methods: ['GET'])]
 final class ProfilePageController extends AbstractController
 {
     public function __construct(
-        private readonly GetProfileQueryHandler $profileQueryHandler,
+        private readonly GetProfileQueryHandlerInterface $profileQueryHandler,
     ) {}
 
     /**
