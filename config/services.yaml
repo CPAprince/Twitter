@@ -3,6 +3,7 @@
 parameters:
     cache_ttl_feed_main: '%env(int:CACHE_TTL_FEED_MAIN)%'
     cache_ttl_feed_user: '%env(int:CACHE_TTL_FEED_USER)%'
+    cache_ttl_profile: '%env(int:CACHE_TTL_PROFILE)%'
 
 services:
     _defaults:
@@ -151,6 +152,13 @@ services:
             $inner: '@.inner'
             $cacheTweets: '@cache.tweets'
             $ttl: '%cache_ttl_feed_user%'
+
+    Twitter\Profile\Infrastructure\Cache\Proxy\GetProfileQueryHandlerProxy:
+        decorates: Twitter\Profile\Application\UseCase\GetProfile\GetProfileQueryHandlerInterface
+        arguments:
+            $inner: '@.inner'
+            $cacheProfiles: '@cache.profiles'
+            $ttl: '%cache_ttl_profile%'
 
     Twitter\Tweet\Application\Message\UpdateTweetLikesCountHandler: ~
 
