@@ -67,7 +67,7 @@ final readonly class MySQLTweetRepository implements TweetRepository
 
         return $this->entityManager
             ->getRepository(Tweet::class)
-            ->findBy([], ['createdAt' => 'DESC'], $limit, $offset);
+            ->findBy(['moderationStatus' => Tweet::MODERATION_APPROVED], ['createdAt' => 'DESC'], $limit, $offset);
     }
 
     public function getUserTweets(string $userId, int $limit = self::DEFAULT_LIMIT, int $page = 1): array
@@ -77,6 +77,14 @@ final readonly class MySQLTweetRepository implements TweetRepository
 
         return $this->entityManager
             ->getRepository(Tweet::class)
-            ->findBy(['userId' => $binaryUserId], ['createdAt' => 'DESC'], $limit, $offset);
+            ->findBy(
+                [
+                    'userId' => $binaryUserId,
+                    'moderationStatus' => Tweet::MODERATION_APPROVED
+                ],
+                ['createdAt' => 'DESC'],
+                $limit,
+                $offset
+            );
     }
 }
