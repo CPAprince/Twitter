@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Twitter\Tweet\Application\Moderation;
 
+use InvalidArgumentException;
+
 enum ModerationMode: string
 {
     case LIVE = 'live';
@@ -16,25 +18,22 @@ enum ModerationMode: string
             'live' => self::LIVE,
             'demo' => self::DEMO,
             'bypass' => self::BYPASS,
-            default => throw new \InvalidArgumentException(sprintf(
-                'Unsupported moderation mode "%s". Allowed values: live, demo, bypass.',
-                $value
-            )),
+            default => throw new InvalidArgumentException(sprintf('Unsupported moderation mode "%s". Allowed values: live, demo, bypass.', $value)),
         };
     }
 
     public function isLive(): bool
     {
-        return $this === self::LIVE;
+        return self::LIVE === $this;
     }
 
     public function isDemo(): bool
     {
-        return $this === self::DEMO;
+        return self::DEMO === $this;
     }
 
     public function isBypass(): bool
     {
-        return $this === self::BYPASS;
+        return self::BYPASS === $this;
     }
 }

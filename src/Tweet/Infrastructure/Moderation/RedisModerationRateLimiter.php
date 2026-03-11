@@ -4,9 +4,14 @@ declare(strict_types=1);
 
 namespace Twitter\Tweet\Infrastructure\Moderation;
 
+use DateTimeImmutable;
+use DateTimeZone;
+use InvalidArgumentException;
+use Redis;
+use RuntimeException;
 use Twitter\Tweet\Application\Moderation\ModerationConfig;
-use Twitter\Tweet\Application\Moderation\ModerationRateLimitResult;
 use Twitter\Tweet\Application\Moderation\ModerationRateLimiterInterface;
+use Twitter\Tweet\Application\Moderation\ModerationRateLimitResult;
 
 final readonly class RedisModerationRateLimiter implements ModerationRateLimiterInterface
 {
@@ -60,15 +65,14 @@ return {1, 'allowed'}
 LUA;
 
     public function __construct(
-        private \Redis $redis,
+        private Redis $redis,
         private ModerationConfig $config,
-    ) {
-    }
+    ) {}
 
     public function reserveCapacity(int $batchEstimatedTokens): ModerationRateLimitResult
     {
         if ($batchEstimatedTokens <= 0) {
-            throw new \InvalidArgumentException('Batch estimated tokens must be greater than 0.');
+            throw new InvalidArgumentException('Batch estimated tokens must be greater than 0.');
         }
 
         [$reqMinuteKey, $tokMinuteKey, $reqDayKey] = $this->buildKeys();
@@ -95,10 +99,10 @@ LUA;
         );
 
         if (!is_array($result) || count($result) < 2) {
-            throw new \RuntimeException('Unexpected Redis rate limiter response.');
+            throw new RuntimeException('Unexpected Redis rate limiter response.');
         }
 
-        $allowed = (int) $result[0] === 1;
+        $allowed = 1 === (int) $result[0];
         $reason = (string) $result[1];
 
         if ($allowed) {
@@ -113,21 +117,21 @@ LUA;
      */
     private function buildKeys(): array
     {
-        $now = new \DateTimeImmutable('now', new \DateTimeZone('UTC'));
+        $now = new DateTimeImmutable('now', new DateTimeZone('UTC'));
 
         $minuteSuffix = $now->format('YmdHi');
         $daySuffix = $now->format('Ymd');
 
         return [
-            $this->config->redisRateReqPrefix . $minuteSuffix,
-            $this->config->redisRateTokPrefix . $minuteSuffix,
-            $this->config->redisRateReqDayPrefix . $daySuffix,
+            $this->config->redisRateReqPrefix.$minuteSuffix,
+            $this->config->redisRateTokPrefix.$minuteSuffix,
+            $this->config->redisRateReqDayPrefix.$daySuffix,
         ];
     }
 
     private function secondsUntilNextMinute(): int
     {
-        $now = new \DateTimeImmutable('now', new \DateTimeZone('UTC'));
+        $now = new DateTimeImmutable('now', new DateTimeZone('UTC'));
         $nextMinute = $now
             ->setTime(
                 (int) $now->format('H'),
@@ -141,7 +145,7 @@ LUA;
 
     private function secondsUntilNextDay(): int
     {
-        $now = new \DateTimeImmutable('now', new \DateTimeZone('UTC'));
+        $now = new DateTimeImmutable('now', new DateTimeZone('UTC'));
         $nextDay = $now->modify('tomorrow')->setTime(0, 0, 0);
 
         return max(1, $nextDay->getTimestamp() - $now->getTimestamp());

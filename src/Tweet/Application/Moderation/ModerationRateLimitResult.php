@@ -9,8 +9,7 @@ final readonly class ModerationRateLimitResult
     public function __construct(
         public bool $allowed,
         public ?string $reason = null,
-    ) {
-    }
+    ) {}
 
     public static function allowed(): self
     {

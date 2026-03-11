@@ -26,8 +26,7 @@ final class Tweet
         private string $content,
         private readonly DateTimeImmutable $createdAt = new DateTimeImmutable(),
         private DateTimeImmutable $updatedAt = new DateTimeImmutable(),
-    ) {
-    }
+    ) {}
 
     public static function create(string $userId, string $content): self
     {

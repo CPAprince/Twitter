@@ -80,7 +80,7 @@ final readonly class MySQLTweetRepository implements TweetRepository
             ->findBy(
                 [
                     'userId' => $binaryUserId,
-                    'moderationStatus' => Tweet::MODERATION_APPROVED
+                    'moderationStatus' => Tweet::MODERATION_APPROVED,
                 ],
                 ['createdAt' => 'DESC'],
                 $limit,

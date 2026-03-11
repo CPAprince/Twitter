@@ -30,7 +30,7 @@ final class UpdateTweetCommandHandlerTest extends TestCase
     {
         $this->tweetRepository = $this->createMock(TweetRepository::class);
         $this->moderationQueue = $this->createMock(ModerationQueueInterface::class);
-        $this->handler = new UpdateTweetCommandHandler($this->tweetRepository,$this->moderationQueue);
+        $this->handler = new UpdateTweetCommandHandler($this->tweetRepository, $this->moderationQueue);
     }
 
     /**

@@ -6,6 +6,7 @@ namespace Twitter\Tweet\Infrastructure\Moderation;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\ParameterType;
+use RuntimeException;
 use Twitter\Shared\Infrastructure\Persistence\Doctrine\UuidBinaryConverter;
 use Twitter\Tweet\Application\Moderation\ModerationConfig;
 use Twitter\Tweet\Application\Moderation\ModerationTweetCandidate;
@@ -16,12 +17,11 @@ final readonly class MySqlModerationTweetSource implements ModerationTweetSource
     public function __construct(
         private Connection $connection,
         private ModerationConfig $config,
-    ) {
-    }
+    ) {}
 
     public function findByIds(array $tweetIds): array
     {
-        if ($tweetIds === []) {
+        if ([] === $tweetIds) {
             return [];
         }
 
@@ -46,7 +46,7 @@ final readonly class MySqlModerationTweetSource implements ModerationTweetSource
 
         $rows = $this->connection->fetchAllAssociative($sql, $params, $types);
 
-        if ($rows === []) {
+        if ([] === $rows) {
             return [];
         }
 
@@ -56,8 +56,8 @@ final readonly class MySqlModerationTweetSource implements ModerationTweetSource
             $tweetId = (string) $row['id'];
             $content = (string) $row['content'];
 
-            if ($tweetId === '' || $content === '') {
-                throw new \RuntimeException('Invalid moderation tweet row fetched from database.');
+            if ('' === $tweetId || '' === $content) {
+                throw new RuntimeException('Invalid moderation tweet row fetched from database.');
             }
 
             $candidates[] = new ModerationTweetCandidate(
@@ -71,7 +71,7 @@ final readonly class MySqlModerationTweetSource implements ModerationTweetSource
 
     /**
      * @param ModerationTweetCandidate[] $candidates
-     * @param string[] $requestedIds
+     * @param string[]                   $requestedIds
      *
      * @return ModerationTweetCandidate[]
      */

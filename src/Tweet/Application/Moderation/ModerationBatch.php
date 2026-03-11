@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Twitter\Tweet\Application\Moderation;
 
+use InvalidArgumentException;
+
 final readonly class ModerationBatch
 {
     /**
@@ -14,17 +16,11 @@ final readonly class ModerationBatch
         public int $estimatedTokens,
     ) {
         if ($this->estimatedTokens <= 0) {
-            throw new \InvalidArgumentException('estimatedTokens must be greater than 0.');
+            throw new InvalidArgumentException('estimatedTokens must be greater than 0.');
         }
 
-        if ($this->items === []) {
-            throw new \InvalidArgumentException('Batch items must not be empty.');
-        }
-
-        foreach ($this->items as $item) {
-            if (!$item instanceof ModerationBatchItem) {
-                throw new \InvalidArgumentException('All items must be instances of ModerationBatchItem.');
-            }
+        if ([] === $this->items) {
+            throw new InvalidArgumentException('Batch items must not be empty.');
         }
     }
 

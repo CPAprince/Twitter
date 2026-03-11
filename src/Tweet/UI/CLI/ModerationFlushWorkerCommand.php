@@ -8,6 +8,7 @@ use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Throwable;
 use Twitter\Tweet\Application\Moderation\ModerationBatchBuilder;
 use Twitter\Tweet\Application\Moderation\ModerationBatchItem;
 use Twitter\Tweet\Application\Moderation\ModerationConfig;
@@ -15,9 +16,9 @@ use Twitter\Tweet\Application\Moderation\ModerationQueueInterface;
 use Twitter\Tweet\Application\Moderation\ModerationRateLimiterInterface;
 use Twitter\Tweet\Application\Moderation\ModerationStatusUpdaterInterface;
 use Twitter\Tweet\Application\Moderation\ModerationTweetSourceInterface;
+use Twitter\Tweet\Application\Moderation\ModerationWorkerLockInterface;
 use Twitter\Tweet\Application\Moderation\TweetModerationProviderInterface;
 use Twitter\Tweet\Application\Moderation\TweetTextTokenEstimator;
-use Twitter\Tweet\Application\Moderation\ModerationWorkerLockInterface;
 
 #[AsCommand(
     name: 'app:moderation:flush-worker',
@@ -63,7 +64,7 @@ final class ModerationFlushWorkerCommand extends Command
 
                 try {
                     $this->tick($output);
-                } catch (\Throwable $e) {
+                } catch (Throwable $e) {
                     $output->writeln(sprintf(
                         '<error>Moderation worker error: %s</error>',
                         $e->getMessage()
@@ -81,14 +82,13 @@ final class ModerationFlushWorkerCommand extends Command
     {
         $queuedIds = $this->queue->peek($this->config->workerMaxFetchItems);
 
-        if ($queuedIds === []) {
+        if ([] === $queuedIds) {
             return;
         }
 
         $candidates = $this->tweetSource->findByIds($queuedIds);
 
-        if ($candidates === []) {
-
+        if ([] === $candidates) {
             $this->queue->remove($queuedIds);
 
             $output->writeln(sprintf(
@@ -111,7 +111,7 @@ final class ModerationFlushWorkerCommand extends Command
 
         $batch = $this->batchBuilder->build($batchItems);
 
-        if ($batch === null) {
+        if (null === $batch) {
             return;
         }
 

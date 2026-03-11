@@ -8,15 +8,14 @@ final readonly class ModerationBatchBuilder
 {
     public function __construct(
         private ModerationConfig $config,
-    ) {
-    }
+    ) {}
 
     /**
      * @param ModerationBatchItem[] $items
      */
     public function build(array $items): ?ModerationBatch
     {
-        if ($items === []) {
+        if ([] === $items) {
             return null;
         }
 
@@ -24,10 +23,6 @@ final readonly class ModerationBatchBuilder
         $totalEstimatedTokens = 0;
 
         foreach ($items as $item) {
-            if (!$item instanceof ModerationBatchItem) {
-                throw new \InvalidArgumentException('All items must be instances of ModerationBatchItem.');
-            }
-
             if (count($batchItems) >= $this->config->batchMaxItems) {
                 break;
             }
@@ -35,8 +30,7 @@ final readonly class ModerationBatchBuilder
             $nextTotal = $totalEstimatedTokens + $item->estimatedTokens;
 
             if ($nextTotal > $this->config->batchHardTokenCap) {
-                if ($batchItems === []) {
-
+                if ([] === $batchItems) {
                     $batchItems[] = $item;
                     $totalEstimatedTokens = $item->estimatedTokens;
                 }
@@ -44,7 +38,7 @@ final readonly class ModerationBatchBuilder
                 break;
             }
 
-            if ($batchItems !== [] && $nextTotal > $this->config->batchSoftTokenCap) {
+            if ([] !== $batchItems && $nextTotal > $this->config->batchSoftTokenCap) {
                 break;
             }
 
@@ -52,7 +46,7 @@ final readonly class ModerationBatchBuilder
             $totalEstimatedTokens = $nextTotal;
         }
 
-        if ($batchItems === []) {
+        if ([] === $batchItems) {
             return null;
         }
 

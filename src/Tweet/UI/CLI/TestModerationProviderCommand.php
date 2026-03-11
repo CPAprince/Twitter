@@ -8,6 +8,7 @@ use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Throwable;
 use Twitter\Tweet\Application\Moderation\ModerationBatchItem;
 use Twitter\Tweet\Application\Moderation\ModerationConfig;
 use Twitter\Tweet\Application\Moderation\TweetModerationProviderInterface;
@@ -27,8 +28,8 @@ final class TestModerationProviderCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $output->writeln('Mode: ' . $this->config->mode->value);
-        $output->writeln('Model: ' . $this->config->model);
+        $output->writeln('Mode: '.$this->config->mode->value);
+        $output->writeln('Model: '.$this->config->model);
 
         $items = [
             new ModerationBatchItem(
@@ -51,11 +52,11 @@ final class TestModerationProviderCommand extends Command
                     '%s => %s%s',
                     $decision->tweetId,
                     $decision->approved ? 'APPROVED' : 'REJECTED',
-                    $decision->reason !== null ? ' (' . $decision->reason . ')' : ''
+                    null !== $decision->reason ? ' ('.$decision->reason.')' : ''
                 ));
             }
-        } catch (\Throwable $e) {
-            $output->writeln('<error>' . $e->getMessage() . '</error>');
+        } catch (Throwable $e) {
+            $output->writeln('<error>'.$e->getMessage().'</error>');
 
             return Command::FAILURE;
         }

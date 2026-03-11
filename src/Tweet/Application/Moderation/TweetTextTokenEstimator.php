@@ -11,7 +11,8 @@ final class TweetTextTokenEstimator
     public function estimate(string $text): int
     {
         $length = mb_strlen(trim($text));
-        return (int) ceil(max(1,$length) / self::CHARS_PER_TOKEN_ESTIMATE);
+
+        return (int) ceil(max(1, $length) / self::CHARS_PER_TOKEN_ESTIMATE);
     }
 
     /**

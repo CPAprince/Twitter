@@ -169,18 +169,6 @@ services:
         class: Prometheus\CollectorRegistry
         arguments:
             - '@Prometheus\Storage\InMemory'
-    
-    Twitter\Tweet\Domain\Tweet\ModerationServiceInterface:
-        alias: Twitter\Tweet\Infrastructure\AI\OpenAIModerationService
-
-    Twitter\Tweet\Infrastructure\AI\OpenAIModerationService:
-        arguments:
-            $apiKey: '%env(OPENAI_API_KEY)%'
-
-    Twitter\Tweet\UI\CLI\TestModerationCommand:
-        tags: [ 'console.command' ]
-        arguments:
-            $moderation: '@Twitter\Tweet\Infrastructure\AI\OpenAIModerationService'
 
     Twitter\Tweet\Application\Moderation\:
         resource: '../src/Tweet/Application/Moderation/'

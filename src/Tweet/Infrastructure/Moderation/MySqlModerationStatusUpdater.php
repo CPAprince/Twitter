@@ -15,8 +15,7 @@ final readonly class MySqlModerationStatusUpdater implements ModerationStatusUpd
     public function __construct(
         private Connection $connection,
         private ModerationConfig $config,
-    ) {
-    }
+    ) {}
 
     public function markApproved(array $tweetIds): void
     {
@@ -33,7 +32,7 @@ final readonly class MySqlModerationStatusUpdater implements ModerationStatusUpd
      */
     private function updateStatus(array $tweetIds, int $targetStatus): void
     {
-        if ($tweetIds === []) {
+        if ([] === $tweetIds) {
             return;
         }
 

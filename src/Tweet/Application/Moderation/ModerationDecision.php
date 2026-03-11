@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Twitter\Tweet\Application\Moderation;
 
+use InvalidArgumentException;
+
 final readonly class ModerationDecision
 {
     public function __construct(
@@ -12,8 +14,8 @@ final readonly class ModerationDecision
         public ?string $reason = null,
         public array $categories = [],
     ) {
-        if ($this->tweetId === '') {
-            throw new \InvalidArgumentException('tweetId must not be empty.');
+        if ('' === $this->tweetId) {
+            throw new InvalidArgumentException('tweetId must not be empty.');
         }
     }
 

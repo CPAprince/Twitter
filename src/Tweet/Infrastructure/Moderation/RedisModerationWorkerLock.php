@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Twitter\Tweet\Infrastructure\Moderation;
 
+use Redis;
 use Twitter\Tweet\Application\Moderation\ModerationConfig;
 use Twitter\Tweet\Application\Moderation\ModerationWorkerLockInterface;
 
@@ -12,7 +13,7 @@ final readonly class RedisModerationWorkerLock implements ModerationWorkerLockIn
     private string $token;
 
     public function __construct(
-        private \Redis $redis,
+        private Redis $redis,
         private ModerationConfig $config,
     ) {
         $this->token = bin2hex(random_bytes(16));

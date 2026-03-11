@@ -4,23 +4,24 @@ declare(strict_types=1);
 
 namespace Twitter\Tweet\Infrastructure\Moderation;
 
+use InvalidArgumentException;
+use Redis;
 use Twitter\Tweet\Application\Moderation\ModerationConfig;
 use Twitter\Tweet\Application\Moderation\ModerationQueueInterface;
 
 final readonly class RedisModerationQueue implements ModerationQueueInterface
 {
     public function __construct(
-        private \Redis $redis,
+        private Redis $redis,
         private ModerationConfig $config,
-    ) {
-    }
+    ) {}
 
     public function enqueue(string $tweetId): void
     {
         $tweetId = trim($tweetId);
 
-        if ($tweetId === '') {
-            throw new \InvalidArgumentException('tweetId must not be empty.');
+        if ('' === $tweetId) {
+            throw new InvalidArgumentException('tweetId must not be empty.');
         }
 
         $this->redis->rPush($this->config->redisQueueKey, $tweetId);
@@ -29,7 +30,7 @@ final readonly class RedisModerationQueue implements ModerationQueueInterface
     public function peek(int $limit): array
     {
         if ($limit <= 0) {
-            throw new \InvalidArgumentException('limit must be greater than 0.');
+            throw new InvalidArgumentException('limit must be greater than 0.');
         }
 
         $items = $this->redis->lRange(
@@ -47,32 +48,29 @@ final readonly class RedisModerationQueue implements ModerationQueueInterface
                 static fn (mixed $item): string => is_string($item) ? trim($item) : '',
                 $items
             ),
-            static fn (string $item): bool => $item !== ''
+            static fn (string $item): bool => '' !== $item
         ));
     }
 
     public function remove(array $tweetIds): void
     {
-        if ($tweetIds === []) {
+        if ([] === $tweetIds) {
             return;
         }
 
         $queueKey = $this->config->redisQueueKey;
         $queueItems = $this->redis->lRange($queueKey, 0, -1);
 
-        if (!is_array($queueItems) || $queueItems === []) {
+        if (!is_array($queueItems) || [] === $queueItems) {
             return;
         }
 
         $tweetIdsToRemove = array_values(array_filter(
-            array_map(
-                static fn (mixed $item): string => is_string($item) ? trim($item) : '',
-                $tweetIds
-            ),
-            static fn (string $item): bool => $item !== ''
+            $tweetIds,
+            static fn (string $item): bool => '' !== trim($item)
         ));
 
-        if ($tweetIdsToRemove === []) {
+        if ([] === $tweetIdsToRemove) {
             return;
         }
 
@@ -88,12 +86,12 @@ final readonly class RedisModerationQueue implements ModerationQueueInterface
         foreach ($queueItems as $item) {
             $value = is_string($item) ? trim($item) : '';
 
-            if ($value === '') {
+            if ('' === $value) {
                 continue;
             }
 
-            if (isset($removeSet[$value]) && $removedCounts[$value] === 0) {
-                $removedCounts[$value]++;
+            if (isset($removeSet[$value]) && 0 === $removedCounts[$value]) {
+                ++$removedCounts[$value];
                 continue;
             }
 
@@ -104,7 +102,7 @@ final readonly class RedisModerationQueue implements ModerationQueueInterface
 
         $this->redis->del($queueKey);
 
-        if ($remaining !== []) {
+        if ([] !== $remaining) {
             $this->redis->rPush($queueKey, ...$remaining);
         }
 

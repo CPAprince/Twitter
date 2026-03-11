@@ -4,12 +4,11 @@ declare(strict_types=1);
 
 namespace Twitter\Tweet\Application\UseCase\GetTweet;
 
-use http\Env\Response;
 use Twitter\Profile\Domain\Profile\Model\ProfileRepository;
 use Twitter\Tweet\Application\UseCase\Shared\TweetResponse;
 use Twitter\Tweet\Domain\Tweet\Exception\TweetNotFoundException;
-use Twitter\Tweet\Domain\Tweet\Model\TweetRepository;
 use Twitter\Tweet\Domain\Tweet\Model\Tweet;
+use Twitter\Tweet\Domain\Tweet\Model\TweetRepository;
 
 final readonly class GetTweetCommandHandler
 {
@@ -22,7 +21,7 @@ final readonly class GetTweetCommandHandler
     {
         $tweet = $this->tweetRepository->getById($command->tweetId);
 
-        if($tweet->moderationStatus() !== Tweet::MODERATION_APPROVED) {
+        if (Tweet::MODERATION_APPROVED !== $tweet->moderationStatus()) {
             throw new TweetNotFoundException($tweet->id());
         }
 

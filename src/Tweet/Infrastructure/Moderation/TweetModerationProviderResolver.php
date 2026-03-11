@@ -14,8 +14,7 @@ final readonly class TweetModerationProviderResolver
         private DemoTweetModerationProvider $demoProvider,
         private BypassTweetModerationProvider $bypassProvider,
         private OpenAiTweetModerationProvider $openAiProvider,
-    ) {
-    }
+    ) {}
 
     public function resolve(): TweetModerationProviderInterface
     {

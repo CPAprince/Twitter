@@ -9,5 +9,5 @@ final readonly class ModerationTweetCandidate
     public function __construct(
         public string $tweetId,
         public string $text,
-    ) { }
+    ) {}
 }

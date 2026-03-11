@@ -181,7 +181,7 @@ final class MySQLTweetRepositoryTest extends TestCase
             ->method('findBy')
             ->with([
                 'userId' => $expectedBinaryUserId,
-                'moderationStatus' => Tweet::MODERATION_APPROVED
+                'moderationStatus' => Tweet::MODERATION_APPROVED,
             ],
                 ['createdAt' => 'DESC'], 10, 0)
             ->willReturn($expected);

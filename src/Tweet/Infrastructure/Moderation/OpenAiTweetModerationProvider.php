@@ -6,6 +6,7 @@ namespace Twitter\Tweet\Infrastructure\Moderation;
 
 use OpenAI;
 use OpenAI\Client;
+use RuntimeException;
 use Twitter\Tweet\Application\Moderation\ModerationBatchItem;
 use Twitter\Tweet\Application\Moderation\ModerationConfig;
 use Twitter\Tweet\Application\Moderation\ModerationDecision;
@@ -19,7 +20,7 @@ final class OpenAiTweetModerationProvider implements TweetModerationProviderInte
         private readonly ModerationConfig $config,
     ) {
         if (!$this->config->hasApiKey()) {
-            throw new \RuntimeException('OPENAI_API_KEY is not configured.');
+            throw new RuntimeException('OPENAI_API_KEY is not configured.');
         }
 
         $this->client = OpenAI::client($this->config->apiKey);
@@ -27,13 +28,7 @@ final class OpenAiTweetModerationProvider implements TweetModerationProviderInte
 
     public function moderateBatch(array $items): array
     {
-        foreach ($items as $item) {
-            if (!$item instanceof ModerationBatchItem) {
-                throw new \InvalidArgumentException('All items must be instances of ModerationBatchItem.');
-            }
-        }
-
-        if ($items === []) {
+        if ([] === $items) {
             return [];
         }
 
@@ -52,7 +47,6 @@ final class OpenAiTweetModerationProvider implements TweetModerationProviderInte
         $decisions = [];
 
         foreach ($items as $index => $item) {
-
             $result = $results[$index];
 
             $flagged = $result->flagged ?? false;

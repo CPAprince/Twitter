@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Twitter\Tweet\Infrastructure\Moderation;
 
-use Twitter\Tweet\Application\Moderation\ModerationBatchItem;
 use Twitter\Tweet\Application\Moderation\ModerationDecision;
 use Twitter\Tweet\Application\Moderation\TweetModerationProviderInterface;
 
@@ -15,10 +14,6 @@ final class BypassTweetModerationProvider implements TweetModerationProviderInte
         $decisions = [];
 
         foreach ($items as $item) {
-            if (!$item instanceof ModerationBatchItem) {
-                throw new \InvalidArgumentException('All items must be instances of ModerationBatchItem.');
-            }
-
             $decisions[] = new ModerationDecision(
                 tweetId: $item->tweetId,
                 approved: true,

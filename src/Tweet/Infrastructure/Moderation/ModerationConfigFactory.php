@@ -43,8 +43,7 @@ final readonly class ModerationConfigFactory
         private int $statusPending,
         private int $statusApproved,
         private int $statusRejected,
-    ) {
-    }
+    ) {}
 
     public function create(): ModerationConfig
     {
@@ -87,12 +86,12 @@ final readonly class ModerationConfigFactory
 
     private function normalizeApiKey(?string $apiKey): ?string
     {
-        if ($apiKey === null) {
+        if (null === $apiKey) {
             return null;
         }
 
         $apiKey = trim($apiKey);
 
-        return $apiKey === '' ? null : $apiKey;
+        return '' === $apiKey ? null : $apiKey;
     }
 }
