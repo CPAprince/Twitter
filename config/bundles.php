@@ -7,11 +7,13 @@ use Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle;
 use Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle;
 use Gesdinet\JWTRefreshTokenBundle\GesdinetJWTRefreshTokenBundle;
 use Lexik\Bundle\JWTAuthenticationBundle\LexikJWTAuthenticationBundle;
+use Symfony\Bundle\DebugBundle\DebugBundle;
 use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
 use Symfony\Bundle\MercureBundle\MercureBundle;
 use Symfony\Bundle\MonologBundle\MonologBundle;
 use Symfony\Bundle\SecurityBundle\SecurityBundle;
 use Symfony\Bundle\TwigBundle\TwigBundle;
+use Symfony\Bundle\WebProfilerBundle\WebProfilerBundle;
 
 return [
     FrameworkBundle::class => ['all' => true],
@@ -24,4 +26,6 @@ return [
     TwigBundle::class => ['all' => true],
     GesdinetJWTRefreshTokenBundle::class => ['all' => true],
     MercureBundle::class => ['all' => true],
+    WebProfilerBundle::class => ['dev' => true, 'test' => true],
+    DebugBundle::class => ['dev' => true],
 ];
