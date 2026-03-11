@@ -160,6 +160,12 @@ services:
             $cacheProfiles: '@cache.profiles'
             $ttl: '%cache_ttl_profile%'
 
+    Twitter\Profile\Infrastructure\Cache\Decorator\UpdateProfileCommandHandlerDecorator:
+        decorates: Twitter\Profile\Application\UseCase\UpdateProfile\UpdateProfileCommandHandlerInterface
+        arguments:
+            $inner: '@.inner'
+            $cacheProfiles: '@cache.profiles'
+
     Twitter\Tweet\Application\Message\UpdateTweetLikesCountHandler: ~
 
     Twitter\Tweet\Infrastructure\Service\TweetLikesCountUpdaterInterface:
