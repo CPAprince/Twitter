@@ -78,6 +78,37 @@ final class ModerationFlushWorkerCommand extends Command
         }
     }
 
+    private function toBatchItems(array $candidates): array
+    {
+        $items = [];
+
+        foreach ($candidates as $candidate) {
+            $items[] = new ModerationBatchItem(
+                tweetId: $candidate->tweetId,
+                text: $candidate->text,
+                estimatedTokens: $this->tokenEstimator->estimate($candidate->text),
+            );
+        }
+
+        return $items;
+    }
+
+    private function splitDecisionIds(array $decisions)
+    {
+        $approvedIds = [];
+        $rejectedIds = [];
+
+        foreach ($decisions as $decision) {
+            if ($decision->approved) {
+                $approvedIds[] = $decision->tweetId;
+            } else {
+                $rejectedIds[] = $decision->tweetId;
+            }
+        }
+
+        return [$approvedIds, $rejectedIds];
+    }
+
     private function tick(OutputInterface $output): void
     {
         $queuedIds = $this->queue->peek($this->config->workerMaxFetchItems);
@@ -99,16 +130,7 @@ final class ModerationFlushWorkerCommand extends Command
             return;
         }
 
-        $batchItems = [];
-
-        foreach ($candidates as $candidate) {
-            $batchItems[] = new ModerationBatchItem(
-                tweetId: $candidate->tweetId,
-                text: $candidate->text,
-                estimatedTokens: $this->tokenEstimator->estimate($candidate->text),
-            );
-        }
-
+        $batchItems = $this->toBatchItems($candidates);
         $batch = $this->batchBuilder->build($batchItems);
 
         if (null === $batch) {
@@ -130,16 +152,7 @@ final class ModerationFlushWorkerCommand extends Command
 
         $decisions = $this->provider->moderateBatch($batch->items);
 
-        $approvedIds = [];
-        $rejectedIds = [];
-
-        foreach ($decisions as $decision) {
-            if ($decision->approved) {
-                $approvedIds[] = $decision->tweetId;
-            } else {
-                $rejectedIds[] = $decision->tweetId;
-            }
-        }
+        [$approvedIds, $rejectedIds] = $this->splitDecisionIds($decisions);
 
         $this->statusUpdater->markApproved($approvedIds);
         $this->statusUpdater->markRejected($rejectedIds);
