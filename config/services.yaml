@@ -153,6 +153,12 @@ services:
             $cacheTweets: '@cache.tweets'
             $ttl: '%cache_ttl_feed_user%'
 
+    Twitter\Tweet\Infrastructure\Cache\Decorator\UpdateTweetCommandHandlerDecorator:
+        decorates: Twitter\Tweet\Application\UseCase\UpdateTweet\UpdateTweetCommandHandlerInterface
+        arguments:
+            $inner: '@.inner'
+            $cacheTweets: '@cache.tweets'
+
     Twitter\Profile\Infrastructure\Cache\Proxy\GetProfileQueryHandlerProxy:
         decorates: Twitter\Profile\Application\UseCase\GetProfile\GetProfileQueryHandlerInterface
         arguments:
