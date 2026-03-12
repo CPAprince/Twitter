@@ -87,6 +87,7 @@ final class ModerationFlushWorkerCommand extends Command
                 tweetId: $candidate->tweetId,
                 text: $candidate->text,
                 estimatedTokens: $this->tokenEstimator->estimate($candidate->text),
+                moderationVersion: $candidate->moderationVersion,
             );
         }
 
@@ -154,10 +155,9 @@ final class ModerationFlushWorkerCommand extends Command
 
         [$approvedIds, $rejectedIds] = $this->splitDecisionIds($decisions);
 
-        $this->statusUpdater->markApproved($approvedIds);
-        $this->statusUpdater->markRejected($rejectedIds);
+        $this->statusUpdater->apply($decisions);
 
-        $processedIds = $batch->tweetIds();
+        $processedIds = array_merge($approvedIds, $rejectedIds);
         $this->queue->remove($processedIds);
 
         $output->writeln(sprintf(

@@ -26,9 +26,6 @@ final readonly class ModerationConfigFactory
         private int $limitRpd,
 
         private int $demoApprovePercent,
-        private bool $demoSetModeratedAt,
-
-        private bool $bypassSetModeratedAt,
 
         private string $redisQueueKey,
         private string $redisFlushLockKey,
@@ -39,10 +36,6 @@ final readonly class ModerationConfigFactory
         private int $workerIdleSleepMs,
         private int $workerLockTtlSeconds,
         private int $workerMaxFetchItems,
-
-        private int $statusPending,
-        private int $statusApproved,
-        private int $statusRejected,
     ) {}
 
     public function create(): ModerationConfig
@@ -64,9 +57,6 @@ final readonly class ModerationConfigFactory
             limitRpd: $this->limitRpd,
 
             demoApprovePercent: $this->demoApprovePercent,
-            demoSetModeratedAt: $this->demoSetModeratedAt,
-
-            bypassSetModeratedAt: $this->bypassSetModeratedAt,
 
             redisQueueKey: $this->redisQueueKey,
             redisFlushLockKey: $this->redisFlushLockKey,
@@ -77,10 +67,6 @@ final readonly class ModerationConfigFactory
             workerIdleSleepMs: $this->workerIdleSleepMs,
             workerLockTtlSeconds: $this->workerLockTtlSeconds,
             workerMaxFetchItems: $this->workerMaxFetchItems,
-
-            statusPending: $this->statusPending,
-            statusApproved: $this->statusApproved,
-            statusRejected: $this->statusRejected,
         );
     }
 

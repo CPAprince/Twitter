@@ -45,7 +45,8 @@ Open  https://localhost
 
 Set moderation mode in *.ENV* default is ***demo*** mode where 95% of tweets automatically approve
 
-To get real OpenAI moderation functional set ***live*** mode and OPEN_API_KEY
+To get real OpenAI moderation functional set ***
+live*** mode and OPEN_API_KEY
 
 Moderation Worker
 ```

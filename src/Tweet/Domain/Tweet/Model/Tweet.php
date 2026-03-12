@@ -13,6 +13,7 @@ final class Tweet
     public const int MODERATION_PENDING = 0;
     public const int MODERATION_APPROVED = 1;
     public const int MODERATION_REJECTED = 2;
+    private int $moderationVersion = 1;
 
     private int $likesCount = 0;
 
@@ -69,6 +70,7 @@ final class Tweet
 
         $this->content = $content;
         $this->updatedAt = new DateTimeImmutable();
+        ++$this->moderationVersion;
         $this->resetModeration();
 
         return true;
@@ -127,5 +129,10 @@ final class Tweet
     {
         $this->moderationStatus = self::MODERATION_REJECTED;
         $this->moderatedAt = new DateTimeImmutable();
+    }
+
+    public function moderationVersion(): int
+    {
+        return $this->moderationVersion;
     }
 }

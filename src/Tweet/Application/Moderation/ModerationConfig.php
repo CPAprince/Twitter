@@ -25,9 +25,6 @@ final readonly class ModerationConfig
         public int $limitRpd,
 
         public int $demoApprovePercent,
-        public bool $demoSetModeratedAt,
-
-        public bool $bypassSetModeratedAt,
 
         public string $redisQueueKey,
         public string $redisFlushLockKey,
@@ -38,10 +35,6 @@ final readonly class ModerationConfig
         public int $workerIdleSleepMs,
         public int $workerLockTtlSeconds,
         public int $workerMaxFetchItems,
-
-        public int $statusPending,
-        public int $statusApproved,
-        public int $statusRejected,
     ) {
         $this->assertValid();
     }
@@ -98,13 +91,6 @@ final readonly class ModerationConfig
 
         if ($this->workerMaxFetchItems <= 0) {
             throw new InvalidArgumentException('moderation.worker.max_fetch_items must be greater than 0.');
-        }
-
-        if ($this->statusPending === $this->statusApproved
-            || $this->statusPending === $this->statusRejected
-            || $this->statusApproved === $this->statusRejected
-        ) {
-            throw new InvalidArgumentException('Moderation statuses must be unique.');
         }
     }
 

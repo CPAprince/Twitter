@@ -17,6 +17,7 @@ final class BypassTweetModerationProvider implements TweetModerationProviderInte
             $decisions[] = new ModerationDecision(
                 tweetId: $item->tweetId,
                 approved: true,
+                moderationVersion: $item->moderationVersion,
                 reason: null,
                 categories: [],
             );

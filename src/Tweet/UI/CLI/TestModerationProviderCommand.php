@@ -35,12 +35,14 @@ final class TestModerationProviderCommand extends Command
             new ModerationBatchItem(
                 tweetId: 'demo-tweet-1',
                 text: 'GLAD TO SEE YOU! Keep going! Be wise!',
-                estimatedTokens: 3,
+                moderationVersion: 1,
+                estimatedTokens: 9,
             ),
             new ModerationBatchItem(
                 tweetId: 'demo-tweet-2',
                 text: 'I will kill you little m@theF@CK@!',
-                estimatedTokens: 5,
+                moderationVersion: 1,
+                estimatedTokens: 7,
             ),
         ];
 

@@ -7,12 +7,7 @@ namespace Twitter\Tweet\Application\Moderation;
 interface ModerationStatusUpdaterInterface
 {
     /**
-     * @param string[] $tweetIds
+     * @param list<ModerationDecision> $decisions
      */
-    public function markApproved(array $tweetIds): void;
-
-    /**
-     * @param string[] $tweetIds
-     */
-    public function markRejected(array $tweetIds): void;
+    public function apply(array $decisions): void;
 }

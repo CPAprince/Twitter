@@ -19,7 +19,8 @@ final class Version20260306121000 extends AbstractMigration
         $this->addSql('
             ALTER TABLE tweets
             ADD moderation_status TINYINT UNSIGNED NOT NULL DEFAULT 0,
-            ADD moderated_at DATETIME DEFAULT NULL
+            ADD moderated_at DATETIME DEFAULT NULL,
+            ADD moderation_version INT UNSIGNED NOT NULL DEFAULT 1
         ');
 
         // Mark tweets in table as APPROVED
@@ -46,7 +47,8 @@ final class Version20260306121000 extends AbstractMigration
         $this->addSql('
             ALTER TABLE tweets
             DROP moderation_status,
-            DROP moderated_at
+            DROP moderated_at,
+            DROP moderation_version
         ');
     }
 }

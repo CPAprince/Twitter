@@ -6,17 +6,15 @@ namespace Twitter\Tweet\Infrastructure\Moderation;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\ParameterType;
-use RuntimeException;
 use Twitter\Shared\Infrastructure\Persistence\Doctrine\UuidBinaryConverter;
-use Twitter\Tweet\Application\Moderation\ModerationConfig;
 use Twitter\Tweet\Application\Moderation\ModerationTweetCandidate;
 use Twitter\Tweet\Application\Moderation\ModerationTweetSourceInterface;
+use Twitter\Tweet\Domain\Tweet\Model\Tweet;
 
 final readonly class MySqlModerationTweetSource implements ModerationTweetSourceInterface
 {
     public function __construct(
         private Connection $connection,
-        private ModerationConfig $config,
     ) {}
 
     public function findByIds(array $tweetIds): array
@@ -33,14 +31,14 @@ final readonly class MySqlModerationTweetSource implements ModerationTweetSource
         $placeholders = implode(', ', array_fill(0, count($binaryIds), '?'));
 
         $sql = sprintf(
-            'SELECT BIN_TO_UUID(id) AS id, content
+            'SELECT BIN_TO_UUID(id) AS id, content, moderation_version
              FROM tweets
              WHERE id IN (%s)
                AND moderation_status = ?',
             $placeholders
         );
 
-        $params = [...$binaryIds, $this->config->statusPending];
+        $params = [...$binaryIds, Tweet::MODERATION_PENDING];
         $types = array_fill(0, count($binaryIds), ParameterType::BINARY);
         $types[] = ParameterType::INTEGER;
 
@@ -55,14 +53,12 @@ final readonly class MySqlModerationTweetSource implements ModerationTweetSource
         foreach ($rows as $row) {
             $tweetId = (string) $row['id'];
             $content = (string) $row['content'];
-
-            if ('' === $tweetId || '' === $content) {
-                throw new RuntimeException('Invalid moderation tweet row fetched from database.');
-            }
+            $moderationVersion = (int) $row['moderation_version'];
 
             $candidates[] = new ModerationTweetCandidate(
                 tweetId: $tweetId,
                 text: $content,
+                moderationVersion: $moderationVersion,
             );
         }
 

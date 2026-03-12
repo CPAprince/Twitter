@@ -28,6 +28,12 @@
             </options>
         </field>
         <field name="moderatedAt" column="moderated_at" type="datetime_immutable" nullable="true"/>
+        <field name="moderationVersion" column="moderation_version" type="integer">
+            <options>
+                <option name="unsigned">true</option>
+                <option name="default">1</option>
+            </options>
+        </field>
 
     </entity>
 

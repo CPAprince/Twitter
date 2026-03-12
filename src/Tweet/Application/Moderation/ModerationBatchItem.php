@@ -10,5 +10,6 @@ final readonly class ModerationBatchItem
         public string $tweetId,
         public string $text,
         public int $estimatedTokens,
+        public int $moderationVersion,
     ) {}
 }

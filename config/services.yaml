@@ -206,9 +206,6 @@ services:
             $limitRpd: '%moderation.limits.rpd%'
 
             $demoApprovePercent: '%moderation.demo.approve_percent%'
-            $demoSetModeratedAt: '%moderation.demo.set_moderated_at%'
-
-            $bypassSetModeratedAt: '%moderation.bypass.set_moderated_at%'
 
             $redisQueueKey: '%moderation.redis.queue_key%'
             $redisFlushLockKey: '%moderation.redis.flush_lock_key%'
@@ -219,10 +216,6 @@ services:
             $workerIdleSleepMs: '%moderation.worker.idle_sleep_ms%'
             $workerLockTtlSeconds: '%moderation.worker.lock_ttl_seconds%'
             $workerMaxFetchItems: '%moderation.worker.max_fetch_items%'
-
-            $statusPending: '%moderation.status.pending%'
-            $statusApproved: '%moderation.status.approved%'
-            $statusRejected: '%moderation.status.rejected%'
 
     Twitter\Tweet\Application\Moderation\ModerationConfig:
         public: true

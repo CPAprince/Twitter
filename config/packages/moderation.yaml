@@ -26,10 +26,6 @@ parameters:
     
     # demo mode settings
     moderation.demo.approve_percent: '%env(int:MODERATION_DEMO_APPROVE_PERCENT)%'
-    moderation.demo.set_moderated_at: '%env(bool:MODERATION_DEMO_SET_MODERATED_AT)%'
-    
-    # bypass mode settings
-    moderation.bypass.set_moderated_at: false
     
     # redis keys / prefixes
     moderation.redis.queue_key: 'moderation:tweet_queue'
@@ -42,8 +38,4 @@ parameters:
     moderation.worker.idle_sleep_ms: 300
     moderation.worker.lock_ttl_seconds: 5
     moderation.worker.max_fetch_items: 100
-    
-    # statuses
-    moderation.status.pending: 0
-    moderation.status.approved: 1
-    moderation.status.rejected: 2
+

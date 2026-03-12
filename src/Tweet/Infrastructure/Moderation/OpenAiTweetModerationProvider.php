@@ -44,6 +44,10 @@ final class OpenAiTweetModerationProvider implements TweetModerationProviderInte
 
         $results = $response->results;
 
+        if (count($results) !== count($items)) {
+            throw new RuntimeException(sprintf('OpenAI moderation API returned %d result(s) for %d input(s).', count($results), count($items)));
+        }
+
         $decisions = [];
 
         foreach ($items as $index => $item) {
@@ -54,6 +58,7 @@ final class OpenAiTweetModerationProvider implements TweetModerationProviderInte
             $decisions[] = new ModerationDecision(
                 tweetId: $item->tweetId,
                 approved: !$flagged,
+                moderationVersion: $item->moderationVersion,
                 reason: $flagged ? 'Rejected by OpenAI moderation.' : null,
                 categories: [],
             );

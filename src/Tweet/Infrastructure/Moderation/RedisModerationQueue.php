@@ -51,55 +51,9 @@ final readonly class RedisModerationQueue implements ModerationQueueInterface
             return;
         }
 
-        $queueKey = $this->config->redisQueueKey;
-        $queueItems = $this->redis->lRange($queueKey, 0, -1);
-
-        if (!is_array($queueItems) || [] === $queueItems) {
-            return;
+        foreach ($tweetIds as $tweetId) {
+            $this->redis->lRem($this->config->redisQueueKey, $tweetId, 1);
         }
-
-        $tweetIdsToRemove = array_values(array_filter(
-            $tweetIds,
-            static fn (string $item): bool => '' !== trim($item)
-        ));
-
-        if ([] === $tweetIdsToRemove) {
-            return;
-        }
-
-        $removeSet = array_fill_keys($tweetIdsToRemove, true);
-
-        $remaining = [];
-        $removedCounts = [];
-
-        foreach ($tweetIdsToRemove as $tweetId) {
-            $removedCounts[$tweetId] = 0;
-        }
-
-        foreach ($queueItems as $item) {
-            $value = is_string($item) ? trim($item) : '';
-
-            if ('' === $value) {
-                continue;
-            }
-
-            if (isset($removeSet[$value]) && 0 === $removedCounts[$value]) {
-                ++$removedCounts[$value];
-                continue;
-            }
-
-            $remaining[] = $value;
-        }
-
-        $this->redis->multi();
-
-        $this->redis->del($queueKey);
-
-        if ([] !== $remaining) {
-            $this->redis->rPush($queueKey, ...$remaining);
-        }
-
-        $this->redis->exec();
     }
 
     public function size(): int

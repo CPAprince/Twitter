@@ -24,6 +24,7 @@ final readonly class DemoTweetModerationProvider implements TweetModerationProvi
             $decisions[] = new ModerationDecision(
                 tweetId: $item->tweetId,
                 approved: $approved,
+                moderationVersion: $item->moderationVersion,
                 reason: $approved ? null : 'Rejected in demo mode by probability policy.',
                 categories: [],
             );
