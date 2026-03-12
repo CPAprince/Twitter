@@ -38,4 +38,3 @@ parameters:
     moderation.worker.idle_sleep_ms: 300
     moderation.worker.lock_ttl_seconds: 5
     moderation.worker.max_fetch_items: 100
-
