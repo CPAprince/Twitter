@@ -31,7 +31,7 @@ start:
 stop:
 	docker compose down
 
-allchecks: stan cs test
+allchecks: stan csdr testdetails
 
 r: router
 cc: cache-clear

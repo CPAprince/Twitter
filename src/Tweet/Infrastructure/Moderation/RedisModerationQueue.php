@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Twitter\Tweet\Infrastructure\Moderation;
 
-use InvalidArgumentException;
 use Redis;
 use Twitter\Tweet\Application\Moderation\ModerationConfig;
 use Twitter\Tweet\Application\Moderation\ModerationQueueInterface;
@@ -18,19 +17,13 @@ final readonly class RedisModerationQueue implements ModerationQueueInterface
 
     public function enqueue(string $tweetId): void
     {
-        $tweetId = trim($tweetId);
-
-        if ('' === $tweetId) {
-            throw new InvalidArgumentException('tweetId must not be empty.');
-        }
-
         $this->redis->rPush($this->config->redisQueueKey, $tweetId);
     }
 
     public function peek(int $limit): array
     {
         if ($limit <= 0) {
-            throw new InvalidArgumentException('limit must be greater than 0.');
+            return [];
         }
 
         $items = $this->redis->lRange(

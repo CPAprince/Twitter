@@ -93,7 +93,7 @@ final class ModerationFlushWorkerCommand extends Command
         return $items;
     }
 
-    private function splitDecisionIds(array $decisions)
+    private function splitDecisionIds(array $decisions): array
     {
         $approvedIds = [];
         $rejectedIds = [];
