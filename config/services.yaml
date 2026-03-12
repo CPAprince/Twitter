@@ -159,6 +159,12 @@ services:
             $inner: '@.inner'
             $cacheTweets: '@cache.tweets'
 
+    Twitter\Tweet\Infrastructure\Cache\Decorator\CreateTweetCommandHandlerDecorator:
+        decorates: Twitter\Tweet\Application\UseCase\CreateTweet\CreateTweetCommandHandlerInterface
+        arguments:
+            $inner: '@.inner'
+            $cacheTweets: '@cache.tweets'
+
     Twitter\Profile\Infrastructure\Cache\Proxy\GetProfileQueryHandlerProxy:
         decorates: Twitter\Profile\Application\UseCase\GetProfile\GetProfileQueryHandlerInterface
         arguments:
