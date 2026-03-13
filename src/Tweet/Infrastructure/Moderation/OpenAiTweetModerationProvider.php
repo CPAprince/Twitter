@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Twitter\Tweet\Infrastructure\Moderation;
 
 use OpenAI;
-use OpenAI\Client;
+use OpenAI\Contracts\ClientContract;
 use RuntimeException;
 use Twitter\Tweet\Application\Moderation\ModerationBatchItem;
 use Twitter\Tweet\Application\Moderation\ModerationConfig;
@@ -14,7 +14,7 @@ use Twitter\Tweet\Application\Moderation\TweetModerationProviderInterface;
 
 final class OpenAiTweetModerationProvider implements TweetModerationProviderInterface
 {
-    private Client $client;
+    private ClientContract $client;
 
     public function __construct(
         private readonly ModerationConfig $config,
