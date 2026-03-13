@@ -39,7 +39,7 @@ final class TweetLikesCountUpdaterTest extends TestCase
             ->expects(self::once())
             ->method('executeStatement')
             ->with(
-                self::stringContains('UPDATE tweets SET likes_count'),
+                self::stringContains(/* @lang text */ 'UPDATE tweets SET likes_count'),
                 self::callback(function (array $params): bool {
                     return isset($params['delta']) && 1 === $params['delta']
                         && isset($params['id']);
