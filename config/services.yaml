@@ -9,6 +9,10 @@ services:
     _defaults:
         autowire: true
         autoconfigure: true
+    
+    ##########
+    # Shared #
+    ##########
 
     Twitter\Shared\Infrastructure\EventSubscriber\ExceptionSubscriber:
         tags: [ 'kernel.event_subscriber' ]
@@ -22,6 +26,10 @@ services:
         tags:
             - { name: kernel.event_listener, event: lexik_jwt_authentication.on_jwt_created }
 
+    ########################################
+    # Identity and Access Management (IAM) #
+    ########################################
+
     Twitter\IAM\UI\REST\Controller\:
         resource: '../src/IAM/UI/REST/Controller/*Controller.php'
         tags: [ 'controller.service_arguments' ]
@@ -30,24 +38,10 @@ services:
         resource: '../src/IAM/UI/Web/*/*Controller.php'
         tags: [ 'controller.service_arguments' ]
 
-    Twitter\Registration\UI\REST\Controller\:
-        resource: '../src/Registration/UI/REST/Controller/*Controller.php'
-        tags: [ 'controller.service_arguments' ]
-
     Twitter\IAM\Application\CreateUser\CreateUserCommandHandler:
         arguments:
             $userRepository: '@Twitter\IAM\Domain\User\Model\UserRepository'
-
-    Twitter\Registration\Application\UseCase\RegisterUser\RegisterUserCommandHandler:
-        arguments:
-            $entityManager: '@doctrine.orm.entity_manager'
-            $messageBus: '@messenger.default_bus'
-
-    Twitter\Registration\Application\Message\SendWelcomeEmailHandler:
-        arguments:
-            $senderAddress: '%env(MAILER_SENDER)%'
-            $appBaseUrl: '%env(DEFAULT_URI)%'
-
+    
     Twitter\IAM\Application\Logout\LogoutHandler:
         arguments:
             $repository: '@Twitter\IAM\Application\Logout\RefreshTokenRepository'
@@ -63,6 +57,28 @@ services:
     Twitter\IAM\Application\Logout\RefreshTokenRepository:
         class: Twitter\IAM\Infrastructure\Persistence\MySQL\Repository\MySQLRefreshTokenRepository
 
+    ################
+    # Registration #
+    ################
+
+    Twitter\Registration\UI\REST\Controller\:
+        resource: '../src/Registration/UI/REST/Controller/*Controller.php'
+        tags: [ 'controller.service_arguments' ]
+
+    Twitter\Registration\Application\UseCase\RegisterUser\RegisterUserCommandHandler:
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+            $messageBus: '@messenger.default_bus'
+
+    Twitter\Registration\Application\Message\SendWelcomeEmailHandler:
+        arguments:
+            $senderAddress: '%env(MAILER_SENDER)%'
+            $appBaseUrl: '%env(DEFAULT_URI)%'
+
+    ###########
+    # Profile #
+    ###########
+
     Twitter\Profile\UI\REST\Controller\:
         resource: '../src/Profile/UI/REST/Controller/*/*Controller.php'
         tags: [ 'controller.service_arguments' ]
@@ -71,17 +87,9 @@ services:
         resource: '../src/Profile/UI/Web/*/*Controller.php'
         tags: [ 'controller.service_arguments' ]
 
-    Twitter\Like\UI\REST\Controller\:
-        resource: '../src/Like/UI/REST/Controller/*Controller.php'
-        tags: [ 'controller.service_arguments' ]
-
     Twitter\Profile\Application\UseCase\CreateProfile\CreateProfileCommandHandler:
         arguments:
             $profileRepository: '@Twitter\Profile\Domain\Profile\Model\ProfileRepository'
-    
-    Twitter\Like\Application\UseCase\ToggleLike\ToggleLikeCommandHandler:
-        arguments:
-            $likeRepository: '@Twitter\Like\Domain\Like\Model\LikeRepository'
     
     Twitter\Profile\Application\UseCase\GetProfile\GetProfileQueryHandler:
         arguments:
@@ -98,6 +106,10 @@ services:
     Twitter\Profile\Domain\Profile\Model\ProfileRepository:
         class: Twitter\Profile\Infrastructure\Persistence\MySQL\Repository\MySQLProfileRepository
 
+    #########
+    # Tweet #
+    #########
+
     Twitter\Tweet\UI\REST\:
         resource: '../src/Tweet/UI/REST/*/*Controller.php'
         tags: [ 'controller.service_arguments' ]
@@ -111,9 +123,6 @@ services:
 
     Twitter\Tweet\Application\UseCase\CreateTweet\CreateTweetCommandHandlerInterface: '@Twitter\Tweet\Application\UseCase\CreateTweet\CreateTweetCommandHandler'
     
-    Twitter\Like\Domain\Like\Model\LikeRepository:
-        class: Twitter\Like\Infrastructure\Persistence\MySQL\Repository\MySQLLikeRepository
-
     Twitter\Tweet\UI\Web\:
         resource: '../src/Tweet/UI/Web/'
         tags: [ 'controller.service_arguments' ]
@@ -145,45 +154,6 @@ services:
     
     Twitter\Tweet\Application\UseCase\GetUserTweets\GetUserTweetsQueryHandlerInterface: '@Twitter\Tweet\Application\UseCase\GetUserTweets\GetUserTweetsQueryHandler'
 
-    Twitter\Tweet\Infrastructure\Cache\Proxy\GetTweetsCommandHandlerProxy:
-        decorates: Twitter\Tweet\Application\UseCase\GetTweets\GetTweetsCommandHandlerInterface
-        arguments:
-            $inner: '@.inner'
-            $cacheTweets: '@cache.tweets'
-            $ttl: '%cache_ttl_feed_main%'
-
-    Twitter\Tweet\Infrastructure\Cache\Proxy\GetUserTweetsQueryHandlerProxy:
-        decorates: Twitter\Tweet\Application\UseCase\GetUserTweets\GetUserTweetsQueryHandlerInterface
-        arguments:
-            $inner: '@.inner'
-            $cacheTweets: '@cache.tweets'
-            $ttl: '%cache_ttl_feed_user%'
-
-    Twitter\Tweet\Infrastructure\Cache\Decorator\UpdateTweetCommandHandlerDecorator:
-        decorates: Twitter\Tweet\Application\UseCase\UpdateTweet\UpdateTweetCommandHandlerInterface
-        arguments:
-            $inner: '@.inner'
-            $cacheTweets: '@cache.tweets'
-
-    Twitter\Tweet\Infrastructure\Cache\Decorator\CreateTweetCommandHandlerDecorator:
-        decorates: Twitter\Tweet\Application\UseCase\CreateTweet\CreateTweetCommandHandlerInterface
-        arguments:
-            $inner: '@.inner'
-            $cacheTweets: '@cache.tweets'
-
-    Twitter\Profile\Infrastructure\Cache\Proxy\GetProfileQueryHandlerProxy:
-        decorates: Twitter\Profile\Application\UseCase\GetProfile\GetProfileQueryHandlerInterface
-        arguments:
-            $inner: '@.inner'
-            $cacheProfiles: '@cache.profiles'
-            $ttl: '%cache_ttl_profile%'
-
-    Twitter\Profile\Infrastructure\Cache\Decorator\UpdateProfileCommandHandlerDecorator:
-        decorates: Twitter\Profile\Application\UseCase\UpdateProfile\UpdateProfileCommandHandlerInterface
-        arguments:
-            $inner: '@.inner'
-            $cacheProfiles: '@cache.profiles'
-
     Twitter\Tweet\Application\Message\UpdateTweetLikesCountHandler: ~
 
     Twitter\Tweet\Infrastructure\Service\TweetLikesCountUpdaterInterface:
@@ -196,6 +166,25 @@ services:
             $topicBaseUrl: '%env(DEFAULT_URI)%'
             $logger: '@logger'
 
+    ########
+    # Like #
+    ########
+    
+    Twitter\Like\Application\UseCase\ToggleLike\ToggleLikeCommandHandler:
+        arguments:
+            $likeRepository: '@Twitter\Like\Domain\Like\Model\LikeRepository'
+
+    Twitter\Like\UI\REST\Controller\:
+        resource: '../src/Like/UI/REST/Controller/*Controller.php'
+        tags: [ 'controller.service_arguments' ]
+
+    Twitter\Like\Domain\Like\Model\LikeRepository:
+        class: Twitter\Like\Infrastructure\Persistence\MySQL\Repository\MySQLLikeRepository
+
+    ###########
+    # Metrics #
+    ###########
+
     Twitter\Metrics\Controller\:
         resource: '../src/Metrics/Controller'
         tags: [ 'controller.service_arguments' ]
@@ -204,6 +193,10 @@ services:
         tags:
             - { name: kernel.event_subscriber }
     
+    ###############
+    # Third-party #
+    ###############
+    
     Prometheus\Storage\InMemory:
         public: true
     
@@ -211,9 +204,3 @@ services:
         class: Prometheus\CollectorRegistry
         arguments:
             - '@Prometheus\Storage\InMemory'
-    
-    # DoctrineClearSubscriber commented out: redundant with DoctrineResetSubscriber.
-    # In FrankenPHP worker mode, resetManager() already clears the identity map; this subscriber's
-    # injected EM reference becomes stale after reset, making it redundant at best.
-    # Twitter\Shared\Infrastructure\EventSubscriber\DoctrineClearSubscriber:
-    #     tags: [ 'kernel.event_subscriber' ]
