@@ -1,5 +1,9 @@
 # yaml-language-server: $schema=../vendor/symfony/dependency-injection/Loader/schema/services.schema.json
 
+parameters:
+    cache_ttl_feed_main: '%env(int:CACHE_TTL_FEED_MAIN)%'
+    cache_ttl_feed_user: '%env(int:CACHE_TTL_FEED_USER)%'
+
 services:
     _defaults:
         autowire: true
@@ -139,6 +143,20 @@ services:
         tags: [ 'kernel.event_subscriber' ]
     
     Twitter\Tweet\Application\UseCase\GetUserTweets\GetUserTweetsQueryHandlerInterface: '@Twitter\Tweet\Application\UseCase\GetUserTweets\GetUserTweetsQueryHandler'
+
+    Twitter\Tweet\Infrastructure\Cache\Proxy\GetTweetsCommandHandlerProxy:
+        decorates: Twitter\Tweet\Application\UseCase\GetTweets\GetTweetsCommandHandlerInterface
+        arguments:
+            $inner: '@.inner'
+            $cacheTweets: '@cache.tweets'
+            $ttl: '%cache_ttl_feed_main%'
+
+    Twitter\Tweet\Infrastructure\Cache\Proxy\GetUserTweetsQueryHandlerProxy:
+        decorates: Twitter\Tweet\Application\UseCase\GetUserTweets\GetUserTweetsQueryHandlerInterface
+        arguments:
+            $inner: '@.inner'
+            $cacheTweets: '@cache.tweets'
+            $ttl: '%cache_ttl_feed_user%'
 
     Twitter\Tweet\Application\Message\UpdateTweetLikesCountHandler: ~
 
