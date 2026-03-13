@@ -31,7 +31,7 @@ final class ModerationBatchBuilderTest extends TestCase
     {
         // Arrange
         $builder = new ModerationBatchBuilder($this->makeConfig(maxItems: 10, softCap: 100, hardCap: 200));
-        $item    = new ModerationBatchItem('tweet-1', 'Hello world', 5, 0);
+        $item = new ModerationBatchItem('tweet-1', 'Hello world', 5, 0);
 
         // Act
         $batch = $builder->build([$item]);
@@ -47,7 +47,7 @@ final class ModerationBatchBuilderTest extends TestCase
     {
         // Arrange – 3 items but maxItems=2
         $builder = new ModerationBatchBuilder($this->makeConfig(maxItems: 2, softCap: 1000, hardCap: 2000));
-        $items   = [
+        $items = [
             new ModerationBatchItem('t1', 'A', 10, 0),
             new ModerationBatchItem('t2', 'B', 10, 0),
             new ModerationBatchItem('t3', 'C', 10, 0),
@@ -67,7 +67,7 @@ final class ModerationBatchBuilderTest extends TestCase
     {
         // Arrange – softCap=60; item1=50 tokens (added), item2=20 tokens (50+20=70 > 60 → stop)
         $builder = new ModerationBatchBuilder($this->makeConfig(maxItems: 10, softCap: 60, hardCap: 200));
-        $items   = [
+        $items = [
             new ModerationBatchItem('t1', 'A', 50, 0),
             new ModerationBatchItem('t2', 'B', 20, 0),
         ];
@@ -86,7 +86,7 @@ final class ModerationBatchBuilderTest extends TestCase
     {
         // Arrange – hardCap=50, single item has 80 tokens → forced through
         $builder = new ModerationBatchBuilder($this->makeConfig(maxItems: 10, softCap: 50, hardCap: 50));
-        $item    = new ModerationBatchItem('t1', 'A very long tweet text here', 80, 0);
+        $item = new ModerationBatchItem('t1', 'A very long tweet text here', 80, 0);
 
         // Act
         $batch = $builder->build([$item]);
@@ -102,7 +102,7 @@ final class ModerationBatchBuilderTest extends TestCase
     {
         // Arrange – hardCap=100; item1=60 tokens (added), item2=60 tokens (60+60=120 > 100 → stop)
         $builder = new ModerationBatchBuilder($this->makeConfig(maxItems: 10, softCap: 50, hardCap: 100));
-        $items   = [
+        $items = [
             new ModerationBatchItem('t1', 'A', 60, 0),
             new ModerationBatchItem('t2', 'B', 60, 0),
         ];
@@ -121,7 +121,7 @@ final class ModerationBatchBuilderTest extends TestCase
     {
         // Arrange – softCap=100, hardCap=200; three items at 20 tokens each = 60 total (under both caps)
         $builder = new ModerationBatchBuilder($this->makeConfig(maxItems: 10, softCap: 100, hardCap: 200));
-        $items   = [
+        $items = [
             new ModerationBatchItem('t1', 'A', 20, 0),
             new ModerationBatchItem('t2', 'B', 20, 0),
             new ModerationBatchItem('t3', 'C', 20, 0),

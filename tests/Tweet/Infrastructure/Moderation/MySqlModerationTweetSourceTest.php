@@ -7,6 +7,7 @@ namespace Twitter\Tests\Tweet\Infrastructure\Moderation;
 use Doctrine\DBAL\Connection;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -22,7 +23,7 @@ final class MySqlModerationTweetSourceTest extends TestCase
     protected function setUp(): void
     {
         $this->connection = $this->createMock(Connection::class);
-        $this->source     = new MySqlModerationTweetSource($this->connection);
+        $this->source = new MySqlModerationTweetSource($this->connection);
     }
 
     #[Test]
@@ -56,6 +57,7 @@ final class MySqlModerationTweetSourceTest extends TestCase
         self::assertSame(1, $candidates[0]->moderationVersion);
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     #[Test]
     public function findByIdsReturnsEmptyWhenAllIdsAreStale(): void
     {
@@ -87,6 +89,7 @@ final class MySqlModerationTweetSourceTest extends TestCase
         $this->source->findByIds(['019b5f3f-d110-7908-9177-5df439942a8b']);
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     #[Test]
     public function findByIdsPreservesRequestedIdOrder(): void
     {
@@ -112,6 +115,7 @@ final class MySqlModerationTweetSourceTest extends TestCase
         self::assertSame($id3, $candidates[2]->tweetId);
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     #[Test]
     public function findByIdsModerationVersionIsPreservedPerRow(): void
     {

@@ -22,7 +22,7 @@ final class DemoTweetModerationProviderTest extends TestCase
     {
         // Arrange
         $provider = new DemoTweetModerationProvider($this->makeConfig(approvePercent: 100));
-        $items    = array_map(
+        $items = array_map(
             static fn (int $i) => new ModerationBatchItem("tweet-$i", "Text $i", 3, 0),
             range(1, 20),
         );
@@ -41,7 +41,7 @@ final class DemoTweetModerationProviderTest extends TestCase
     {
         // Arrange
         $provider = new DemoTweetModerationProvider($this->makeConfig(approvePercent: 0));
-        $items    = array_map(
+        $items = array_map(
             static fn (int $i) => new ModerationBatchItem("tweet-$i", "Text $i", 3, 0),
             range(1, 20),
         );
@@ -61,7 +61,7 @@ final class DemoTweetModerationProviderTest extends TestCase
     {
         // Arrange
         $provider = new DemoTweetModerationProvider($this->makeConfig(approvePercent: 80));
-        $items    = [
+        $items = [
             new ModerationBatchItem('t1', 'A', 2, 0),
             new ModerationBatchItem('t2', 'B', 2, 0),
             new ModerationBatchItem('t3', 'C', 2, 0),
@@ -80,7 +80,7 @@ final class DemoTweetModerationProviderTest extends TestCase
     #[Test]
     public function returnsEmptyArrayForEmptyInput(): void
     {
-        $provider  = new DemoTweetModerationProvider($this->makeConfig(approvePercent: 80));
+        $provider = new DemoTweetModerationProvider($this->makeConfig(approvePercent: 80));
         $decisions = $provider->moderateBatch([]);
 
         self::assertSame([], $decisions);

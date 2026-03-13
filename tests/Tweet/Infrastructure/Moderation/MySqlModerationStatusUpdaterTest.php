@@ -7,6 +7,7 @@ namespace Twitter\Tests\Tweet\Infrastructure\Moderation;
 use Doctrine\DBAL\Connection;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -24,7 +25,7 @@ final class MySqlModerationStatusUpdaterTest extends TestCase
     protected function setUp(): void
     {
         $this->connection = $this->createMock(Connection::class);
-        $this->updater    = new MySqlModerationStatusUpdater($this->connection);
+        $this->updater = new MySqlModerationStatusUpdater($this->connection);
     }
 
     // ── apply: empty ──────────────────────────────────────────────────────────
@@ -51,9 +52,9 @@ final class MySqlModerationStatusUpdaterTest extends TestCase
             ->with(
                 self::stringContains('moderation_status = ?'),
                 self::callback(function (array $params) use ($version): bool {
-                    return $params[0] === Tweet::MODERATION_APPROVED
+                    return Tweet::MODERATION_APPROVED === $params[0]
                         && $params[2] === $version
-                        && $params[3] === Tweet::MODERATION_PENDING;
+                        && Tweet::MODERATION_PENDING === $params[3];
                 }),
             );
 
@@ -74,9 +75,9 @@ final class MySqlModerationStatusUpdaterTest extends TestCase
             ->with(
                 self::stringContains('moderation_status = ?'),
                 self::callback(function (array $params) use ($version): bool {
-                    return $params[0] === Tweet::MODERATION_REJECTED
+                    return Tweet::MODERATION_REJECTED === $params[0]
                         && $params[2] === $version
-                        && $params[3] === Tweet::MODERATION_PENDING;
+                        && Tweet::MODERATION_PENDING === $params[3];
                 }),
             );
 
@@ -93,9 +94,9 @@ final class MySqlModerationStatusUpdaterTest extends TestCase
             ->method('executeStatement');
 
         $this->updater->apply([
-            new ModerationDecision('019b5f3f-d110-7908-9177-5df439942a8b', true,  1),
+            new ModerationDecision('019b5f3f-d110-7908-9177-5df439942a8b', true, 1),
             new ModerationDecision('019b5f41-0e5b-7f65-8b7a-0f9c0b3b3c11', false, 1),
-            new ModerationDecision('550e8400-e29b-41d4-a716-446655440000', true,  2),
+            new ModerationDecision('550e8400-e29b-41d4-a716-446655440000', true, 2),
         ]);
     }
 
@@ -129,6 +130,7 @@ final class MySqlModerationStatusUpdaterTest extends TestCase
         $this->updater->apply([new ModerationDecision('019b5f3f-d110-7908-9177-5df439942a8b', true, 1)]);
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     #[Test]
     public function passesCorrectModerationVersionToStatement(): void
     {
@@ -139,6 +141,7 @@ final class MySqlModerationStatusUpdaterTest extends TestCase
             ->method('executeStatement')
             ->willReturnCallback(function (string $sql, array $params) use (&$captured): int {
                 $captured = $params;
+
                 return 1;
             });
 

@@ -6,6 +6,7 @@ namespace Twitter\Tests\Tweet\Infrastructure\Moderation;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -24,9 +25,9 @@ final class RedisModerationQueueTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->redis  = $this->createMock(Redis::class);
+        $this->redis = $this->createMock(Redis::class);
         $this->config = $this->makeConfig();
-        $this->queue  = new RedisModerationQueue($this->redis, $this->config);
+        $this->queue = new RedisModerationQueue($this->redis, $this->config);
     }
 
     #[Test]
@@ -65,6 +66,7 @@ final class RedisModerationQueueTest extends TestCase
         self::assertSame([], $this->queue->peek(0));
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     #[Test]
     public function peekFiltersBlankValuesReturnedByRedis(): void
     {
@@ -77,6 +79,7 @@ final class RedisModerationQueueTest extends TestCase
         self::assertSame(['tweet-1', 'tweet-2'], $result);
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     #[Test]
     public function peekReturnsEmptyArrayWhenRedisReturnsNonArray(): void
     {
@@ -100,6 +103,7 @@ final class RedisModerationQueueTest extends TestCase
         $this->queue->remove($tweetIds);
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     #[Test]
     public function removeCallsLRemWithCorrectTweetId(): void
     {

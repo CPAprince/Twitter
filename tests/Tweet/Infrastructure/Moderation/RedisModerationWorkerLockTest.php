@@ -6,6 +6,7 @@ namespace Twitter\Tests\Tweet\Infrastructure\Moderation;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -25,9 +26,9 @@ final class RedisModerationWorkerLockTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->redis  = $this->createMock(Redis::class);
+        $this->redis = $this->createMock(Redis::class);
         $this->config = $this->makeConfig();
-        $this->lock   = new RedisModerationWorkerLock($this->redis, $this->config);
+        $this->lock = new RedisModerationWorkerLock($this->redis, $this->config);
     }
 
     // ── acquire ───────────────────────────────────────────────────────────────
@@ -62,11 +63,11 @@ final class RedisModerationWorkerLockTest extends TestCase
             ->method('set')
             ->with(
                 $this->config->redisFlushLockKey,
-                self::isType('string'),
+                self::isString(),
                 self::callback(
                     static fn (array $opts): bool => in_array('nx', $opts, true)
                         && isset($opts['ex'])
-                        && $opts['ex'] === 60,
+                        && 60 === $opts['ex'],
                 ),
             )
             ->willReturn('OK');
@@ -76,6 +77,7 @@ final class RedisModerationWorkerLockTest extends TestCase
 
     // ── refresh ───────────────────────────────────────────────────────────────
 
+    #[AllowMockObjectsWithoutExpectations]
     #[Test]
     public function refreshReturnsTrueWhenTokenMatchesAndExpireSucceeds(): void
     {

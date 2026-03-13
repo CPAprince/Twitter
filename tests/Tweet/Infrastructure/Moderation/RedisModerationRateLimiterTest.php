@@ -7,6 +7,7 @@ namespace Twitter\Tests\Tweet\Infrastructure\Moderation;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -25,10 +26,11 @@ final class RedisModerationRateLimiterTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->redis       = $this->createMock(Redis::class);
+        $this->redis = $this->createMock(Redis::class);
         $this->rateLimiter = new RedisModerationRateLimiter($this->redis, $this->makeConfig());
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     #[Test]
     public function throwsWhenBatchTokensIsZero(): void
     {
@@ -37,6 +39,7 @@ final class RedisModerationRateLimiterTest extends TestCase
         $this->rateLimiter->reserveCapacity(0);
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     #[Test]
     public function throwsWhenBatchTokensIsNegative(): void
     {
@@ -45,6 +48,7 @@ final class RedisModerationRateLimiterTest extends TestCase
         $this->rateLimiter->reserveCapacity(-5);
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     #[Test]
     public function returnsAllowedResultWhenRedisLuaPermits(): void
     {
@@ -61,6 +65,7 @@ final class RedisModerationRateLimiterTest extends TestCase
         self::assertNull($result->reason);
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     #[Test]
     public function returnsDeniedWithReasonWhenRpmExceeded(): void
     {
@@ -74,6 +79,7 @@ final class RedisModerationRateLimiterTest extends TestCase
         self::assertSame('rpm_exceeded', $result->reason);
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     #[Test]
     public function returnsDeniedWithReasonWhenTpmExceeded(): void
     {
@@ -87,6 +93,7 @@ final class RedisModerationRateLimiterTest extends TestCase
         self::assertSame('tpm_exceeded', $result->reason);
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     #[Test]
     public function returnsDeniedWithReasonWhenRpdExceeded(): void
     {
@@ -100,6 +107,7 @@ final class RedisModerationRateLimiterTest extends TestCase
         self::assertSame('rpd_exceeded', $result->reason);
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     #[Test]
     public function throwsWhenRedisReturnsUnexpectedFormat(): void
     {
@@ -113,6 +121,7 @@ final class RedisModerationRateLimiterTest extends TestCase
         $this->rateLimiter->reserveCapacity(50);
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     #[Test]
     public function throwsWhenRedisReturnsTooFewElements(): void
     {
@@ -133,8 +142,8 @@ final class RedisModerationRateLimiterTest extends TestCase
             ->expects(self::once())
             ->method('eval')
             ->with(
-                self::isType('string'),  // Lua script
-                self::isType('array'),   // keys + argv
+                self::isString(),  // Lua script
+                self::isArray(),   // keys + argv
                 3,                       // numkeys
             )
             ->willReturn([1, 'allowed']);

@@ -52,14 +52,14 @@ final class ModerationConfigFactoryTest extends TestCase
     #[Test]
     public function createConvertsStringModeToEnum(): void
     {
-        self::assertSame(ModerationMode::DEMO,   $this->makeFactory(mode: 'demo')->create()->mode);
+        self::assertSame(ModerationMode::DEMO, $this->makeFactory(mode: 'demo')->create()->mode);
         self::assertSame(ModerationMode::BYPASS, $this->makeFactory(mode: 'bypass')->create()->mode);
     }
 
     // ── helpers ───────────────────────────────────────────────────────────────
 
     private function makeFactory(
-        string $mode   = 'live',
+        string $mode = 'live',
         ?string $apiKey = 'sk-test-key',
     ): ModerationConfigFactory {
         return new ModerationConfigFactory(

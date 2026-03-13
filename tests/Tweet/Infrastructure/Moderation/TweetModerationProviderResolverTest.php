@@ -23,7 +23,7 @@ final class TweetModerationProviderResolverTest extends TestCase
     public function resolvesOpenAiProviderWhenLiveModeAndEnabled(): void
     {
         // Arrange
-        $config   = $this->makeConfig(enabled: true, mode: ModerationMode::LIVE);
+        $config = $this->makeConfig(enabled: true, mode: ModerationMode::LIVE);
         $resolver = $this->makeResolver($config);
 
         // Act & Assert
@@ -34,7 +34,7 @@ final class TweetModerationProviderResolverTest extends TestCase
     public function resolvesDemoProviderWhenDemoModeAndEnabled(): void
     {
         // Arrange
-        $config   = $this->makeConfig(enabled: true, mode: ModerationMode::DEMO);
+        $config = $this->makeConfig(enabled: true, mode: ModerationMode::DEMO);
         $resolver = $this->makeResolver($config);
 
         // Act & Assert
@@ -45,7 +45,7 @@ final class TweetModerationProviderResolverTest extends TestCase
     public function resolvesBypassProviderWhenBypassModeAndEnabled(): void
     {
         // Arrange
-        $config   = $this->makeConfig(enabled: true, mode: ModerationMode::BYPASS);
+        $config = $this->makeConfig(enabled: true, mode: ModerationMode::BYPASS);
         $resolver = $this->makeResolver($config);
 
         // Act & Assert
@@ -56,7 +56,7 @@ final class TweetModerationProviderResolverTest extends TestCase
     public function resolvesBypassProviderWhenModerationIsDisabled(): void
     {
         // Arrange – even LIVE mode should resolve to bypass when disabled
-        $config   = $this->makeConfig(enabled: false, mode: ModerationMode::LIVE);
+        $config = $this->makeConfig(enabled: false, mode: ModerationMode::LIVE);
         $resolver = $this->makeResolver($config);
 
         // Act & Assert
@@ -68,7 +68,7 @@ final class TweetModerationProviderResolverTest extends TestCase
     private function makeResolver(ModerationConfig $config): TweetModerationProviderResolver
     {
         $bypassProvider = new BypassTweetModerationProvider();
-        $demoProvider   = new DemoTweetModerationProvider($config);
+        $demoProvider = new DemoTweetModerationProvider($config);
         $openAiProvider = new OpenAiTweetModerationProvider(
             $this->makeConfig(enabled: true, mode: ModerationMode::LIVE),
         );

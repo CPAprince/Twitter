@@ -41,7 +41,7 @@ final class OpenAiTweetModerationProviderTest extends TestCase
     {
         // Arrange
         $provider = $this->makeProviderWithFakeClient(flagged: false);
-        $items    = [new ModerationBatchItem('tweet-1', 'Hello world', 3, 1)];
+        $items = [new ModerationBatchItem('tweet-1', 'Hello world', 3, 1)];
 
         // Act
         $decisions = $provider->moderateBatch($items);
@@ -58,7 +58,7 @@ final class OpenAiTweetModerationProviderTest extends TestCase
     {
         // Arrange
         $provider = $this->makeProviderWithFakeClient(flagged: true);
-        $items    = [new ModerationBatchItem('tweet-2', 'Harmful content', 4, 1)];
+        $items = [new ModerationBatchItem('tweet-2', 'Harmful content', 4, 1)];
 
         // Act
         $decisions = $provider->moderateBatch($items);
@@ -74,7 +74,7 @@ final class OpenAiTweetModerationProviderTest extends TestCase
     public function returnsEmptyArrayForEmptyInput(): void
     {
         // The client should never be called when input is empty
-        $provider  = $this->makeProviderWithFakeClient(flagged: false);
+        $provider = $this->makeProviderWithFakeClient(flagged: false);
         $decisions = $provider->moderateBatch([]);
 
         self::assertSame([], $decisions);
@@ -85,7 +85,7 @@ final class OpenAiTweetModerationProviderTest extends TestCase
     {
         // Arrange – two items but API returns only one result (Bug 2 guard)
         $provider = $this->makeProviderWithFakeClient(flagged: false, responseCount: 1);
-        $items    = [
+        $items = [
             new ModerationBatchItem('tweet-1', 'Text A', 3, 1),
             new ModerationBatchItem('tweet-2', 'Text B', 3, 1),
         ];
@@ -102,7 +102,7 @@ final class OpenAiTweetModerationProviderTest extends TestCase
     {
         // Arrange – three items; each result maps by index
         $provider = $this->makeProviderWithFakeClient(flagged: false, itemCount: 3);
-        $items    = [
+        $items = [
             new ModerationBatchItem('t-first', 'A', 2, 1),
             new ModerationBatchItem('t-second', 'B', 2, 1),
             new ModerationBatchItem('t-third', 'C', 2, 1),
@@ -112,9 +112,9 @@ final class OpenAiTweetModerationProviderTest extends TestCase
         $decisions = $provider->moderateBatch($items);
 
         // Assert
-        self::assertSame('t-first',  $decisions[0]->tweetId);
+        self::assertSame('t-first', $decisions[0]->tweetId);
         self::assertSame('t-second', $decisions[1]->tweetId);
-        self::assertSame('t-third',  $decisions[2]->tweetId);
+        self::assertSame('t-third', $decisions[2]->tweetId);
     }
 
     // ── helpers ───────────────────────────────────────────────────────────────
