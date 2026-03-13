@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Twitter\Tests\Tweet\Infrastructure\Service;
 
 use Doctrine\DBAL\Connection;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
@@ -29,6 +30,7 @@ final class TweetLikesCountUpdaterTest extends TestCase
     }
 
     #[Test]
+    #[AllowMockObjectsWithoutExpectations]
     public function updateCountReturnsNewCountWhenTweetExists(): void
     {
         $tweetId = '019b5f3f-d110-7908-9177-5df439942a8b';
@@ -37,7 +39,7 @@ final class TweetLikesCountUpdaterTest extends TestCase
             ->expects(self::once())
             ->method('executeStatement')
             ->with(
-                self::stringContains('UPDATE tweets SET likes_count'),
+                self::stringContains(/* @lang text */ 'UPDATE tweets SET likes_count'),
                 self::callback(function (array $params): bool {
                     return isset($params['delta']) && 1 === $params['delta']
                         && isset($params['id']);
@@ -80,6 +82,7 @@ final class TweetLikesCountUpdaterTest extends TestCase
     }
 
     #[Test]
+    #[AllowMockObjectsWithoutExpectations]
     public function updateCountPassesCorrectBinaryId(): void
     {
         $tweetId = '019b5f3f-d110-7908-9177-5df439942a8b';

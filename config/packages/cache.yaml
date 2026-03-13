@@ -7,9 +7,9 @@ framework:
 
         pools:
             cache.tweets:
-                adapter: cache.adapter.redis
+                adapter: cache.adapter.redis_tag_aware
                 tags: true
 
             cache.profiles:
-                adapter: cache.adapter.redis
+                adapter: cache.adapter.redis_tag_aware
                 tags: true

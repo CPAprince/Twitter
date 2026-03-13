@@ -1,5 +1,10 @@
 # yaml-language-server: $schema=../vendor/symfony/dependency-injection/Loader/schema/services.schema.json
 
+parameters:
+    cache_ttl_feed_main: '%env(int:CACHE_TTL_FEED_MAIN)%'
+    cache_ttl_feed_user: '%env(int:CACHE_TTL_FEED_USER)%'
+    cache_ttl_profile: '%env(int:CACHE_TTL_PROFILE)%'
+
 services:
     _defaults:
         autowire: true
@@ -44,6 +49,12 @@ services:
     Twitter\Registration\Application\UseCase\RegisterUser\RegisterUserCommandHandler:
         arguments:
             $entityManager: '@doctrine.orm.entity_manager'
+            $messageBus: '@messenger.default_bus'
+
+    Twitter\Registration\Application\Message\SendWelcomeEmailHandler:
+        arguments:
+            $senderAddress: '%env(MAILER_SENDER)%'
+            $appBaseUrl: '%env(DEFAULT_URI)%'
 
     Twitter\IAM\Application\Logout\LogoutHandler:
         arguments:
@@ -139,8 +150,47 @@ services:
 
     Twitter\Tweet\Application\EventSubscriber\LikeMessageBridgeSubscriber:
         tags: [ 'kernel.event_subscriber' ]
-        
+    
     Twitter\Tweet\Application\UseCase\GetUserTweets\GetUserTweetsQueryHandlerInterface: '@Twitter\Tweet\Application\UseCase\GetUserTweets\GetUserTweetsQueryHandler'
+
+    Twitter\Tweet\Infrastructure\Cache\Proxy\GetTweetsCommandHandlerProxy:
+        decorates: Twitter\Tweet\Application\UseCase\GetTweets\GetTweetsCommandHandlerInterface
+        arguments:
+            $inner: '@.inner'
+            $cacheTweets: '@cache.tweets'
+            $ttl: '%cache_ttl_feed_main%'
+
+    Twitter\Tweet\Infrastructure\Cache\Proxy\GetUserTweetsQueryHandlerProxy:
+        decorates: Twitter\Tweet\Application\UseCase\GetUserTweets\GetUserTweetsQueryHandlerInterface
+        arguments:
+            $inner: '@.inner'
+            $cacheTweets: '@cache.tweets'
+            $ttl: '%cache_ttl_feed_user%'
+
+    Twitter\Tweet\Infrastructure\Cache\Decorator\UpdateTweetCommandHandlerDecorator:
+        decorates: Twitter\Tweet\Application\UseCase\UpdateTweet\UpdateTweetCommandHandlerInterface
+        arguments:
+            $inner: '@.inner'
+            $cacheTweets: '@cache.tweets'
+
+    Twitter\Tweet\Infrastructure\Cache\Decorator\CreateTweetCommandHandlerDecorator:
+        decorates: Twitter\Tweet\Application\UseCase\CreateTweet\CreateTweetCommandHandlerInterface
+        arguments:
+            $inner: '@.inner'
+            $cacheTweets: '@cache.tweets'
+
+    Twitter\Profile\Infrastructure\Cache\Proxy\GetProfileQueryHandlerProxy:
+        decorates: Twitter\Profile\Application\UseCase\GetProfile\GetProfileQueryHandlerInterface
+        arguments:
+            $inner: '@.inner'
+            $cacheProfiles: '@cache.profiles'
+            $ttl: '%cache_ttl_profile%'
+
+    Twitter\Profile\Infrastructure\Cache\Decorator\UpdateProfileCommandHandlerDecorator:
+        decorates: Twitter\Profile\Application\UseCase\UpdateProfile\UpdateProfileCommandHandlerInterface
+        arguments:
+            $inner: '@.inner'
+            $cacheProfiles: '@cache.profiles'
 
     Twitter\Tweet\Application\Message\UpdateTweetLikesCountHandler: ~
 
