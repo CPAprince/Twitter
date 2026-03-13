@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Twitter\Tests\Tweet\Application\EventSubscriber;
 
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
@@ -31,6 +32,7 @@ final class LikeMessageBridgeSubscriberTest extends TestCase
     }
 
     #[Test]
+    #[AllowMockObjectsWithoutExpectations]
     public function getSubscribedEventsReturnsCorrectMapping(): void
     {
         $events = LikeMessageBridgeSubscriber::getSubscribedEvents();

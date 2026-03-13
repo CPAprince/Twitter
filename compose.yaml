@@ -7,6 +7,8 @@ services:
         condition: service_healthy
       rabbitmq:
         condition: service_started
+      mailpit:
+        condition: service_started
     environment:
       APP_ENV: dev
       APP_DEBUG: 1
@@ -19,6 +21,7 @@ services:
       MERCURE_PUBLIC_URL: ${MERCURE_PUBLIC_URL:-/.well-known/mercure}
       MERCURE_JWT_SECRET: ${MERCURE_JWT_SECRET:-!ChangeThisMercureHubJWTSecretKey!}
       MESSENGER_TRANSPORT_DSN: amqp://${RABBITMQ_DEFAULT_USER:-app}:${RABBITMQ_DEFAULT_PASS:-app}@rabbitmq:5672/%2f/messages
+      MAILER_DSN: smtp://mailpit:1025
     volumes:
       - caddy_data:/data
       - caddy_config:/config
@@ -40,6 +43,8 @@ services:
         condition: service_healthy
       rabbitmq:
         condition: service_started
+      mailpit:
+        condition: service_started
     environment:
       APP_ENV: dev
       DATABASE_URL: mysql://${MYSQL_USER:-app}:${MYSQL_PASSWORD:-!ChangeMe!}@database:3306/${MYSQL_DATABASE:-app}?serverVersion=${MYSQL_VERSION:-8}&charset=${MYSQL_CHARSET:-utf8mb4}
@@ -47,16 +52,17 @@ services:
       MERCURE_URL: ${MERCURE_URL:-http://mercure/.well-known/mercure}
       MERCURE_JWT_SECRET: ${MERCURE_JWT_SECRET:-!ChangeThisMercureHubJWTSecretKey!}
       DEFAULT_URI: https://${SERVER_NAME:-localhost}:${HTTPS_PORT:-443}
-    command: [ "php", "bin/console", "messenger:consume", "async", "--time-limit=3600", "--memory-limit=128M", "-vv" ]
+      MAILER_DSN: smtp://mailpit:1025
+    command: [ "php", "bin/console", "messenger:consume", "async", "async_emails", "--time-limit=3600", "--memory-limit=128M", "-vv" ]
     healthcheck:
-      test: ["CMD-SHELL", "grep -qa messenger /proc/1/cmdline"]
+      test: [ "CMD-SHELL", "grep -qa messenger /proc/1/cmdline" ]
       interval: 10s
       timeout: 5s
       retries: 5
       start_period: 30s
 
   database:
-    image: mysql:${MYSQL_VERSION:-8}
+    image: mysql:${MYSQL_VERSION:-8.4}
     restart: unless-stopped
     environment:
       MYSQL_DATABASE: ${MYSQL_DATABASE:-app}
@@ -133,6 +139,13 @@ services:
       - "15672:15672" # management UI
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
+
+  mailpit:
+    image: axllent/mailpit:latest
+    restart: unless-stopped
+    ports:
+      - "8025:8025"   # web UI
+      - "1025:1025"   # SMTP
 
   prometheus:
     image: prom/prometheus:v2.50.1
