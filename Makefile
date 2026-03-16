@@ -19,6 +19,9 @@ test:
 testdetails:
 	docker compose exec php vendor/bin/phpunit --display-all-issues --colors=always
 
+dump-auto:
+	docker compose exec php composer dump-autoload
+
 about:
 	docker compose exec php php bin/console about
 
@@ -30,6 +33,12 @@ start:
 
 stop:
 	docker compose down
+
+worker:
+	docker compose exec php php bin/console app:moderation:flush-worker
+
+phpmetrics:
+	docker compose exec php ./vendor/bin/phpmetrics --report-html=phpmetrics3 ./src
 
 allchecks: stan csdr testdetails
 

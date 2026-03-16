@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Twitter\Tweet\UI\CLI;
 
+use DateTimeImmutable;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -160,8 +161,11 @@ final class ModerationFlushWorkerCommand extends Command
         $processedIds = array_merge($approvedIds, $rejectedIds);
         $this->queue->remove($processedIds);
 
+        $now = new DateTimeImmutable();
+
         $output->writeln(sprintf(
-            '<info>Moderated batch: total=%d approved=%d rejected=%d tokens=%d</info>',
+            '[ %s ] <info>Moderated batch: total=%d approved=%d rejected=%d tokens=%d</info>',
+            $now->format('Y-m-d H:i:s.v'),
             count($processedIds),
             count($approvedIds),
             count($rejectedIds),
