@@ -11,7 +11,7 @@ use Twitter\Like\Domain\Like\Exception\LikeAlreadyExistsException;
 use Twitter\Like\Domain\Like\Model\Like;
 use Twitter\Like\Domain\Like\Model\LikeRepository;
 
-final readonly class ToggleLikeCommandHandler
+final readonly class ToggleLikeCommandHandler implements ToggleLikeCommandHandlerInterface
 {
     public function __construct(
         private LikeRepository $likeRepository,

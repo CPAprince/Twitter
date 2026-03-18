@@ -29,6 +29,7 @@ use Twitter\Profile\Domain\Profile\Exception\UserNotFoundException as ProfileUse
 use Twitter\Tweet\Domain\Tweet\Exception\TweetAccessDeniedException;
 use Twitter\Tweet\Domain\Tweet\Exception\TweetNotFoundException;
 use Twitter\Tweet\Domain\Tweet\Exception\UserNotFoundException as TweetUserNotFoundExceptionAlias;
+use Twitter\Like\Domain\Like\Exception\LikeActionLockedException;
 
 final readonly class ExceptionSubscriber implements EventSubscriberInterface
 {
@@ -104,6 +105,11 @@ final readonly class ExceptionSubscriber implements EventSubscriberInterface
             'message' => 'The tweet has already been liked by this user',
             'status' => Response::HTTP_CONFLICT,
         ],
+        LikeActionLockedException::class => [
+            'code' => 'LIKE_ACTION_LOCKED',
+            'message' => 'The tweet has already been locked by this user',
+            'status' => Response::HTTP_TOO_MANY_REQUESTS,
+        ]
     ];
 
     public function __construct(
