@@ -22,6 +22,7 @@ use Twitter\IAM\Domain\Auth\Exception\ValidationErrorException;
 use Twitter\IAM\Domain\User\Exception\InvalidEmailException;
 use Twitter\IAM\Domain\User\Exception\InvalidPasswordException;
 use Twitter\IAM\Domain\User\Exception\UserAlreadyExistsException;
+use Twitter\Like\Domain\Like\Exception\LikeActionLockedException;
 use Twitter\Like\Domain\Like\Exception\LikeAlreadyExistsException;
 use Twitter\Profile\Domain\Profile\Exception\ProfileAlreadyExistsException;
 use Twitter\Profile\Domain\Profile\Exception\ProfileNotFoundException;
@@ -29,7 +30,6 @@ use Twitter\Profile\Domain\Profile\Exception\UserNotFoundException as ProfileUse
 use Twitter\Tweet\Domain\Tweet\Exception\TweetAccessDeniedException;
 use Twitter\Tweet\Domain\Tweet\Exception\TweetNotFoundException;
 use Twitter\Tweet\Domain\Tweet\Exception\UserNotFoundException as TweetUserNotFoundExceptionAlias;
-use Twitter\Like\Domain\Like\Exception\LikeActionLockedException;
 
 final readonly class ExceptionSubscriber implements EventSubscriberInterface
 {
@@ -109,7 +109,7 @@ final readonly class ExceptionSubscriber implements EventSubscriberInterface
             'code' => 'LIKE_ACTION_LOCKED',
             'message' => 'The tweet has already been locked by this user',
             'status' => Response::HTTP_TOO_MANY_REQUESTS,
-        ]
+        ],
     ];
 
     public function __construct(

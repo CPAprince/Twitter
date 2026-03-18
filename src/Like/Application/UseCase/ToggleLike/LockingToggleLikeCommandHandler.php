@@ -7,7 +7,6 @@ namespace Twitter\Like\Application\UseCase\ToggleLike;
 use Symfony\Component\Lock\LockFactory;
 use Twitter\Like\Domain\Like\Exception\LikeActionLockedException;
 
-
 final readonly class LockingToggleLikeCommandHandler implements ToggleLikeCommandHandlerInterface
 {
     public function __construct(

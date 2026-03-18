@@ -84,7 +84,13 @@ services:
         arguments:
             $likeRepository: '@Twitter\Like\Domain\Like\Model\LikeRepository'
             
-        Twitter\Like\Application\UseCase\ToggleLike\ToggleLikeCommandHandlerInterface: '@Twitter\Like\Application\UseCase\ToggleLike\ToggleLikeCommandHandler'
+    Twitter\Like\Application\UseCase\ToggleLike\ToggleLikeCommandHandlerInterface: '@Twitter\Like\Application\UseCase\ToggleLike\ToggleLikeCommandHandler'
+    
+    Twitter\Like\Application\UseCase\ToggleLike\LockingToggleLikeCommandHandler:
+        decorates: Twitter\Like\Application\UseCase\ToggleLike\ToggleLikeCommandHandlerInterface
+        arguments:
+            $inner: '@.inner'
+            $ttlSeconds: '%like_toggle_lock_ttl_seconds%'
     
     Twitter\Profile\Application\UseCase\GetProfile\GetProfileQueryHandler:
         arguments:
@@ -206,12 +212,6 @@ services:
     Twitter\Metrics\EventSubscriber\HttpMetricsSubscriber:
         tags:
             - { name: kernel.event_subscriber }
-    
-    Twitter\Like\Application\UseCase\ToggleLike\LockingToggleLikeCommandHandler:
-        decorates: Twitter\Like\Application\UseCase\ToggleLike\ToggleLikeCommandHandlerInterface
-        arguments:
-            $inner: '@.inner'
-            $ttlSeconds: '%like_toggle_lock_ttl_seconds%'
     
     Prometheus\Storage\InMemory:
         public: true
