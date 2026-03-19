@@ -96,6 +96,7 @@
         "doctrine/doctrine-fixtures-bundle": "^4.3.1",
         "friendsofphp/php-cs-fixer": "*",
         "php-cs-fixer/shim": "^3.94.2",
+        "phpmetrics/phpmetrics": "^2.9",
         "phpstan/phpstan": "^2.1.40",
         "phpstan/phpstan-doctrine": "^2.0.19",
         "phpstan/phpstan-symfony": "^2.0.15",

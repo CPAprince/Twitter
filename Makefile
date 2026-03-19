@@ -40,8 +40,10 @@ worker:
 phpmetrics:
 	docker compose exec php ./vendor/bin/phpmetrics --report-html=phpmetrics3 ./src
 
-allchecks: stan csdr testdetails
+coveragexml:
+	docker compose exec php env XDEBUG_MODE=coverage vendor/bin/phpunit --coverage-clover coverage.xml
 
+allchecks: stan csdr testdetails
 r: router
 cc: cache-clear
 s: stan
