@@ -13,6 +13,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
+use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Throwable;
 use Twitter\IAM\Domain\Auth\Exception\BadRequestException;
@@ -104,6 +105,11 @@ final readonly class ExceptionSubscriber implements EventSubscriberInterface
             'message' => 'The tweet has already been liked by this user',
             'status' => Response::HTTP_CONFLICT,
         ],
+        TooManyRequestsHttpException::class => [
+            'code' => 'TOO_MANY_REQUESTS',
+            'message' => 'Rate limit exceeded. Please try again later.',
+            'status' => Response::HTTP_TOO_MANY_REQUESTS,
+        ],
     ];
 
     public function __construct(
@@ -176,12 +182,18 @@ final readonly class ExceptionSubscriber implements EventSubscriberInterface
             $status = $throwable->getStatusCode();
         }
 
-        return new JsonResponse([
+        $response = new JsonResponse([
             'error' => [
                 'code' => $code,
                 'message' => $message,
             ],
         ], $status);
+
+        if ($throwable instanceof HttpExceptionInterface) {
+            $response->headers->add($throwable->getHeaders());
+        }
+
+        return $response;
     }
 
     private function validationErrorResponse(Throwable $throwable): ?JsonResponse
