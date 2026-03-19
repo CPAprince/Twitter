@@ -18,6 +18,9 @@ services:
     Twitter\Shared\Infrastructure\EventSubscriber\DoctrineResetSubscriber:
         tags: [ 'kernel.event_subscriber' ]
 
+    Twitter\Shared\Infrastructure\EventSubscriber\RateLimitSubscriber:
+        tags: [ 'kernel.event_subscriber' ]
+
     Twitter\Shared\Infrastructure\EventSubscriber\JWTCreatedListener:
         tags:
             - { name: kernel.event_listener, event: lexik_jwt_authentication.on_jwt_created }
