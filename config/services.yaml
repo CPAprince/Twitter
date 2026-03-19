@@ -211,7 +211,14 @@ services:
         class: Prometheus\CollectorRegistry
         arguments:
             - '@Prometheus\Storage\InMemory'
-    
+
+    app.login_rate_limiter:
+        class: Symfony\Component\Security\Http\RateLimiter\DefaultLoginRateLimiter
+        arguments:
+            $globalFactory: '@limiter.ip_login'
+            $localFactory: '@limiter.username_ip_login'
+            $secret: '%kernel.secret%'
+
     # DoctrineClearSubscriber commented out: redundant with DoctrineResetSubscriber.
     # In FrankenPHP worker mode, resetManager() already clears the identity map; this subscriber's
     # injected EM reference becomes stale after reset, making it redundant at best.
