@@ -2,12 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Twitter\Like\Application\UseCase\ToggleLike;
+namespace Twitter\Like\Infrastructure\Lock\Decorator;
 
+use Override;
 use Symfony\Component\Lock\LockFactory;
-use Twitter\Like\Domain\Like\Exception\LikeActionLockedException;
+use Twitter\Like\Application\UseCase\ToggleLike\ToggleLikeCommand;
+use Twitter\Like\Application\UseCase\ToggleLike\ToggleLikeCommandHandlerInterface;
+use Twitter\Like\Application\UseCase\ToggleLike\ToggleLikeCommandResult;
+use Twitter\Like\Infrastructure\Lock\Exception\LikeActionLockedException;
 
-final readonly class LockingToggleLikeCommandHandler implements ToggleLikeCommandHandlerInterface
+final readonly class ToggleLikeCommandHandlerDecorator implements ToggleLikeCommandHandlerInterface
 {
     public function __construct(
         private ToggleLikeCommandHandlerInterface $inner,
@@ -18,6 +22,7 @@ final readonly class LockingToggleLikeCommandHandler implements ToggleLikeComman
     /**
      * @throws LikeActionLockedException
      */
+    #[Override]
     public function handle(ToggleLikeCommand $command): ToggleLikeCommandResult
     {
         $lock = $this->lockFactory->createLock(

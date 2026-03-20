@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Twitter\tests\Like\Application\UseCase\ToggleLike;
+namespace Twitter\Tests\Like\Application\UseCase\ToggleLike;
 
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 use Symfony\Component\Lock\LockFactory;
 use Symfony\Component\Lock\SharedLockInterface;
-use Twitter\Like\Application\UseCase\ToggleLike\LockingToggleLikeCommandHandler;
 use Twitter\Like\Application\UseCase\ToggleLike\ToggleLikeCommand;
 use Twitter\Like\Application\UseCase\ToggleLike\ToggleLikeCommandHandlerInterface;
 use Twitter\Like\Application\UseCase\ToggleLike\ToggleLikeCommandResult;
-use Twitter\Like\Domain\Like\Exception\LikeActionLockedException;
+use Twitter\Like\Infrastructure\Lock\Decorator\ToggleLikeCommandHandlerDecorator;
+use Twitter\Like\Infrastructure\Lock\Exception\LikeActionLockedException;
 
 final class LockingToggleLikeCommandHandlerTest extends TestCase
 {
@@ -49,7 +49,7 @@ final class LockingToggleLikeCommandHandlerTest extends TestCase
             )
             ->willReturn($lock);
 
-        $handler = new LockingToggleLikeCommandHandler(
+        $handler = new ToggleLikeCommandHandlerDecorator(
             $innerHandler,
             $lockFactory,
             5,
@@ -97,7 +97,7 @@ final class LockingToggleLikeCommandHandlerTest extends TestCase
             )
             ->willReturn($lock);
 
-        $handler = new LockingToggleLikeCommandHandler(
+        $handler = new ToggleLikeCommandHandlerDecorator(
             $innerHandler,
             $lockFactory,
             5,
@@ -143,7 +143,7 @@ final class LockingToggleLikeCommandHandlerTest extends TestCase
             )
             ->willReturn($lock);
 
-        $handler = new LockingToggleLikeCommandHandler(
+        $handler = new ToggleLikeCommandHandlerDecorator(
             $innerHandler,
             $lockFactory,
             5,

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Twitter\Like\Domain\Like\Exception;
+namespace Twitter\Like\Infrastructure\Lock\Exception;
 
 use Exception;
 
