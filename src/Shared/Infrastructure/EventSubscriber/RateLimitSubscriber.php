@@ -76,7 +76,7 @@ final readonly class RateLimitSubscriber implements EventSubscriberInterface
             /** @var RateLimiterFactory $factory */
             $factory = $this->limiters->get($config->target);
 
-            $limit = $factory->create((string) $key)->consume();
+            $limit = $factory->create($key)->consume();
 
             if (!$limit->isAccepted()) {
                 throw new TooManyRequestsHttpException(max(0, $limit->getRetryAfter()->getTimestamp() - time()));
