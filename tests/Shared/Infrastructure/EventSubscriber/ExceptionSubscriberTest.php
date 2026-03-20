@@ -218,7 +218,6 @@ final class ExceptionSubscriberTest extends TestCase
     #[Test]
     public function onKernelExceptionMapsTooManyRequestsHttpExceptionAndPreservesHeaders(): void
     {
-        // Arrange
         $subscriber = new ExceptionSubscriber($this->logger);
         $throwable = new TooManyRequestsHttpException(60);
         $event = new ExceptionEvent(
@@ -232,15 +231,12 @@ final class ExceptionSubscriberTest extends TestCase
             ->expects(self::once())
             ->method('error');
 
-        // Act
         $subscriber->onKernelException($event);
 
-        // Assert
         $response = $event->getResponse();
         self::assertNotNull($response);
         self::assertSame(429, $response->getStatusCode());
 
-        self::assertTrue($response->headers->has('Retry-After'));
         self::assertSame('60', $response->headers->get('Retry-After'));
 
         $payload = json_decode($response->getContent() ?: '', true);
