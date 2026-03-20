@@ -12,11 +12,11 @@ use PHPUnit\Framework\TestCase;
 use RuntimeException;
 use Symfony\Component\Lock\LockFactory;
 use Symfony\Component\Lock\SharedLockInterface;
-use Twitter\Like\Infrastructure\Lock\Exception\LikeActionLockedException;
 use Twitter\Like\Application\UseCase\ToggleLike\ToggleLikeCommand;
 use Twitter\Like\Application\UseCase\ToggleLike\ToggleLikeCommandHandlerInterface;
 use Twitter\Like\Application\UseCase\ToggleLike\ToggleLikeCommandResult;
 use Twitter\Like\Infrastructure\Lock\Decorator\ToggleLikeCommandHandlerDecorator;
+use Twitter\Like\Infrastructure\Lock\Exception\LikeActionLockedException;
 
 #[Group('unit')]
 #[CoversMethod(ToggleLikeCommandHandlerDecorator::class, 'handle')]
