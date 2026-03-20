@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Twitter\Shared\Infrastructure\EventSubscriber;
+namespace Twitter\Shared\Infrastructure\RateLimiter;
 
 use LogicException;
 use Override;
@@ -16,7 +16,6 @@ use Symfony\Component\HttpKernel\Event\ControllerEvent;
 use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\RateLimiter\RateLimiterFactory;
-use Twitter\Shared\Infrastructure\Attribute\RateLimited;
 
 final readonly class RateLimitSubscriber implements EventSubscriberInterface
 {

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Twitter\Tests\Shared\Infrastructure\EventSubscriber;
+namespace Twitter\Tests\Shared\Infrastructure\RateLimiter;
 
 use DateTimeImmutable;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -21,8 +21,8 @@ use Symfony\Component\RateLimiter\LimiterInterface;
 use Symfony\Component\RateLimiter\RateLimit;
 use Symfony\Component\RateLimiter\RateLimiterFactoryInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Twitter\Shared\Infrastructure\Attribute\RateLimited;
-use Twitter\Shared\Infrastructure\EventSubscriber\RateLimitSubscriber;
+use Twitter\Shared\Infrastructure\RateLimiter\RateLimited;
+use Twitter\Shared\Infrastructure\RateLimiter\RateLimitSubscriber;
 
 #[Group('unit')]
 #[CoversClass(RateLimitSubscriber::class)]

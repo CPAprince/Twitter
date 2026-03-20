@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Twitter\Shared\Infrastructure\Attribute;
+namespace Twitter\Shared\Infrastructure\RateLimiter;
 
 use Attribute;
 

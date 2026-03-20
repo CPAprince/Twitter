@@ -12,7 +12,7 @@ use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Twitter\IAM\Domain\User\Model\User;
-use Twitter\Shared\Infrastructure\Attribute\RateLimited;
+use Twitter\Shared\Infrastructure\RateLimiter\RateLimited;
 use Twitter\Tweet\Application\UseCase\CreateTweet\CreateTweetCommand;
 use Twitter\Tweet\Application\UseCase\CreateTweet\CreateTweetCommandHandlerInterface;
 

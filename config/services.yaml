@@ -18,7 +18,7 @@ services:
     Twitter\Shared\Infrastructure\EventSubscriber\DoctrineResetSubscriber:
         tags: [ 'kernel.event_subscriber' ]
 
-    Twitter\Shared\Infrastructure\EventSubscriber\RateLimitSubscriber:
+    Twitter\Shared\Infrastructure\RateLimiter\RateLimitSubscriber:
         tags: [ 'kernel.event_subscriber' ]
 
     Twitter\Shared\Infrastructure\EventSubscriber\JWTCreatedListener:

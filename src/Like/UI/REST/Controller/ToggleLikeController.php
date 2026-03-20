@@ -14,7 +14,7 @@ use Twitter\IAM\Domain\User\Model\User;
 use Twitter\Like\Application\UseCase\ToggleLike\ToggleLikeCommand;
 use Twitter\Like\Application\UseCase\ToggleLike\ToggleLikeCommandHandler;
 use Twitter\Like\Domain\Like\Exception\LikeAlreadyExistsException;
-use Twitter\Shared\Infrastructure\Attribute\RateLimited;
+use Twitter\Shared\Infrastructure\RateLimiter\RateLimited;
 
 #[Route('api/tweets/{tweetId}/likes/toggle', name: 'api_tweets_like_toggle', methods: [Request::METHOD_POST])]
 #[RateLimited('like')]
