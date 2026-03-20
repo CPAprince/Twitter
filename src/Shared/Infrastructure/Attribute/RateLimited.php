@@ -10,6 +10,6 @@ use Attribute;
 final readonly class RateLimited
 {
     public function __construct(
-        public string $limiter,
+        public string $target,
     ) {}
 }

@@ -69,12 +69,12 @@ final readonly class RateLimitSubscriber implements EventSubscriberInterface
             /** @var RateLimited $config */
             $config = $attribute->newInstance();
 
-            if (!$this->limiters->has($config->limiter)) {
-                throw new LogicException(sprintf('Rate limiter "%s" is not defined.', $config->limiter));
+            if (!$this->limiters->has($config->target)) {
+                throw new LogicException(sprintf('Rate limiter "%s" is not defined.', $config->target));
             }
 
             /** @var RateLimiterFactory $factory */
-            $factory = $this->limiters->get($config->limiter);
+            $factory = $this->limiters->get($config->target);
 
             $limit = $factory->create((string) $key)->consume();
 
