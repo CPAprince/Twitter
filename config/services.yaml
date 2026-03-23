@@ -4,6 +4,7 @@ parameters:
     cache_ttl_feed_main: '%env(int:CACHE_TTL_FEED_MAIN)%'
     cache_ttl_feed_user: '%env(int:CACHE_TTL_FEED_USER)%'
     cache_ttl_profile: '%env(int:CACHE_TTL_PROFILE)%'
+    like_toggle_lock_ttl_seconds: '%env(int:LIKE_TOGGLE_LOCK_TTL)%'
 
 services:
     _defaults:
@@ -85,6 +86,14 @@ services:
     Twitter\Like\Application\UseCase\ToggleLike\ToggleLikeCommandHandler:
         arguments:
             $likeRepository: '@Twitter\Like\Domain\Like\Model\LikeRepository'
+            
+    Twitter\Like\Application\UseCase\ToggleLike\ToggleLikeCommandHandlerInterface: '@Twitter\Like\Application\UseCase\ToggleLike\ToggleLikeCommandHandler'
+    
+    Twitter\Like\Infrastructure\Lock\Decorator\ToggleLikeCommandHandlerDecorator:
+        decorates: Twitter\Like\Application\UseCase\ToggleLike\ToggleLikeCommandHandlerInterface
+        arguments:
+            $inner: '@.inner'
+            $ttlSeconds: '%like_toggle_lock_ttl_seconds%'
     
     Twitter\Profile\Application\UseCase\GetProfile\GetProfileQueryHandler:
         arguments:

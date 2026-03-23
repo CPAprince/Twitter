@@ -24,6 +24,7 @@ use Twitter\IAM\Domain\User\Exception\InvalidEmailException;
 use Twitter\IAM\Domain\User\Exception\InvalidPasswordException;
 use Twitter\IAM\Domain\User\Exception\UserAlreadyExistsException;
 use Twitter\Like\Domain\Like\Exception\LikeAlreadyExistsException;
+use Twitter\Like\Infrastructure\Lock\Exception\LikeActionLockedException;
 use Twitter\Profile\Domain\Profile\Exception\ProfileAlreadyExistsException;
 use Twitter\Profile\Domain\Profile\Exception\ProfileNotFoundException;
 use Twitter\Profile\Domain\Profile\Exception\UserNotFoundException as ProfileUserNotFoundExceptionAlias;
@@ -104,6 +105,11 @@ final readonly class ExceptionSubscriber implements EventSubscriberInterface
             'code' => 'LIKE_ALREADY_EXISTS',
             'message' => 'The tweet has already been liked by this user',
             'status' => Response::HTTP_CONFLICT,
+        ],
+        LikeActionLockedException::class => [
+            'code' => 'LIKE_ACTION_LOCKED',
+            'message' => 'The tweet has already been locked by this user',
+            'status' => Response::HTTP_TOO_MANY_REQUESTS,
         ],
         TooManyRequestsHttpException::class => [
             'code' => 'TOO_MANY_REQUESTS',

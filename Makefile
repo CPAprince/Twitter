@@ -16,8 +16,17 @@ csdr:
 test:
 	docker compose exec php vendor/bin/phpunit
 
+testdetails:
+	docker compose exec php vendor/bin/phpunit --display-all-issues --colors=always
+
+dump-auto:
+	docker compose exec php composer dump-autoload
+
 about:
 	docker compose exec php php bin/console about
+
+container:
+	docker compose exec php php bin/console debug:container
 
 start:
 	docker compose up --wait -d
@@ -25,9 +34,16 @@ start:
 stop:
 	docker compose down
 
-allchecks: stan cs test
+worker:
+	docker compose exec php php bin/console app:moderation:flush-worker
+
+phpmetrics:
+	docker compose exec php ./vendor/bin/phpmetrics --report-html=phpmetrics3 ./src
+
+allchecks: stan csdr testdetails
 
 r: router
 cc: cache-clear
 s: stan
 t: test
+td: testdetails

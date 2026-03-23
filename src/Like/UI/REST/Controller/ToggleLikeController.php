@@ -12,7 +12,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Twitter\IAM\Domain\User\Model\User;
 use Twitter\Like\Application\UseCase\ToggleLike\ToggleLikeCommand;
-use Twitter\Like\Application\UseCase\ToggleLike\ToggleLikeCommandHandler;
+use Twitter\Like\Application\UseCase\ToggleLike\ToggleLikeCommandHandlerInterface;
 use Twitter\Like\Domain\Like\Exception\LikeAlreadyExistsException;
 use Twitter\Shared\Infrastructure\RateLimiter\RateLimited;
 
@@ -21,7 +21,7 @@ use Twitter\Shared\Infrastructure\RateLimiter\RateLimited;
 final class ToggleLikeController extends AbstractController
 {
     public function __construct(
-        private readonly ToggleLikeCommandHandler $handler,
+        private readonly ToggleLikeCommandHandlerInterface $handler,
     ) {}
 
     /**
