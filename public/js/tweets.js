@@ -64,7 +64,19 @@ window.Tweets.applyEditVisibility = async (container = document) => {
 
 window.Tweets.applyLikedState = async (container = document) => {
   const currentUserId = await Auth.getCurrentUserId();
-  if (!currentUserId) return;
+  
+  // If not authenticated, reset all like buttons to unliked state
+  if (!currentUserId) {
+    container.querySelectorAll(".tweet-like-btn").forEach(btn => {
+      btn.dataset.liked = "false";
+      const icon = btn.querySelector(".tweet-like-icon");
+      if (icon) {
+        icon.classList.remove("fas", "text-primary");
+        icon.classList.add("far");
+      }
+    });
+    return;
+  }
 
   const likedTweets = getLikedTweets();
   container.querySelectorAll(".tweet-like-btn").forEach(btn => {
