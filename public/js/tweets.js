@@ -377,6 +377,9 @@ document.addEventListener("DOMContentLoaded", async () => {
                   clearInterval(interval);
                   submitBtn.disabled = false;
                   submitBtn.textContent = originalText;
+                  if (alerts) {
+                    alerts.replaceChildren();
+                  }
                 } else {
                   submitBtn.textContent = `Try in ${timeLeft}s`;
                 }
