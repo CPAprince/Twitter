@@ -1,0 +1,15 @@
+pre-commit:
+    parallel: true
+    jobs:
+        -   run: docker compose exec -T php ./vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php {staged_files}
+            glob: "*.php"
+            stage_fixed: true
+
+        -   run: docker compose exec -T php ./vendor/bin/phpstan analyse -c phpstan.dist.neon --no-interaction --memory-limit=512M {staged_files}
+            glob: "*.php"
+            exclude: '\.php-cs-fixer\.dist\.php'
+
+pre-push:
+    parallel: true
+    jobs:
+        -   run: docker compose exec -T php ./vendor/bin/phpunit --stop-on-failure --stop-on-error --colors=always
