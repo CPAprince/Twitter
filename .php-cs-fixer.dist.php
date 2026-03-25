@@ -21,7 +21,7 @@ $finder = new Finder()
 return new Config()
     ->setRiskyAllowed(true)
     ->setUsingCache(true)
-    ->setCacheFile(__DIR__.'/.phpunit.result.cache')
+    ->setCacheFile(__DIR__.'/.php-cs-fixer.cache')
     ->setRules([
         '@Symfony' => true,
         'strict_param' => true,
