@@ -4,8 +4,20 @@ services:
       context: .
       target: frankenphp_prod
     environment:
-      APP_SECRET: ${APP_SECRET}
+      APP_ENV: prod
+      APP_DEBUG: 0
+      APP_SECRET: 87a40337be60a70d4d59cdf83c7ce425
+  
+  php-worker:
+    build:
+      context: .
+      target: frankenphp_prod
+    environment:
+      APP_ENV: prod
+      APP_DEBUG: 0
 
   database:
     environment:
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    ports:
+      - "${MYSQL_PORT:-3306}:3306"

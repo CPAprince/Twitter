@@ -41,10 +41,18 @@ docker compose exec php php bin/console lexik:jwt:generate-keypair
 
 Open  https://localhost
 
-
-
 *You also can import [Demo Dataset with 555 users, 21k tweets, 79k likes](docs/Dump4tables_for_import_owerwrite_ready.sql)*
 
+
+***Run PROD to test performance with k6***
+
+```shell
+docker compose -f compose.yaml -f compose.prod.yaml up -d --build
+```
+
+```shell
+docker compose -f compose.yaml -f compose.prod.yaml down
+```
 
 ## License
 
