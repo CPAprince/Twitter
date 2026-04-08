@@ -33,6 +33,12 @@ final class Version20260408150600 extends AbstractMigration
 
     public function down(Schema $schema): void
     {
-        $this->addSql('DROP TABLE tweets');
+        $this->addSql(
+            <<<SQL
+            ALTER TABLE tweets
+            DROP INDEX idx_tweets_created_id,
+            DROP INDEX idx_tweets_user_created_id;
+            SQL
+        );
     }
 }
