@@ -41,6 +41,19 @@ To use the [message template](../.github/.gitmessage), change Git config local s
 git config --local commit.template .github/.gitmessage
 ```
 
+## Git Hooks (Lefthook)
+
+The project uses [Lefthook](https://lefthook.dev/) to automate code quality checks.
+
+- **pre-commit**: Runs `php-cs-fixer` (auto-fixing style) and `phpstan` on staged `.php` files.
+- **pre-push**: Runs all PHPUnit tests.
+
+To install the hooks, run:
+
+```sh
+lefthook install
+```
+
 ## Prohibited
 
 - Direct commits or force-push to `main` and `develop`
