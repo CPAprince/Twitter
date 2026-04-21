@@ -21,8 +21,28 @@ services:
     ports:
       - "${MYSQL_PORT:-3306}:3306"
 
+  php-worker:
+    build:
+      context: .
+      target: frankenphp_dev
+    volumes:
+      - ./:/app
+      - /app/var
+      - /app/vendor
+
 ###> symfony/mercure-bundle ###
   mercure:
     ports:
       - "80"
 ###< symfony/mercure-bundle ###
+
+###> symfony/mailer ###
+  mailer:
+    image: axllent/mailpit
+    ports:
+      - "1025"
+      - "8025"
+    environment:
+      MP_SMTP_AUTH_ACCEPT_ANY: 1
+      MP_SMTP_AUTH_ALLOW_INSECURE: 1
+###< symfony/mailer ###

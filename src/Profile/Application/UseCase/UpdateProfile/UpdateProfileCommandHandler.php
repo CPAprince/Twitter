@@ -4,11 +4,12 @@ declare(strict_types=1);
 
 namespace Twitter\Profile\Application\UseCase\UpdateProfile;
 
+use Override;
 use Twitter\IAM\Domain\Auth\Exception\UnauthorizedException;
 use Twitter\Profile\Domain\Profile\Exception\ProfileNotFoundException;
 use Twitter\Profile\Domain\Profile\Model\ProfileRepository;
 
-final readonly class UpdateProfileCommandHandler
+final readonly class UpdateProfileCommandHandler implements UpdateProfileCommandHandlerInterface
 {
     public function __construct(private ProfileRepository $profileRepository) {}
 
@@ -16,6 +17,7 @@ final readonly class UpdateProfileCommandHandler
      * @throws ProfileNotFoundException
      * @throws UnauthorizedException
      */
+    #[Override]
     public function handle(UpdateProfileCommand $command): UpdateProfileCommandResult
     {
         $profile = $this->profileRepository->getByUserId($command->userId);

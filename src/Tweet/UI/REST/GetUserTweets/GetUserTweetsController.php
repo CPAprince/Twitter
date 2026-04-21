@@ -9,13 +9,13 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Twitter\Tweet\Application\UseCase\GetUserTweets\GetUserTweetsQuery;
-use Twitter\Tweet\Application\UseCase\GetUserTweets\GetUserTweetsQueryHandler;
+use Twitter\Tweet\Application\UseCase\GetUserTweets\GetUserTweetsQueryHandlerInterface;
 use Twitter\Tweet\Application\UseCase\Shared\TweetResponse;
 
 #[Route('/api/profiles/{userId}/tweets', name: 'tweets_get_by_user', methods: [Request::METHOD_GET])]
 final readonly class GetUserTweetsController
 {
-    public function __construct(private GetUserTweetsQueryHandler $queryHandler) {}
+    public function __construct(private GetUserTweetsQueryHandlerInterface $queryHandler) {}
 
     public function __invoke(string $userId, Request $request): JsonResponse
     {

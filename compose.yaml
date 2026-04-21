@@ -5,7 +5,13 @@ services:
     depends_on:
       database:
         condition: service_healthy
+      rabbitmq:
+        condition: service_started
+      mailpit:
+        condition: service_started
     environment:
+      APP_ENV: dev
+      APP_DEBUG: 1
       SERVER_NAME: ${SERVER_NAME:-localhost}, php:80
       DEFAULT_URI: https://${SERVER_NAME:-localhost}:${HTTPS_PORT:-443}
       TRUSTED_PROXIES: ${TRUSTED_PROXIES:-127.0.0.0/8,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16}
@@ -14,6 +20,8 @@ services:
       MERCURE_URL: ${MERCURE_URL:-http://mercure/.well-known/mercure}
       MERCURE_PUBLIC_URL: ${MERCURE_PUBLIC_URL:-/.well-known/mercure}
       MERCURE_JWT_SECRET: ${MERCURE_JWT_SECRET:-!ChangeThisMercureHubJWTSecretKey!}
+      MESSENGER_TRANSPORT_DSN: amqp://${RABBITMQ_DEFAULT_USER:-app}:${RABBITMQ_DEFAULT_PASS:-app}@rabbitmq:5672/%2f/messages
+      MAILER_DSN: smtp://mailpit:1025
     volumes:
       - caddy_data:/data
       - caddy_config:/config
@@ -27,13 +35,40 @@ services:
       retries: 5
       start_period: 60s
 
+  php-worker:
+    image: ${IMAGES_PREFIX:-}app-php
+    restart: unless-stopped
+    depends_on:
+      php:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_started
+      mailpit:
+        condition: service_started
+    environment:
+      APP_ENV: dev
+      DATABASE_URL: mysql://${MYSQL_USER:-app}:${MYSQL_PASSWORD:-!ChangeMe!}@database:3306/${MYSQL_DATABASE:-app}?serverVersion=${MYSQL_VERSION:-8}&charset=${MYSQL_CHARSET:-utf8mb4}
+      MESSENGER_TRANSPORT_DSN: amqp://${RABBITMQ_DEFAULT_USER:-app}:${RABBITMQ_DEFAULT_PASS:-app}@rabbitmq:5672/%2f/messages
+      MERCURE_URL: ${MERCURE_URL:-http://mercure/.well-known/mercure}
+      MERCURE_JWT_SECRET: ${MERCURE_JWT_SECRET:-!ChangeThisMercureHubJWTSecretKey!}
+      DEFAULT_URI: https://${SERVER_NAME:-localhost}:${HTTPS_PORT:-443}
+      MAILER_DSN: smtp://mailpit:1025
+    command: [ "php", "bin/console", "messenger:consume", "async", "async_emails", "--time-limit=3600", "--memory-limit=128M", "-vv" ]
+    healthcheck:
+      test: [ "CMD-SHELL", "grep -qa messenger /proc/1/cmdline" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
   database:
-    image: mysql:${MYSQL_VERSION:-8}
+    image: mysql:${MYSQL_VERSION:-8.4}
     restart: unless-stopped
     environment:
       MYSQL_DATABASE: ${MYSQL_DATABASE:-app}
       # You should definitely change the password in production
-      MYSQL_RANDOM_ROOT_PASSWORD: "true"
+      # MYSQL_RANDOM_ROOT_PASSWORD: "true"
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD:-!ChangeMe!}
       MYSQL_USER: ${MYSQL_USER:-app}
     volumes:
@@ -43,8 +78,21 @@ services:
       timeout: 5s
       retries: 5
       start_period: 60s
-
-###> symfony/mercure-bundle ###
+  
+  mysqld_exporter:
+    image: prom/mysqld-exporter:v0.15.1
+    restart: unless-stopped
+    volumes:
+      - ./infra/mysql-exporter/.my.cnf:/.my.cnf:ro
+    command:
+      - --config.my-cnf=/.my.cnf
+    depends_on:
+      database:
+        condition: service_healthy
+    ports:
+      - "9104:9104"
+  
+  ###> symfony/mercure-bundle ###
   mercure:
     image: dunglas/mercure:latest
     restart: unless-stopped
@@ -56,21 +104,89 @@ services:
         anonymous
         cors_origins *
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost/healthz"]
+      test: [ "CMD", "curl", "-f", "http://localhost/healthz" ]
       timeout: 5s
       retries: 5
       start_period: 60s
     volumes:
       - mercure_data:/data
       - mercure_config:/config
-###< symfony/mercure-bundle ###
+  ###< symfony/mercure-bundle ###
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - redis_data:/data
+
+  rabbitmq:
+    image: rabbitmq:3.13-management
+    restart: unless-stopped
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER:-app}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS:-app}
+      RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS: "-rabbitmq_prometheus return_per_object_metrics true"
+    ports:
+      - "5672:5672"
+      - "15672:15672" # management UI
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+
+  mailpit:
+    image: axllent/mailpit:latest
+    restart: unless-stopped
+    ports:
+      - "8025:8025"   # web UI
+      - "1025:1025"   # SMTP
+
+  prometheus:
+    image: prom/prometheus:v2.50.1
+    restart: unless-stopped
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./infra/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./infra/prometheus/alerts.yml:/etc/prometheus/alerts.yml:ro
+      - prometheus_data:/prometheus
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus"
+      - "--storage.tsdb.retention.time=30d"
+
+  grafana:
+    image: grafana/grafana:10.3.3
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./infra/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./infra/grafana/dashboards:/var/lib/grafana/dashboards:ro
+    depends_on:
+      - prometheus
 
 volumes:
   caddy_data:
   caddy_config:
   database_data:
-
-###> symfony/mercure-bundle ###
+  
+  ###> symfony/mercure-bundle ###
   mercure_data:
   mercure_config:
-###< symfony/mercure-bundle ###
+  ###< symfony/mercure-bundle ###
+
+  redis_data:
+  rabbitmq_data:
+  grafana_data:
+  prometheus_data:

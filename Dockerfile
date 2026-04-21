@@ -32,6 +32,9 @@ RUN set -eux; \
 		opcache \
 		zip \
     	pdo_mysql \
+    	igbinary \
+    	redis \
+		amqp \
 	;
 
 COPY --link frankenphp/conf.d/10-app.ini $PHP_INI_DIR/app.conf.d/
@@ -67,6 +70,7 @@ CMD [ "frankenphp", "run", "--config", "/etc/frankenphp/Caddyfile", "--watch" ]
 FROM frankenphp_base AS frankenphp_prod
 
 ENV APP_ENV=prod
+ENV FRANKENPHP_WORKER_CONFIG="num 5"
 
 RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
 

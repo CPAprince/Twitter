@@ -1,5 +1,11 @@
 # yaml-language-server: $schema=../vendor/symfony/dependency-injection/Loader/schema/services.schema.json
 
+parameters:
+    cache_ttl_feed_main: '%env(int:CACHE_TTL_FEED_MAIN)%'
+    cache_ttl_feed_user: '%env(int:CACHE_TTL_FEED_USER)%'
+    cache_ttl_profile: '%env(int:CACHE_TTL_PROFILE)%'
+    like_toggle_lock_ttl_seconds: '%env(int:LIKE_TOGGLE_LOCK_TTL)%'
+
 services:
     _defaults:
         autowire: true
@@ -13,6 +19,9 @@ services:
     Twitter\Shared\Infrastructure\EventSubscriber\DoctrineResetSubscriber:
         tags: [ 'kernel.event_subscriber' ]
 
+    Twitter\Shared\Infrastructure\RateLimiter\RateLimitSubscriber:
+        tags: [ 'kernel.event_subscriber' ]
+
     Twitter\Shared\Infrastructure\EventSubscriber\JWTCreatedListener:
         tags:
             - { name: kernel.event_listener, event: lexik_jwt_authentication.on_jwt_created }
@@ -20,7 +29,7 @@ services:
     Twitter\IAM\UI\REST\Controller\:
         resource: '../src/IAM/UI/REST/Controller/*Controller.php'
         tags: [ 'controller.service_arguments' ]
-        
+    
     Twitter\IAM\UI\Web\:
         resource: '../src/IAM/UI/Web/*/*Controller.php'
         tags: [ 'controller.service_arguments' ]
@@ -36,6 +45,12 @@ services:
     Twitter\Registration\Application\UseCase\RegisterUser\RegisterUserCommandHandler:
         arguments:
             $entityManager: '@doctrine.orm.entity_manager'
+            $messageBus: '@messenger.default_bus'
+
+    Twitter\Registration\Application\Message\SendWelcomeEmailHandler:
+        arguments:
+            $senderAddress: '%env(MAILER_SENDER)%'
+            $appBaseUrl: '%env(DEFAULT_URI)%'
 
     Twitter\IAM\Application\Logout\LogoutHandler:
         arguments:
@@ -72,13 +87,25 @@ services:
         arguments:
             $likeRepository: '@Twitter\Like\Domain\Like\Model\LikeRepository'
             
+    Twitter\Like\Application\UseCase\ToggleLike\ToggleLikeCommandHandlerInterface: '@Twitter\Like\Application\UseCase\ToggleLike\ToggleLikeCommandHandler'
+    
+    Twitter\Like\Infrastructure\Lock\Decorator\ToggleLikeCommandHandlerDecorator:
+        decorates: Twitter\Like\Application\UseCase\ToggleLike\ToggleLikeCommandHandlerInterface
+        arguments:
+            $inner: '@.inner'
+            $ttlSeconds: '%like_toggle_lock_ttl_seconds%'
+    
     Twitter\Profile\Application\UseCase\GetProfile\GetProfileQueryHandler:
         arguments:
             $profileRepository: '@Twitter\Profile\Domain\Profile\Model\ProfileRepository'
 
+    Twitter\Profile\Application\UseCase\GetProfile\GetProfileQueryHandlerInterface: '@Twitter\Profile\Application\UseCase\GetProfile\GetProfileQueryHandler'
+
     Twitter\Profile\Application\UseCase\UpdateProfile\UpdateProfileCommandHandler:
         arguments:
             $profileRepository: '@Twitter\Profile\Domain\Profile\Model\ProfileRepository'
+
+    Twitter\Profile\Application\UseCase\UpdateProfile\UpdateProfileCommandHandlerInterface: '@Twitter\Profile\Application\UseCase\UpdateProfile\UpdateProfileCommandHandler'
 
     Twitter\Profile\Domain\Profile\Model\ProfileRepository:
         class: Twitter\Profile\Infrastructure\Persistence\MySQL\Repository\MySQLProfileRepository
@@ -93,6 +120,8 @@ services:
     Twitter\Tweet\Application\UseCase\CreateTweet\CreateTweetCommandHandler:
         arguments:
             $tweetRepository: '@Twitter\Tweet\Domain\Tweet\Model\TweetRepository'
+
+    Twitter\Tweet\Application\UseCase\CreateTweet\CreateTweetCommandHandlerInterface: '@Twitter\Tweet\Application\UseCase\CreateTweet\CreateTweetCommandHandler'
     
     Twitter\Like\Domain\Like\Model\LikeRepository:
         class: Twitter\Like\Infrastructure\Persistence\MySQL\Repository\MySQLLikeRepository
@@ -100,34 +129,110 @@ services:
     Twitter\Tweet\UI\Web\:
         resource: '../src/Tweet/UI/Web/'
         tags: [ 'controller.service_arguments' ]
-        
+    
     Twitter\Tweet\Application\UseCase\GetTweet\GetTweetCommandHandler:
         arguments:
             $tweetRepository: '@Twitter\Tweet\Domain\Tweet\Model\TweetRepository'
             $profileRepository: '@Twitter\Profile\Domain\Profile\Model\ProfileRepository'
-            
+    
     Twitter\Tweet\Application\UseCase\GetTweets\GetTweetsCommandHandler:
         arguments:
             $tweetRepository: '@Twitter\Tweet\Domain\Tweet\Model\TweetRepository'
             $profileRepository: '@Twitter\Profile\Domain\Profile\Model\ProfileRepository'
-            
+
+    Twitter\Tweet\Application\UseCase\GetTweets\GetTweetsCommandHandlerInterface: '@Twitter\Tweet\Application\UseCase\GetTweets\GetTweetsCommandHandler'
+
     Twitter\Tweet\Application\UseCase\UpdateTweet\UpdateTweetCommandHandler:
         arguments:
             $tweetRepository: '@Twitter\Tweet\Domain\Tweet\Model\TweetRepository'
-            
+    
+    Twitter\Tweet\Application\UseCase\UpdateTweet\UpdateTweetCommandHandlerInterface: '@Twitter\Tweet\Application\UseCase\UpdateTweet\UpdateTweetCommandHandler'
+
     Twitter\Tweet\Application\UseCase\GetUserTweets\GetUserTweetsQueryHandler:
         arguments:
             $tweetRepository: '@Twitter\Tweet\Domain\Tweet\Model\TweetRepository'
 
-    Twitter\Tweet\Application\EventSubscriber\UpdateTweetLikesCountSubscriber:
+    Twitter\Tweet\Application\EventSubscriber\LikeMessageBridgeSubscriber:
         tags: [ 'kernel.event_subscriber' ]
-        arguments:
-            $tweetRepository: '@Twitter\Tweet\Domain\Tweet\Model\TweetRepository'
+    
+    Twitter\Tweet\Application\UseCase\GetUserTweets\GetUserTweetsQueryHandlerInterface: '@Twitter\Tweet\Application\UseCase\GetUserTweets\GetUserTweetsQueryHandler'
 
-    Twitter\Realtime\Infrastructure\EventSubscriber\LikeBroadcastSubscriber:
-        tags: [ 'kernel.event_subscriber' ]
+    Twitter\Tweet\Infrastructure\Cache\Proxy\GetTweetsCommandHandlerProxy:
+        decorates: Twitter\Tweet\Application\UseCase\GetTweets\GetTweetsCommandHandlerInterface
+        arguments:
+            $inner: '@.inner'
+            $cacheTweets: '@cache.tweets'
+            $ttl: '%cache_ttl_feed_main%'
+
+    Twitter\Tweet\Infrastructure\Cache\Proxy\GetUserTweetsQueryHandlerProxy:
+        decorates: Twitter\Tweet\Application\UseCase\GetUserTweets\GetUserTweetsQueryHandlerInterface
+        arguments:
+            $inner: '@.inner'
+            $cacheTweets: '@cache.tweets'
+            $ttl: '%cache_ttl_feed_user%'
+
+    Twitter\Tweet\Infrastructure\Cache\Decorator\UpdateTweetCommandHandlerDecorator:
+        decorates: Twitter\Tweet\Application\UseCase\UpdateTweet\UpdateTweetCommandHandlerInterface
+        arguments:
+            $inner: '@.inner'
+            $cacheTweets: '@cache.tweets'
+
+    Twitter\Tweet\Infrastructure\Cache\Decorator\CreateTweetCommandHandlerDecorator:
+        decorates: Twitter\Tweet\Application\UseCase\CreateTweet\CreateTweetCommandHandlerInterface
+        arguments:
+            $inner: '@.inner'
+            $cacheTweets: '@cache.tweets'
+
+    Twitter\Profile\Infrastructure\Cache\Proxy\GetProfileQueryHandlerProxy:
+        decorates: Twitter\Profile\Application\UseCase\GetProfile\GetProfileQueryHandlerInterface
+        arguments:
+            $inner: '@.inner'
+            $cacheProfiles: '@cache.profiles'
+            $ttl: '%cache_ttl_profile%'
+
+    Twitter\Profile\Infrastructure\Cache\Decorator\UpdateProfileCommandHandlerDecorator:
+        decorates: Twitter\Profile\Application\UseCase\UpdateProfile\UpdateProfileCommandHandlerInterface
+        arguments:
+            $inner: '@.inner'
+            $cacheProfiles: '@cache.profiles'
+
+    Twitter\Tweet\Application\Message\UpdateTweetLikesCountHandler: ~
+
+    Twitter\Tweet\Infrastructure\Service\TweetLikesCountUpdaterInterface:
+        class: Twitter\Tweet\Infrastructure\Service\TweetLikesCountUpdater
+
+    Twitter\Tweet\Infrastructure\Service\LikeBroadcasterInterface:
+        class: Twitter\Tweet\Infrastructure\Service\LikeBroadcaster
         arguments:
             $hub: '@Symfony\Component\Mercure\HubInterface'
-            $tweetRepository: '@Twitter\Tweet\Domain\Tweet\Model\TweetRepository'
             $topicBaseUrl: '%env(DEFAULT_URI)%'
             $logger: '@logger'
+
+    Twitter\Metrics\Controller\:
+        resource: '../src/Metrics/Controller'
+        tags: [ 'controller.service_arguments' ]
+    
+    Twitter\Metrics\EventSubscriber\HttpMetricsSubscriber:
+        tags:
+            - { name: kernel.event_subscriber }
+    
+    Prometheus\Storage\InMemory:
+        public: true
+    
+    Prometheus\CollectorRegistry:
+        class: Prometheus\CollectorRegistry
+        arguments:
+            - '@Prometheus\Storage\InMemory'
+
+    app.login_rate_limiter:
+        class: Symfony\Component\Security\Http\RateLimiter\DefaultLoginRateLimiter
+        arguments:
+            $globalFactory: '@limiter.ip_login'
+            $localFactory: '@limiter.username_ip_login'
+            $secret: '%kernel.secret%'
+
+    # DoctrineClearSubscriber commented out: redundant with DoctrineResetSubscriber.
+    # In FrankenPHP worker mode, resetManager() already clears the identity map; this subscriber's
+    # injected EM reference becomes stale after reset, making it redundant at best.
+    # Twitter\Shared\Infrastructure\EventSubscriber\DoctrineClearSubscriber:
+    #     tags: [ 'kernel.event_subscriber' ]

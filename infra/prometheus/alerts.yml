@@ -1,0 +1,34 @@
+groups:
+    - name: twitter-observability
+      rules:
+          - alert: HighErrorRate5xx
+            expr: (sum(rate(http_requests_total{status=~"5.."}[5m])) / sum(rate(http_requests_total[5m]))) > 0.02
+            for: 5m
+            labels:
+                severity: warning
+            annotations:
+                summary: "High 5xx error rate (>2% for 5m)"
+
+          - alert: RabbitMQQueueTooLong
+            expr: sum(rabbitmq_queue_messages_ready{queue="likes"}) > 100
+            for: 10m
+            labels:
+                severity: warning
+            annotations:
+                summary: "RabbitMQ likes backlog too large (ready > 100 for 10m)"
+
+          - alert: RabbitMQDLQNotEmpty
+            expr: sum(rabbitmq_queue_messages_ready{queue="failed"}) > 0
+            for: 5m
+            labels:
+                severity: warning
+            annotations:
+                summary: "RabbitMQ failed queue has messages"
+
+          - alert: RabbitMQNoProcessing
+            expr: sum(rabbitmq_queue_messages_ready{queue="likes"}) > 100 and sum(rate(rabbitmq_channel_messages_acked_total{queue="likes"}[5m])) < 0.1
+            for: 10m
+            labels:
+                severity: warning
+            annotations:
+                summary: "RabbitMQ likes queue has backlog but almost no processing"
